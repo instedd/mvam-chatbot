@@ -1,0 +1,3 @@
+module MvamBot
+
+end

@@ -1,5 +1,4 @@
 require "./mvam-bot/*"
 
-module Mvam::Bot
-  # TODO Put your code here
-end
+bot = MvamBot::Bot.new(MvamBot::Config.telegram_token)
+bot.polling
