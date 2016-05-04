@@ -9,16 +9,23 @@ module MvamBot
     end
 
     def handle(message : TelegramBot::Message) : Bool
-      p "Message: #{message.inspect}"
+      puts "Message: #{message.inspect}"
+
+      user = load_user(message)
+
       if message.text == "/start location"
-          # Handle location set
-          send_message message.chat.id, "What is your location?"
+        # Handle location set
+        send_message message.chat.id, "What is your location?"
       end
+
       return true
     end
 
     def handle(query : TelegramBot::InlineQuery)
-      p "Inline query: #{query.inspect}"
+      puts "Inline query: #{query.inspect}"
+
+      user = load_user(query)
+
       results = Array(TelegramBot::InlineQueryResult).new
       potato = TelegramBot::InlineQueryResultArticle.new("food:potato", "Potato", TelegramBot::InputTextMessageContent.new("Potato in Argentina is 20 ARS per kg"))
       potato.description = "20 ARS per kg"
@@ -29,6 +36,9 @@ module MvamBot
       answer_inline_query(query.id, results, switch_pm_text: "Choose your location", switch_pm_parameter: "location")
     end
 
+    private def load_user(msg)
+      Data.get_user(msg.from.id) || Data.create_user(msg.from.id, msg.from.username, [msg.from.first_name, msg.from.last_name].compact.join(" "))
+    end
 
   end
 end
