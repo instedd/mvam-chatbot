@@ -35,3 +35,22 @@ CREATE TABLE users (
   location_lat FLOAT,
   location_lng FLOAT
 );
+
+CREATE TABLE prices (
+  id BIGSERIAL PRIMARY KEY,
+  location_adm0_id INT REFERENCES "locations_adm0" (id),
+  location_adm1_id INT REFERENCES "locations_adm1" (id),
+  location_mkt_id INT REFERENCES "locations_mkt" (id),
+  commodity_id INT,
+  commodity_name VARCHAR(255),
+  currency_id INT,
+  currency_name VARCHAR(30),
+  unit_id INT,
+  unit_name VARCHAR(30),
+  month INT,
+  year INT,
+  price DECIMAL
+);
+
+-- TODO: Check index type for running full text search or prefix search in lowercase
+CREATE INDEX ON "prices" (name);
