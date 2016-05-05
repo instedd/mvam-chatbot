@@ -1,4 +1,5 @@
 require "TelegramBot"
+require "./models/*"
 
 module MvamBot
   class Bot < TelegramBot::Bot
@@ -9,15 +10,12 @@ module MvamBot
     end
 
     def handle(message : TelegramBot::Message) : Bool
-      puts "Message: #{message.inspect}"
+      puts "Message: #{message.to_json}"
 
       user = load_user(message)
+      return true if !user
 
-      if message.text == "/start location"
-        # Handle location set
-        send_message message.chat.id, "What is your location?"
-      end
-
+      MessageHandler.new(message, user, self).handle
       return true
     end
 
@@ -27,8 +25,7 @@ module MvamBot
       user = load_user(query)
 
       results = Array(TelegramBot::InlineQueryResult).new
-      potato = TelegramBot::InlineQueryResultArticle.new("food:potato", "Potato", TelegramBot::InputTextMessageContent.new("Potato in Argentina is 20 ARS per kg"))
-      potato.description = "20 ARS per kg"
+      potato = TelegramBot::InlineQueryResultArticle.new("food:potato", "Potato", TelegramBot::InputTextMessageContent.new("Potato in Argentina is 20 ARS per kg"), description: "20 ARS per kg")
       results << potato
       results << TelegramBot::InlineQueryResultArticle.new("food:rice", "Rice", TelegramBot::InputTextMessageContent.new("10 ARS per kg"))
       results << TelegramBot::InlineQueryResultArticle.new("food:banana", "Banana", TelegramBot::InputTextMessageContent.new("30 ARS per kg"))
@@ -37,7 +34,9 @@ module MvamBot
     end
 
     private def load_user(msg)
-      User.find(msg.from.id) || User.create(msg.from.id, msg.from.username, [msg.from.first_name, msg.from.last_name].compact.join(" "))
+      if user = msg.from
+        User.find(user.id) || User.create(user.id, user.username, [user.first_name, user.last_name].compact.join(" "))
+      end
     end
 
   end

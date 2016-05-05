@@ -1,13 +1,15 @@
+CREATE EXTENSION citext;
+
 CREATE TABLE locations_adm0 (
   id INT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL
+  name CITEXT NOT NULL
 );
 
 CREATE INDEX ON "locations_adm0" (name);
 
 CREATE TABLE locations_adm1 (
   id INT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
+  name CITEXT NOT NULL,
   location_adm0_id INT REFERENCES "locations_adm0" (id)
 );
 
@@ -17,7 +19,7 @@ CREATE INDEX ON "locations_adm1" (location_adm0_id, name);
 
 CREATE TABLE locations_mkt (
   id INT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
+  name CITEXT NOT NULL,
   location_adm1_id INT REFERENCES "locations_adm1" (id)
 );
 
@@ -26,14 +28,16 @@ CREATE INDEX ON "locations_mkt" (location_adm1_id);
 CREATE INDEX ON "locations_mkt" (location_adm1_id, name);
 
 CREATE TABLE users (
-  id BIGINT PRIMARY KEY,
+  id INT PRIMARY KEY,
   username VARCHAR(255) UNIQUE,
   name VARCHAR(255),
   location_adm0_id INT REFERENCES "locations_adm0" (id),
   location_adm1_id INT REFERENCES "locations_adm1" (id),
   location_mkt_id INT REFERENCES "locations_mkt" (id),
   location_lat FLOAT,
-  location_lng FLOAT
+  location_lng FLOAT,
+  conversation_step VARCHAR(255),
+  conversation_at TIMESTAMP
 );
 
 CREATE TABLE prices (
@@ -42,7 +46,7 @@ CREATE TABLE prices (
   location_adm1_id INT REFERENCES "locations_adm1" (id),
   location_mkt_id INT REFERENCES "locations_mkt" (id),
   commodity_id INT,
-  commodity_name VARCHAR(255),
+  commodity_name CITEXT,
   currency_id INT,
   currency_name VARCHAR(30),
   unit_id INT,
@@ -53,4 +57,4 @@ CREATE TABLE prices (
 );
 
 -- TODO: Check index type for running full text search or prefix search in lowercase
-CREATE INDEX ON "prices" (name);
+CREATE INDEX ON "prices" (location_mkt_id, commodity_name);

@@ -6,6 +6,6 @@ authors:
 
 dependencies:
   TelegramBot:
-    github: hangyas/TelegramBot
+    github: spalladino/TelegramBot
   pg:
     github: will/crystal-pg

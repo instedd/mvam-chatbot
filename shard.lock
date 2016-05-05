@@ -1,10 +1,9 @@
 version: 1.0
 shards:
   TelegramBot:
-    github: hangyas/TelegramBot
-    commit: 53502c679790144a16d3bee2c4b8130d4566a433
+    github: spalladino/TelegramBot
+    commit: 26efb8191d8835c1e186d607ab406a525df70362
 
   pg:
     github: will/crystal-pg
     version: 0.5.0
-
