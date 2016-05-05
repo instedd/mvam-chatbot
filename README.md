@@ -1,31 +1,27 @@
 # mvam-bot
 
-TODO: Write a description here
+WFP mVAM food prices Telegram bot.
 
-## Installation
+## Dependencies
 
+A PostgreSQL database, which can be created with the `db/psql.sql` script and seeded via `crystal tasks/load.cr`.
 
-TODO: Write installation instructions here
+## Bot setup
 
+To set up a Telegram bot to use for this project, talk to [BotFather](telegram.me/BotFather) and run the following slash commands:
 
-## Usage
+* `/newbot` to create the bot, make sure to write down the access token
+* `/setinline` to enable inline mode, with a description like `search prices...`
+* `/seteinlinegeo` to send user GPS coordinates with inline queries
+* `/setcommands` with `location - Set your location`
 
+## Environment
 
+Set the following environment variables:
 
-TODO: Write usage instructions here
+* `TELEGRAM_TOKEN`: access token for the Telegram bot
+* `PG_URL`: URL to the postgres DB
 
-## Development
+## Running
 
-TODO: Write development instructions here
-
-## Contributing
-
-1. Fork it ( https://github.com/[your-github-name]/mvam-bot/fork )
-2. Create your feature branch (git checkout -b my-new-feature)
-3. Commit your changes (git commit -am 'Add some feature')
-4. Push to the branch (git push origin my-new-feature)
-5. Create a new Pull Request
-
-## Contributors
-
-- [[your-github-name]](https://github.com/[your-github-name]) Santiago Palladino - creator, maintainer
+Run with `crystal src/mvam-bot.cr`
