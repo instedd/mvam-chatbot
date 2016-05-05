@@ -53,7 +53,7 @@ CREATE TABLE prices (
   unit_name VARCHAR(30),
   month INT,
   year INT,
-  price DECIMAL
+  price DOUBLE PRECISION
 );
 
 -- TODO: Check index type for running full text search or prefix search in lowercase

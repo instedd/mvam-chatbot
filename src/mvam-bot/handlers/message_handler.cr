@@ -100,7 +100,7 @@ module MvamBot
       else
         TelegramBot::ReplyKeyboardHide.new
       end
-      
+
       bot.send_message message.chat.id, text, reply_markup: keyboard
       user.conversation_at = Time.utc_now
       user.update

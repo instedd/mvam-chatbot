@@ -58,5 +58,9 @@ module MvamBot
                 @location_lat, @location_lng, @conversation_step, @conversation_at, @id])
     end
 
+    def location_description
+      Location.short_description(location_adm0_id, location_adm1_id, location_mkt_id)
+    end
+
   end
 end
