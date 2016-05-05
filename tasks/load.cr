@@ -65,7 +65,7 @@ class CsvProcessor
   def import_row(price)
     puts "Inserting price for #{price.commodity_name} in #{price.location_adm0_id}.#{price.location_adm1_id}.#{price.location_mkt_id} on #{price.month}/#{price.year}"
 
-    MvamBot::Data.create_price(
+    MvamBot::Price.create(
       price.location_adm0_id,
       price.location_adm1_id == 0 ? nil : price.location_adm1_id,
       price.location_adm1_id == 0 ? nil : price.location_mkt_id,
@@ -83,19 +83,19 @@ class CsvProcessor
 
   def import_adm0(id, name)
     @adm0s.add(id)
-    MvamBot::Data.create_location_adm0(id, name)
+    MvamBot::Location::Adm0.create(id, name)
   end
 
   def import_adm1(id, name, adm0_id)
     return if id == 0 # Do not store "national average" as location
     @adm1s.add(id.not_nil!)
-    MvamBot::Data.create_location_adm1(id.not_nil!, name, adm0_id)
+    MvamBot::Location::Adm1.create(id.not_nil!, name, adm0_id)
   end
 
   def import_mkt(id, name, adm1_id)
     return if adm1_id == 0 # Do not store "national average" as location
     @mkts.add(id.not_nil!)
-    MvamBot::Data.create_location_mkt(id.not_nil!, name, adm1_id.not_nil!)
+    MvamBot::Location::Mkt.create(id.not_nil!, name, adm1_id.not_nil!)
   end
 
 end

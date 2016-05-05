@@ -37,7 +37,7 @@ module MvamBot
     end
 
     private def load_user(msg)
-      Data.get_user(msg.from.id) || Data.create_user(msg.from.id, msg.from.username, [msg.from.first_name, msg.from.last_name].compact.join(" "))
+      User.find(msg.from.id) || User.create(msg.from.id, msg.from.username, [msg.from.first_name, msg.from.last_name].compact.join(" "))
     end
 
   end
