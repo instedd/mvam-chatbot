@@ -4,3 +4,5 @@
 /.shards/
 .env
 prices.csv
+src/foo.cr
+docker-cloud.yml

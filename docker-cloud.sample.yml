@@ -7,10 +7,10 @@ db:
   autorestart: always
 
 bot:
-  image: instedd/mvam-chatbot:latest
-  command: /bin/sh -c "sleep 5 && bin/mvam-bot"
+  image: manastech/mvam-chatbot:latest
+  command: /bin/sh -c "sleep 5 && ./mvam-bot"
   autorestart: always
   autoredeploy: true
   environment:
-    DATABASE_URL: postgres://mvambot:POSTGRES_PASSWORD@db/mvambot
-    TELEGRAM_BOT_TOKEN: TELEGRAM_BOT_TOKEN
+    PG_URL: postgres://mvambot:POSTGRES_PASSWORD@db/mvambot
+    TELEGRAM_TOKEN: TELEGRAM_BOT_TOKEN
