@@ -11,6 +11,7 @@ A PostgreSQL database, which can be created with the `db/psql.sql` script and se
 To set up a Telegram bot to use for this project, talk to [BotFather](telegram.me/BotFather) and run the following slash commands:
 
 * `/newbot` to create the bot, make sure to write down the access token
+* `/setdescription` to set a suitable welcoming message
 * `/setinline` to enable inline mode, with a description like `search prices...`
 * `/seteinlinegeo` to send user GPS coordinates with inline queries
 * `/setcommands` with `location - Set your location`
