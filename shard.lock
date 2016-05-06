@@ -6,4 +6,4 @@ shards:
 
   pg:
     github: will/crystal-pg
-    version: 0.7.0
+    commit: cafe4748b64a9c95ab93b4c19315780e8e254291
