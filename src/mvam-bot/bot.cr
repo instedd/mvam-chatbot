@@ -7,7 +7,7 @@ module MvamBot
     include TelegramBot::CmdHandler
 
     def initialize(token)
-      super("mvamBot", token)
+      super("mvamBot", token, updates_timeout: 20)
     end
 
     protected def logger : Logger
