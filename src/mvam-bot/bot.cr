@@ -1,4 +1,6 @@
 require "TelegramBot"
+require "logger"
+require "benchmark"
 
 module MvamBot
   class Bot < TelegramBot::Bot
@@ -8,26 +10,30 @@ module MvamBot
       super("mvamBot", token)
     end
 
+    protected def logger : Logger
+      MvamBot.logger
+    end
+
     def handle(message : TelegramBot::Message) : Bool
-      begin
-        puts "> #{message.to_json}"
-        user = load_user(message) || return true
-        MessageHandler.new(message, user, self).handle
-        return true
-      rescue e
-        puts e.inspect_with_backtrace
-        return false
-      end
+      handle_with(message, MessageHandler)
     end
 
     def handle(query : TelegramBot::InlineQuery)
+      handle_with(query, InlineQueryHandler)
+    end
+
+    private def handle_with(obj, klazz)
       begin
-        puts "> #{query.to_json}"
-        user = load_user(query) || return true
-        InlineQueryHandler.new(query, user, self).handle
+        time = Benchmark.measure do
+          MvamBot.logger.info "> #{obj.class.name} #{obj.to_json}"
+          if user = load_user(obj)
+            klazz.new(obj, user, self).handle
+          end
+        end
+        logger.debug("Handled #{obj.class.name} in: #{time}")
         return true
       rescue e
-        puts e.inspect_with_backtrace
+        logger.error e.inspect_with_backtrace
         return false
       end
     end

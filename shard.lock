@@ -2,7 +2,7 @@ version: 1.0
 shards:
   TelegramBot:
     github: spalladino/TelegramBot
-    commit: 26efb8191d8835c1e186d607ab406a525df70362
+    commit: f72fcf1b03ed3240f52ff5a7150b592d5de5f030
 
   pg:
     github: will/crystal-pg

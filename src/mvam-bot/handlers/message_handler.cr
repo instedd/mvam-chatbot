@@ -101,6 +101,7 @@ module MvamBot
         TelegramBot::ReplyKeyboardHide.new
       end
 
+      MvamBot.logger.debug "< SendMessage #{message.chat.id}, #{text}, keyboard: #{keyboard.inspect}"
       bot.send_message message.chat.id, text, reply_markup: keyboard
       user.conversation_at = Time.utc_now
       user.update
