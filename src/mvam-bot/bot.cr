@@ -1,6 +1,8 @@
 require "TelegramBot"
 require "logger"
 require "benchmark"
+require "openssl"
+require "http/server"
 
 module MvamBot
   class Bot < TelegramBot::Bot
@@ -20,6 +22,16 @@ module MvamBot
 
     def handle(query : TelegramBot::InlineQuery)
       handle_with(query, InlineQueryHandler)
+    end
+
+    def run
+      if url = MvamBot::Config.telegram_webhook_url
+        set_webhook(url, MvamBot::Config.telegram_certificate_path)
+        serve(MvamBot::Config.telegram_bind_address, MvamBot::Config.telegram_bind_port, MvamBot::Config.telegram_certificate_path, MvamBot::Config.telegram_key_path)
+      else
+        set_webhook("")
+        polling
+      end
     end
 
     private def handle_with(obj, klazz)
