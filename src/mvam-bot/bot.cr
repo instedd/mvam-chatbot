@@ -26,11 +26,19 @@ module MvamBot
 
     def run
       if url = MvamBot::Config.telegram_webhook_url
-        set_webhook(url, MvamBot::Config.telegram_certificate_path)
+        set_webhook(url, certificate)
         serve(MvamBot::Config.telegram_bind_address, MvamBot::Config.telegram_bind_port, MvamBot::Config.telegram_certificate_path, MvamBot::Config.telegram_key_path)
       else
         set_webhook("")
         polling
+      end
+    end
+
+    private def certificate
+      if cert_path = MvamBot::Config.telegram_certificate_path
+        File.read(cert_path).to_s
+      else
+        MvamBot::Config.telegram_certificate
       end
     end
 

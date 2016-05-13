@@ -4,6 +4,12 @@ module MvamBot
       ENV["TELEGRAM_TOKEN"]
     end
 
+    def self.telegram_certificate : String | Nil
+      if cert = ENV["TELEGRAM_CERTIFICATE"]?
+        cert.gsub("\\n", "\n")
+      end
+    end
+
     def self.telegram_certificate_path : String | Nil
       ENV["TELEGRAM_CERTIFICATE_PATH"]?
     end
