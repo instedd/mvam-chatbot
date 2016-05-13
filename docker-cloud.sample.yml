@@ -8,9 +8,17 @@ db:
 
 bot:
   image: manastech/mvam-chatbot:latest
-  command: /bin/sh -c "sleep 5 && ./mvam-bot"
+  command: /bin/sh -c "sleep 1 && ./mvam-bot"
   autorestart: always
   autoredeploy: true
+  ports:
+    - "8080"
   environment:
+    VIRTUAL_HOST: https://mvam-bot.instedd.org
+    SSL_CERT:
     PG_URL: postgres://mvambot:POSTGRES_PASSWORD@db/mvambot
-    TELEGRAM_TOKEN: TELEGRAM_BOT_TOKEN
+    TELEGRAM_TOKEN:
+    TELEGRAM_BIND_ADDRESS: 0.0.0.0
+    TELEGRAM_BIND_PORT: 8080
+    TELEGRAM_WEBHOOK_URL: https://mvam-bot.instedd.org:443/
+    TELEGRAM_CERTIFICATE:
