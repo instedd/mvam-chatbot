@@ -44,13 +44,12 @@ module MvamBot
 
     private def handle_with(obj, klazz)
       begin
-        time = Benchmark.measure do
-          MvamBot.logger.info "> #{obj.class.name} #{obj.to_json}"
-          if user = load_user(obj)
-            klazz.new(obj, user, self).handle
-          end
+        time = Time.utc_now
+        MvamBot.logger.info "> #{obj.class.name} #{obj.to_json}"
+        if user = load_user(obj)
+          klazz.new(obj, user, self).handle
         end
-        logger.debug("Handled #{obj.class.name} in: #{time}")
+        logger.debug("Handled #{obj.class.name} in: #{Time.utc_now - time}")
         return true
       rescue e
         logger.error e.inspect_with_backtrace

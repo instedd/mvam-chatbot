@@ -3,7 +3,7 @@ require "pg"
 module MvamBot
 
   class DB
-    @@db = PG.connect(ENV["PG_URL"])
+    @@db : PG::Connection = PG.connect(ENV["PG_URL"])
 
     def self.exec(*args)
       @@db.exec(*args)
@@ -20,7 +20,7 @@ module MvamBot
       @sortings = Array(String).new
       @params = Array(PG::PGValue).new
 
-      def initialize(@head, @limit = nil, @offset = nil)
+      def initialize(@head : String, @limit : Int32? = nil, @offset : Int32? = nil)
       end
 
       def add_condition(condition, params : Array(PG::PGValue)? = nil)

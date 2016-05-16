@@ -13,6 +13,8 @@ module MvamBot
     end
 
     record Adm0, id : Int32, name : String do
+      @@cache : Hash(Int32, Adm0)?
+
       def self.cache
         @@cache ||= self.all.index_by(&.id)
       end
@@ -41,6 +43,8 @@ module MvamBot
     end
 
     record Adm1, id : Int32, name : String, adm0_id : Int32 do
+      @@cache : Hash(Int32, Adm1)?
+
       def self.cache
         @@cache ||= self.all.index_by(&.id)
       end
@@ -73,6 +77,8 @@ module MvamBot
     end
 
     record Mkt, id : Int32, name : String, adm1_id : Int32 do
+      @@cache : Hash(Int32, Mkt)?
+
       def self.cache
         @@cache ||= self.all.index_by(&.id)
       end
