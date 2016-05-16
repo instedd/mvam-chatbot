@@ -58,3 +58,21 @@ CREATE TABLE prices (
 
 -- TODO: Check index type for running full text search or prefix search in lowercase
 CREATE INDEX ON "prices" (location_mkt_id, commodity_name);
+
+CREATE TABLE message_logs (
+  id BIGSERIAL PRIMARY KEY,
+  user_id INT REFERENCES "users" (id),
+  is_outgoing BOOLEAN DEFAULT FALSE,
+  text VARCHAR(511),
+  timestamp TIMESTAMP
+);
+
+CREATE TABLE query_logs (
+  id BIGSERIAL PRIMARY KEY,
+  user_id INT REFERENCES "users" (id),
+  query VARCHAR(255),
+  query_offset INT DEFAULT 0,
+  answer_size INT DEFAULT 0,
+  answer_pm_text VARCHAR(255),
+  timestamp TIMESTAMP
+);
