@@ -24,6 +24,7 @@ module MvamBot
     def answer(results = Array(TelegramBot::InlineQueryResult).new(0), pm_text = nil)
       next_offset = results.size == RESULTS_LIMIT ? (query_offset + RESULTS_LIMIT).to_s : nil
       MvamBot.logger.debug "< AnswerInlineQuery #{query.id}, results_size: #{results.size}, offset: #{next_offset}"
+      MvamBot::Logs::Query.create(user.id, query.query, query_offset, results.size, pm_text, Time.utc_now)
       bot.answer_inline_query(query.id, results, switch_pm_text: pm_text, switch_pm_parameter: "location", is_personal: true, cache_time: 10, next_offset: next_offset)
     end
 

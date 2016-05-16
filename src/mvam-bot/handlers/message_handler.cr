@@ -12,6 +12,8 @@ module MvamBot
     end
 
     def handle
+      MvamBot::Logs::Message.create(user.id, false, message.text, Time.utc_now)
+
       if message.text == "/start location" || message.text == "/location"
         handle_init_location
       elsif user.conversation_step == "location/adm0"
@@ -102,6 +104,8 @@ module MvamBot
       end
 
       MvamBot.logger.debug "< SendMessage #{message.chat.id}, #{text}, keyboard: #{keyboard.inspect}"
+      MvamBot::Logs::Message.create(user.id, true, text, Time.utc_now)
+
       bot.send_message message.chat.id, text, reply_markup: keyboard
       user.conversation_at = Time.utc_now
       user.update
