@@ -14,7 +14,9 @@ module MvamBot
     def handle
       MvamBot::Logs::Message.create(user.id, false, message.text, Time.utc_now)
 
-      if message.text == "/start location" || message.text == "/location"
+      if message.text =~ /^\/price(.*)/
+        handle_price($~[1])
+      elsif message.text == "/start location" || message.text == "/location"
         handle_init_location
       elsif user.conversation_step == "location/adm0"
         handle_step_location_adm0
@@ -25,12 +27,43 @@ module MvamBot
       end
     end
 
-    def handle_init_location
+    def handle_price(query)
+      return answer("Send `/price FOOD` to get the prices of a food near you.") if query.strip.empty?
+      return handle_init_location("Before we start, I need to know where you are. ") if user.location_adm0_id.nil?
+
+      prices = Price.search_by_name(query.strip, limit: 5, offset: 0, filter_level: 0, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
+
+      # If there are no results, ask the user to try another query
+      if prices.empty?
+        return answer("Sorry, I have no information on _#{query.strip}_ in #{Location::Adm0.find(user.location_adm0_id.not_nil!).name}.")
+
+      # If there is more than a single commodity that matches, display an inline keyboard to choose one
+      elsif prices.map(&.commodity_id).uniq.size > 1
+        options = prices.map{|p| {p.commodity_name, "commodity/#{p.commodity_id}"}}.uniq
+        return answer_with_inline("I have information on #{options.map{|opt| opt[0]}.join(", ")}; please choose one.", options)
+
+      # If there is a result for the specific market where the user is, return it
+      elsif prices[0].location_mkt_id && prices[0].location_mkt_id == user.location_mkt_id
+        return answer(prices[0].long_description(format: :markdown))
+
+      # If the results are for the same adm1 location, return those
+      elsif prices[0].location_adm1_id && prices[0].location_adm1_id == user.location_adm1_id
+        descriptions = prices.select{|p| p.location_adm1_id}.map{|p| p.short_description(:markdown)}
+        return answer("Prices for #{prices[0].commodity_name} are #{descriptions.join(", ")}.")
+
+      # Otherwise, send some country-wide prices
+      else
+        descriptions = prices.first(5).map{|p| p.short_description(:markdown)}
+        return answer("Prices for #{prices[0].commodity_name} are #{descriptions.join(", ")}.")
+      end
+    end
+
+    def handle_init_location(extra_text = nil)
       user.location_adm0_id = nil
       user.location_adm1_id = nil
       user.location_mkt_id = nil
       user.conversation_step = "location/adm0"
-      answer "What country do you live in?", Location::Adm0.all.map(&.name)
+      answer_with_keyboard "#{extra_text}What country do you live in?", Location::Adm0.all.map(&.name)
     end
 
     def handle_step_location_adm0
@@ -38,7 +71,7 @@ module MvamBot
         user.location_adm0_id = location.id
         request_location_adm1(location)
       else
-        answer "Sorry, I do not have information on #{message.text}. Please pick a country from the list.", Location::Adm0.all.map(&.name)
+        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a country from the list.", Location::Adm0.all.map(&.name)
       end
     end
 
@@ -53,7 +86,7 @@ module MvamBot
         request_location_mkt(location_adm1)
       else
         user.conversation_step = "location/adm1"
-        answer "And where in #{location_adm0.name} are you?", locations.map(&.name)
+        answer_with_keyboard "And where in #{location_adm0.name} are you?", locations.map(&.name)
       end
     end
 
@@ -62,7 +95,7 @@ module MvamBot
         user.location_adm1_id = location.id
         request_location_mkt(location)
       else
-        answer "Sorry, I do not have information on #{message.text}. Please pick a region from the list.", Location::Adm1.where_adm0_id(user.location_adm0_id.not_nil!).map(&.name)
+        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a region from the list.", Location::Adm1.where_adm0_id(user.location_adm0_id.not_nil!).map(&.name)
       end
     end
 
@@ -78,7 +111,7 @@ module MvamBot
         answer_location_complete(location_mkt)
       else
         user.conversation_step = "location/mkt"
-        answer "And which city in #{location_adm1.name} would you like information from?", locations.map(&.name)
+        answer_with_keyboard "And which city in #{location_adm1.name} would you like information from?", locations.map(&.name)
       end
     end
 
@@ -88,25 +121,31 @@ module MvamBot
         user.conversation_step = nil
         answer_location_complete(location)
       else
-        answer "Sorry, I do not have information on #{message.text}. Please pick a city from the list.", Location::Mkt.where_adm1_id(user.location_adm1_id.not_nil!).map(&.name)
+        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a city from the list.", Location::Mkt.where_adm1_id(user.location_adm1_id.not_nil!).map(&.name)
       end
     end
 
     def answer_location_complete(location)
-      answer "Got it, I will send you food prices from #{location.name}. If you want to change it at anytime, just send /location."
+      answer "Got it, I will send you food prices from #{location.name}. If you want to change it at anytime, just send `/location`."
     end
 
-    def answer(text : String, keyboard_buttons : Array(String) = nil)
-      keyboard = if keyboard_buttons
-        TelegramBot::ReplyKeyboardMarkup.new(keyboard_buttons.map {|b| [b]}, one_time_keyboard: true)
-      else
-        TelegramBot::ReplyKeyboardHide.new
-      end
+    def answer_with_keyboard(text : String, buttons : Array(String))
+      keyboard = TelegramBot::ReplyKeyboardMarkup.new(buttons.map {|b| [b]}, one_time_keyboard: true)
+      answer(text, keyboard)
+    end
+
+    def answer_with_inline(text : String, buttons : Array(Tuple(String, String)))
+      keyboard = TelegramBot::InlineKeyboardMarkup.new(buttons.map {|b| TelegramBot::InlineKeyboardButton.new(text: b[0], callback_data: b[1])})
+      answer(text, keyboard)
+    end
+
+    def answer(text : String, keyboard : TelegramBot::ReplyKeyboardMarkup | TelegramBot::InlineKeyboardMarkup | Nil = nil)
+      keyboard ||= TelegramBot::ReplyKeyboardHide.new
 
       MvamBot.logger.debug "< SendMessage #{message.chat.id}, #{text}, keyboard: #{keyboard.inspect}"
       MvamBot::Logs::Message.create(user.id, true, text, Time.utc_now)
 
-      bot.send_message message.chat.id, text, reply_markup: keyboard
+      bot.send_message message.chat.id, text, reply_markup: keyboard, parse_mode: "Markdown"
       user.conversation_at = Time.utc_now
       user.update
     end

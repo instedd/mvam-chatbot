@@ -40,12 +40,12 @@ module MvamBot
       def long_description(format = nil)
         time = Time.new(year, month, 1).to_s(year == Time.now.year ? "%B" : "%B %Y")
         location = Location.short_description(location_adm0_id, location_adm1_id, location_mkt_id)
-        "#{commodity_name} is #{price_description(format)} in #{location} as of #{time}"
+        "#{commodity_name} is #{price_description(format)} in #{location} as of #{time}."
       end
 
-      def short_description
+      def short_description(format = nil)
         location = Location.short_description(location_adm0_id, location_adm1_id, location_mkt_id)
-        "#{price_description} in #{location}"
+        "#{price_description(format)} in #{location}"
       end
 
       def price_description(format = nil)
