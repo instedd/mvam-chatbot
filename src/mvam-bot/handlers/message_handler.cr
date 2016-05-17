@@ -28,10 +28,16 @@ module MvamBot
     end
 
     def handle_price(query)
-      return answer("Send `/price FOOD` to get the prices of a food near you.") if query.strip.empty?
       return handle_init_location("Before we start, I need to know where you are. ") if user.location_adm0_id.nil?
 
-      prices = Price.search_by_name(query.strip, limit: 5, offset: 0, filter_level: 0, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
+      # If the user sent no query, show usage with an example
+      if query.strip.empty?
+        sample_prices = Price.search_by_commodity_id(nil, limit: 1, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
+        example = sample_prices.empty? ? "" : " For example, try `/price #{sample_prices[0].short_commodity_name.downcase}`."
+        return answer("Send `/price FOOD` to get the prices of a food near you.#{example}")
+      end
+
+      prices = Price.search_by_name(query.strip, limit: 50, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
 
       # If there are no results, ask the user to try another query
       if prices.empty?
@@ -42,19 +48,9 @@ module MvamBot
         options = prices.map{|p| {p.commodity_name, "commodity/#{p.commodity_id}"}}.uniq
         return answer_with_inline("I have information on #{options.map{|opt| opt[0]}.join(", ")}; please choose one.", options)
 
-      # If there is a result for the specific market where the user is, return it
-      elsif prices[0].location_mkt_id && prices[0].location_mkt_id == user.location_mkt_id
-        return answer(prices[0].long_description(format: :markdown))
-
-      # If the results are for the same adm1 location, return those
-      elsif prices[0].location_adm1_id && prices[0].location_adm1_id == user.location_adm1_id
-        descriptions = prices.select{|p| p.location_adm1_id}.map{|p| p.short_description(:markdown)}
-        return answer("Prices for #{prices[0].commodity_name} are #{descriptions.join(", ")}.")
-
-      # Otherwise, send some country-wide prices
+      # Otherwise, show a description of the prices
       else
-        descriptions = prices.first(5).map{|p| p.short_description(:markdown)}
-        return answer("Prices for #{prices[0].commodity_name} are #{descriptions.join(", ")}.")
+        answer(Price.description(prices, user: user, format: :markdown))
       end
     end
 

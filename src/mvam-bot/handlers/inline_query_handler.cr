@@ -15,7 +15,7 @@ module MvamBot
       if !user.location_adm0_id
         answer(pm_text: "Press here to set your location to start")
       else
-        prices = Price.search_by_name(query.query, limit: RESULTS_LIMIT, offset: query_offset, filter_level: 0, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
+        prices = Price.search_by_name(query.query, limit: RESULTS_LIMIT, offset: query_offset, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
         results = prices.map { |p| TelegramBot::InlineQueryResultArticle.new("prices/#{p.id}", p.commodity_name, display_content_for(p), description: p.short_description) }
         answer(results, "Location is #{user.location_description} (press here to change)")
       end

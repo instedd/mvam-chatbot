@@ -76,3 +76,11 @@ CREATE TABLE query_logs (
   answer_pm_text VARCHAR(255),
   timestamp TIMESTAMP
 );
+
+CREATE TABLE callback_logs (
+  id BIGSERIAL PRIMARY KEY,
+  user_id INT REFERENCES "users" (id),
+  data VARCHAR(255),
+  answer VARCHAR(255),
+  timestamp TIMESTAMP
+);

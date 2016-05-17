@@ -24,6 +24,10 @@ module MvamBot
       handle_with(query, InlineQueryHandler)
     end
 
+    def handle(callback : TelegramBot::CallbackQuery)
+      handle_with(callback, CallbackQueryHandler)
+    end
+
     def run
       if url = MvamBot::Config.telegram_webhook_url
         set_webhook(url, certificate)
@@ -49,7 +53,7 @@ module MvamBot
         if user = load_user(obj)
           klazz.new(obj, user, self).handle
         end
-        logger.debug("Handled #{obj.class.name} in: #{Time.utc_now - time}")
+        logger.debug("Handled #{obj.class.name} in #{Time.utc_now - time}")
         return true
       rescue e
         logger.error e.inspect_with_backtrace

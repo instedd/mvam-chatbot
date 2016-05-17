@@ -16,6 +16,13 @@ module MvamBot
       end
     end
 
+    record Callback, user_id : Int32, data : String?, answer : String?, timestamp : Time do
+      def self.create(user_id : Int32, data : String?, answer : String?, timestamp : Time)
+        DB.exec("INSERT INTO callback_logs (user_id, data, answer, timestamp) VALUES ($1, $2, $3, $4)",
+                [user_id, data, answer, timestamp])
+      end
+    end
+
   end
 
 end

@@ -24,10 +24,17 @@ module MvamBot
                    [location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price])
       end
 
-      def self.search_by_name(name : String?, adm0_id : Int32? = nil, adm1_id : Int32? = nil, mkt_id : Int32? = nil, filter_level : Int32 = 2, limit : Int32? = nil, offset : Int32? = nil)
-        # TODO: Check compiler error when naming limit: limit, offset: offset in the call below
+      def self.search_by_name(name : String?, adm0_id : Int32? = nil, adm1_id : Int32? = nil, mkt_id : Int32? = nil, filter_level : Int32 = 0, limit : Int32? = nil, offset : Int32? = nil)
+        search_on_locations("commodity_name LIKE $1", (name ? "#{name}%" : nil), adm0_id, adm1_id, mkt_id, filter_level, limit, offset)
+      end
+
+      def self.search_by_commodity_id(commodity_id : Int32?, adm0_id : Int32? = nil, adm1_id : Int32? = nil, mkt_id : Int32? = nil, filter_level : Int32 = 0, limit : Int32? = nil, offset : Int32? = nil)
+        search_on_locations("commodity_id = $1", commodity_id, adm0_id, adm1_id, mkt_id, filter_level, limit, offset)
+      end
+
+      private def self.search_on_locations(condition, value, adm0_id : Int32? = nil, adm1_id : Int32? = nil, mkt_id : Int32? = nil, filter_level : Int32 = 0, limit : Int32? = nil, offset : Int32? = nil)
         DB.exec_with_builder(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM prices", limit, offset) do |builder|
-          builder.add_condition_unless_nil_param("commodity_name LIKE $1", (name ? "#{name}%" : nil))
+          builder.add_condition_unless_nil_param(condition, value)
           builder.add_condition_unless_nil_param("location_adm0_id = $1", adm0_id) if filter_level >= 0
           builder.add_condition_unless_nil_param("location_adm1_id = $1", adm1_id) if filter_level >= 1
           builder.add_condition_unless_nil_param("location_mkt_id = $1", mkt_id) if filter_level >= 2
@@ -35,6 +42,27 @@ module MvamBot
           builder.add_sorting_unless_nil_param("(location_adm1_id != $1)", adm1_id, "(location_adm1_id IS NULL) DESC")
           builder.add_sorting_unless_nil_param("(location_adm0_id != $1)", adm0_id, "(location_adm0_id IS NULL) DESC")
         end.rows.map {|r| self.new(*r)}
+      end
+
+      def self.description(prices, user, format = nil)
+        # Empty response if there are no prices
+        if prices.empty?
+          return ""
+
+        # If there is a result for the specific market where the user is, return it
+        elsif prices[0].location_mkt_id && prices[0].location_mkt_id == user.location_mkt_id
+          return prices[0].long_description(format: format)
+
+        # If the results are for the same adm1 location, return those
+        elsif prices[0].location_adm1_id && prices[0].location_adm1_id == user.location_adm1_id
+          descriptions = prices.select{|p| p.location_adm1_id}.map{|p| p.short_description(format)}
+          return "Prices for #{prices[0].commodity_name} are #{descriptions.join(", ")}."
+
+        # Otherwise, send some country-wide prices
+        else
+          descriptions = prices.first(5).map{|p| p.short_description(format)}
+          return "Prices for #{prices[0].commodity_name} are #{descriptions.join(", ")}."
+        end
       end
 
       def long_description(format = nil)
@@ -51,6 +79,10 @@ module MvamBot
       def price_description(format = nil)
         description = "#{price} #{currency_name} per #{unit_name}"
         return (format == :markdown) ? "*#{description}*" : description
+      end
+
+      def short_commodity_name
+        commodity_name.split(" ").first
       end
 
     end
