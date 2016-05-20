@@ -31,6 +31,10 @@ In addition, if using the Telegram webhook to get updates, instead of polling:
 * `TELEGRAM_BIND_ADDRESS`: bind address for listening to Telegram updates
 * `TELEGRAM_BIND_PORT`: bind port for listening to Telegram updates
 
+To forward all not-understood messages to wit.ai:
+
+* `WIT_ACCESS_TOKEN`: access token for wit.ai application
+
 ## Certificate
 
 ```
