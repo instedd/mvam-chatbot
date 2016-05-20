@@ -37,7 +37,8 @@ CREATE TABLE users (
   location_lat FLOAT,
   location_lng FLOAT,
   conversation_step VARCHAR(255),
-  conversation_at TIMESTAMP
+  conversation_at TIMESTAMP,
+  conversation_session_id VARCHAR(255),
 );
 
 CREATE TABLE prices (
