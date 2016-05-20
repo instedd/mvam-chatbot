@@ -19,8 +19,15 @@ module MvamBot
     end
 
     def merge(session_id : String, context : Wit::State, entities : Hash(String, Array(JSON::Any)), msg : String?) : Wit::State
-      # TODO: Merge entities into context
       logger.debug("Wit merge: entities=#{entities.inspect} context=#{context.inspect}")
+      entities.each do |key, values|
+        if values.size > 0
+          if value = values[0]["value"]?
+            # TODO: Handle non-string values?
+            context[key] = value.as_s
+          end
+        end
+      end
       context
     end
 

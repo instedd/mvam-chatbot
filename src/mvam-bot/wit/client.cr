@@ -13,7 +13,7 @@ module MvamBot
 
     def converse(message : String)
       # TODO: Load user conversation_state
-      @app.run_actions user.ensure_session_id, message, context: nil, max_steps: 10
+      user.conversation_state = @app.run_actions user.ensure_session_id, message, context: user.conversation_state, max_steps: 10
       user.conversation_at = Time.utc_now
       user.update
     end
