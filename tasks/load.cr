@@ -19,6 +19,7 @@ class CsvProcessor
   @adm0s = Set(Int32).new
   @adm1s = Set(Int32).new
   @mkts =  Set(Int32).new
+  @previous : MvamBot::Price | Nil
 
   def import_csv
     File.open(FILE_PATH, "r", encoding: "latin1") do |file|
