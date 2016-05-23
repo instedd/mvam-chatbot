@@ -29,5 +29,9 @@ module MvamBot
     def self.telegram_webhook_url : String | Nil
       ENV["TELEGRAM_WEBHOOK_URL"]?
     end
+
+    def self.wit_access_token : String | Nil
+      ENV["WIT_ACCESS_TOKEN"]?
+    end
   end
 end

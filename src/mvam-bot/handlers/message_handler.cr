@@ -12,6 +12,7 @@ module MvamBot
     end
 
     def handle
+      return if message.text.nil?
       MvamBot::Logs::Message.create(user.id, false, message.text, Time.utc_now)
 
       if message.text =~ /^\/price(.*)/
@@ -24,6 +25,8 @@ module MvamBot
         handle_step_location_adm1
       elsif user.conversation_step == "location/mkt"
         handle_step_location_mkt
+      elsif wit_token = MvamBot::Config.wit_access_token
+        WitClient.new(wit_token, user, self).converse(message.text.not_nil!)
       end
     end
 
@@ -135,7 +138,7 @@ module MvamBot
       answer(text, keyboard)
     end
 
-    def answer(text : String, keyboard : TelegramBot::ReplyKeyboardMarkup | TelegramBot::InlineKeyboardMarkup | Nil = nil)
+    def answer(text : String, keyboard : TelegramBot::ReplyKeyboardMarkup | TelegramBot::InlineKeyboardMarkup | Nil = nil, update_user : Bool = true)
       keyboard ||= TelegramBot::ReplyKeyboardHide.new
 
       MvamBot.logger.debug "< SendMessage #{message.chat.id}, #{text}, keyboard: #{keyboard.inspect}"
@@ -143,7 +146,7 @@ module MvamBot
 
       bot.send_message message.chat.id, text, reply_markup: keyboard, parse_mode: "Markdown"
       user.conversation_at = Time.utc_now
-      user.update
+      user.update if update_user
     end
 
   end

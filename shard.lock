@@ -6,4 +6,9 @@ shards:
 
   pg:
     github: will/crystal-pg
-    commit: cafe4748b64a9c95ab93b4c19315780e8e254291
+    version: 0.7.1
+
+  wit:
+    github: spalladino/wit-crystal
+    version: 1.0.1
+
