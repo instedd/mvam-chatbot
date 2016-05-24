@@ -44,3 +44,24 @@ openssl req -newkey rsa:2048 -sha256 -nodes -keyout spalladino-manas.ddns.net.ke
 ## Running
 
 Run with `crystal src/mvam-bot.cr`
+
+## Roadmap
+
+Overview of upcoming milestones.
+
+### Price queries
+
+[Milestone](https://github.com/instedd/mvam-chatbot/milestones/Version%201.0%20-%20Price%20Queries)
+
+Support for geolocated price queries via inline queries, commands, or NLP. 
+Use WFP food prices DB to answer queries.
+
+### Surveys
+
+[Milestone](https://github.com/instedd/mvam-chatbot/milestones/2/edit)
+
+Run food security surveys from the bot.
+
+### Feedback
+
+Await feedback from the two previous milestones and implement suggested changes.
