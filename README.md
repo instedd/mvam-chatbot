@@ -35,6 +35,14 @@ To forward all not-understood messages to wit.ai:
 
 * `WIT_ACCESS_TOKEN`: access token for wit.ai application
 
+## Database setup
+
+To create a development database and run migrations:
+```
+$ createdb -E utf8 -O `whoami` mvam-chatbot
+$ bin/micrate up
+```
+
 ## Certificate
 
 ```
