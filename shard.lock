@@ -4,6 +4,10 @@ shards:
     github: spalladino/TelegramBot
     commit: 8f958d4cb6b172ea30aef8c7cca46f4a0c607da0
 
+  micrate:
+    github: juanedi/micrate
+    commit: 8a7db21ae9f0f1d37781d55f6962c37dadfb0693
+
   pg:
     github: will/crystal-pg
     version: 0.7.1
