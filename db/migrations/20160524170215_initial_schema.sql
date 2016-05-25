@@ -1,7 +1,7 @@
 -- +micrate Up
 -- SQL in section 'Up' is executed when this migration is applied
 
-CREATE EXTENSION citext;
+CREATE EXTENSION IF NOT EXISTS citext;
 
 CREATE TABLE locations_adm0 (
   id INT PRIMARY KEY,
@@ -89,4 +89,3 @@ CREATE TABLE callback_logs (
   answer VARCHAR(255),
   timestamp TIMESTAMP
 );
-
