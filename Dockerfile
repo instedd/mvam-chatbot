@@ -1,4 +1,4 @@
-FROM crystallang/crystal:0.17.2
+FROM crystallang/crystal:0.17.3
 
 # Install git
 RUN apt-get update && apt-get -y install git libyaml-0-2 && apt-get clean && rm -rf /var/lib/apt/lists/*
