@@ -1,5 +1,14 @@
 module MvamBot
   module Config
+
+    def self.pg_url : String
+      ENV["PG_URL"]
+    end
+
+    def self.log_level : String
+      ENV["LOG_LEVEL"]? || "DEBUG"
+    end
+
     def self.telegram_token : String
       ENV["TELEGRAM_TOKEN"]
     end

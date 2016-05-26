@@ -3,7 +3,7 @@ require "pg"
 module MvamBot
 
   class DB
-    @@db : PG::Connection = PG.connect(ENV["PG_URL"])
+    @@db : PG::Connection = PG.connect(MvamBot::Config.pg_url)
 
     def self.exec(*args)
       @@db.exec(*args)

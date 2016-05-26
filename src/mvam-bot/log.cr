@@ -6,7 +6,7 @@ module MvamBot
 
   def self.logger
     @@logger ||= Logger.new(STDOUT).tap do |l|
-      l.level = Logger::Severity.parse(ENV["LOG_LEVEL"]? || "DEBUG")
+      l.level = Logger::Severity.parse(MvamBot::Config.log_level)
     end
   end
 
