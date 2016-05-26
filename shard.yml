@@ -12,8 +12,6 @@ dependencies:
   wit:
     github: spalladino/wit-crystal
     version: 1.0.1
-
-development_dependencies:
   micrate:
     github: juanedi/micrate
     branch: master
