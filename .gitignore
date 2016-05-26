@@ -2,7 +2,8 @@
 /libs/
 /.crystal/
 /.shards/
-.env
+/.env
+/.docker-env
 prices.csv
 src/foo.cr
 docker-cloud.yml
