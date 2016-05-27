@@ -25,21 +25,21 @@ module MvamBot::Spec
     end
   end
 
-  def message_handler(msg, user = nil)
-    bot = Bot.new
+  def message_handler(msg, user = nil, bot = nil)
+    bot ||= Bot.new
     message = Telegram.message(msg)
     user = user || Factory.user
     MessageHandler.new(message, user, bot)
   end
 
-  def handle_message(msg, user = nil)
-    handler = message_handler(msg, user)
+  def handle_message(msg, user = nil, bot = nil)
+    handler = message_handler(msg, user, bot)
     handler.handle
     handler.bot.as(Bot).messages
   end
 
-  def handle_message_with_wit(msg, user = nil, &wit : (String, String, Wit::Actions -> Wit::State))
-    handler = message_handler(msg, user)
+  def handle_message_with_wit(msg, user = nil, bot = nil, &wit : (String, String, Wit::Actions -> Wit::State))
+    handler = message_handler(msg, user, bot)
     handler.wit_client = WitClient.new(user, handler, &wit)
     handler.handle
     handler.bot.as(Bot).messages

@@ -22,16 +22,24 @@ module MvamBot
 
     def merge(session_id : String, context : Wit::State, entities : Hash(String, Array(JSON::Any)), msg : String?) : Wit::State
       # Set intent
-      context["intent"] = extract_value(entities, "intent")
+      extract_value_into(entities, "intent", context)
 
       # On queryPrice, set commodity
       case context["intent"]
       when WHO_IS
         context["commodity"] = nil
       when QUERY_PRICE
-        context["commodity"] = extract_value(entities, "commodity")
+        extract_value_into(entities, "commodity", context)
       end
 
+      context
+    end
+
+    private def extract_value_into(entities, key, context, context_key=nil)
+      context_key ||= key
+      if value = extract_value(entities, key)
+        context[context_key] = value
+      end
       context
     end
 
