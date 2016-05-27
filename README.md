@@ -59,6 +59,7 @@ The `commodity` entity can be seeded with all the WFP DB prices by running `bin/
 Set the following environment variables:
 
 * `TELEGRAM_TOKEN`: access token for the Telegram bot
+* `TELEGRAM_BOT_NAME`: name of the bot, defaults to `wfpBot`
 * `PG_URL`: URL to the postgres DB
 
 In addition, if using the Telegram webhook to get updates, instead of polling:
