@@ -1,5 +1,7 @@
 # mvam-bot
 
+[![CircleCI](https://circleci.com/gh/instedd/mvam-chatbot/tree/master.svg?style=svg&circle-token=5ae2f59b63a0f6b8e7451ea53cdbb4cfc8e23c88)](https://circleci.com/gh/instedd/mvam-chatbot/tree/master)
+
 WFP mVAM food prices Telegram bot.
 
 ## Dependencies
