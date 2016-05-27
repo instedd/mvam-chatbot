@@ -53,6 +53,13 @@ openssl req -newkey rsa:2048 -sha256 -nodes -keyout spalladino-manas.ddns.net.ke
 
 Run with `crystal src/mvam-bot.cr`
 
+## Tests
+
+* Create test db with `createdb mvambot-test`
+* Run migrations with `PG_URL=postgres://ubuntu@localhost/mvambot-test`, replacing `ubuntu@localhost` accordingly
+* Load seeds with `psql -U ubuntu mvambot-test < spec/db/seeds.sql`
+* Run tests with `crystal spec`
+
 ## Roadmap
 
 Overview of upcoming milestones.
@@ -61,7 +68,7 @@ Overview of upcoming milestones.
 
 [Milestone](https://github.com/instedd/mvam-chatbot/milestones/Version%201.0%20-%20Price%20Queries)
 
-Support for geolocated price queries via inline queries, commands, or NLP. 
+Support for geolocated price queries via inline queries, commands, or NLP.
 Use WFP food prices DB to answer queries.
 
 ### Surveys
