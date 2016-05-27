@@ -54,9 +54,9 @@ module MvamBot
       User.new(*(result.rows[0]))
     end
 
-    def self.create(id : Int32, username : String?, name : String?)
-      DB.exec("INSERT INTO users (id, username, name) VALUES ($1, $2, $3)", [id, username, name])
-      User.new(id, username, name)
+    def self.create(id : Int32, username : String?, name : String?, location_adm0_id : Int32? = nil, location_adm1_id : Int32? = nil, location_mkt_id : Int32? = nil)
+      DB.exec("INSERT INTO users (id, username, name, location_adm0_id, location_adm1_id, location_mkt_id) VALUES ($1, $2, $3, $4, $5, $6)", [id, username, name, location_adm0_id, location_adm1_id, location_mkt_id])
+      User.new(id, username, name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id)
     end
 
     def update
