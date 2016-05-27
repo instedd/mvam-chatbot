@@ -1,6 +1,7 @@
 require "./spec_helper"
 
 include MvamBot::Spec
+include MvamBot::Spec::Wit
 
 describe ::MvamBot::Bot do
 
@@ -54,6 +55,18 @@ describe ::MvamBot::Bot do
       messages.size.should eq(1)
       messages[0][:text].should contain("You can ask for the price of a commodity in your location using the `/price` command.")
       messages[0][:text].should contain("For example, try sending `/price rice`.")
+    end
+
+    it "should return price when asking via wit" do
+      DB.cleanup
+      user = Factory.user_with_location
+      messages = handle_message_with_wit("How much is rice?", user) do |msg, sid, actions|
+        context = actions.merge(sid, user.conversation_state, entities({ "intent" => "QueryPrice", "commodity" => "rice" }), msg)
+        actions.custom("show-price", sid, context)
+      end
+      
+      messages.size.should eq(1)
+      messages[0][:text].should match(/Rice.+85.+DZD per KG.+Algiers.+/)
     end
 
   end

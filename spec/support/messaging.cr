@@ -1,10 +1,48 @@
 module MvamBot::Spec
 
-  def handle_message(msg, user=nil)
+  class WitClient < ::MvamBot::WitClient
+    def initialize(user, requestor, &runner : (String, String, Wit::Actions -> Wit::State))
+      super("", user, requestor)
+      @runner = runner
+    end
+
+    protected def run_actions(message : String, session : String)
+      actions = @app.actions
+      @runner.call(message, session, actions)
+    end
+  end
+
+  class MessageHandler < ::MvamBot::MessageHandler
+    setter wit_client
+    @wit_client : ::MvamBot::WitClient?
+
+    def initialize(*args)
+      super(*args)
+    end
+
+    protected def wit_client
+      @wit_client || super
+    end
+  end
+
+  def message_handler(msg, user = nil)
     bot = Bot.new
     message = Telegram.message(msg)
-    MvamBot::MessageHandler.new(message, user || Factory.user, bot).handle
-    bot.messages
+    user = user || Factory.user
+    MessageHandler.new(message, user, bot)
+  end
+
+  def handle_message(msg, user = nil)
+    handler = message_handler(msg, user)
+    handler.handle
+    handler.bot.as(Bot).messages
+  end
+
+  def handle_message_with_wit(msg, user = nil, &wit : (String, String, Wit::Actions -> Wit::State))
+    handler = message_handler(msg, user)
+    handler.wit_client = WitClient.new(user, handler, &wit)
+    handler.handle
+    handler.bot.as(Bot).messages
   end
 
 end

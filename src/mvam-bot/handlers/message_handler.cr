@@ -4,9 +4,9 @@ module MvamBot
 
   class MessageHandler
 
-    getter :message
-    getter :user
-    getter :bot
+    getter message
+    getter user
+    getter bot
 
     def initialize(@message : TelegramBot::Message, @user : User, @bot : MvamBot::Bot)
     end
@@ -27,8 +27,14 @@ module MvamBot
         handle_step_location_adm1
       elsif user.conversation_step == "location/mkt"
         handle_step_location_mkt
-      elsif wit_token = MvamBot::Config.wit_access_token
-        WitClient.new(wit_token, user, self).converse(message.text.not_nil!)
+      elsif wit = wit_client
+        wit.converse(message.text.not_nil!)
+      end
+    end
+
+    protected def wit_client
+      if wit_token = MvamBot::Config.wit_access_token
+        WitClient.new(wit_token, user, self)
       end
     end
 

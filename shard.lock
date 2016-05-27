@@ -14,4 +14,4 @@ shards:
 
   wit:
     github: spalladino/wit-crystal
-    version: 1.0.1
+    version: 3a85511ab3c0b64c34cdf755310fca23c72f78de

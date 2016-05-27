@@ -7,15 +7,19 @@ module MvamBot
     getter user
 
     def initialize(token : String, @user : User, @requestor : MessageHandler)
-      logger = @requestor.bot.logger
+      logger = MvamBot.logger
       @app = Wit::App.new token, WitActions.new(@user, @requestor, logger), logger
     end
 
     def converse(message : String)
-      # TODO: Load user conversation_state
-      user.conversation_state = @app.run_actions user.ensure_session_id, message, context: user.conversation_state, max_steps: 10
+      session = user.ensure_session_id
+      user.conversation_state = run_actions(message, session)
       user.conversation_at = Time.utc_now
       user.update
+    end
+
+    protected def run_actions(message : String, session : String)
+      @app.run_actions(session, message, context: user.conversation_state, max_steps: 10)
     end
 
   end

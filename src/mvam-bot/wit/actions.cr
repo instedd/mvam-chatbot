@@ -47,7 +47,12 @@ module MvamBot
     end
 
     def custom(action_name : String, session_id : String, context : Wit::State) : Wit::State
-      # TODO: Execute custom action
+      case action_name
+      when "show-price"
+        requestor.handle_price(context["commodity"].try(&.to_s) || "")
+      else
+        logger.warn("Unknown custom action: #{action_name}")
+      end
       context
     end
 
