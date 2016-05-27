@@ -28,7 +28,7 @@ To set up a Telegram bot to use for this project, talk to [BotFather](telegram.m
 * `/setdescription` to set a suitable welcoming message
 * `/setinline` to enable inline mode, with a description like `search prices...`
 * `/seteinlinegeo` to send user GPS coordinates with inline queries
-* `/setcommands` with `location - Set your location` and `price - Get prices on a commodity near you`
+* `/setcommands` with `location - Set your location`, `price - Get prices on a commodity near you` and `help - Detailed help on this bot`
 
 ### Bot certificate
 

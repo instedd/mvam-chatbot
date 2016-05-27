@@ -13,6 +13,10 @@ module MvamBot
       ENV["TELEGRAM_TOKEN"]
     end
 
+    def self.telegram_bot_name : String
+      ENV["TELEGRAM_BOT_NAME"]? || "wfpBot"
+    end
+
     def self.telegram_certificate : String | Nil
       if cert = ENV["TELEGRAM_CERTIFICATE"]?
         cert.gsub("\\n", "\n")

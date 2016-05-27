@@ -36,9 +36,9 @@ module MvamBot
         DB.exec({String}, "SELECT DISTINCT(commodity_name) FROM prices;").rows.map(&.first)
       end
 
-      private def self.search_on_locations(condition, value, adm0_id : Int32? = nil, adm1_id : Int32? = nil, mkt_id : Int32? = nil, filter_level : Int32 = 0, limit : Int32? = nil, offset : Int32? = nil)
+      private def self.search_on_locations(condition : String? = nil, value = nil, adm0_id : Int32? = nil, adm1_id : Int32? = nil, mkt_id : Int32? = nil, filter_level : Int32 = 0, limit : Int32? = nil, offset : Int32? = nil)
         DB.exec_with_builder(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM prices", limit, offset) do |builder|
-          builder.add_condition_unless_nil_param(condition, value)
+          builder.add_condition_unless_nil_param(condition, value) if condition
           builder.add_condition_unless_nil_param("location_adm0_id = $1", adm0_id) if filter_level >= 0
           builder.add_condition_unless_nil_param("location_adm1_id = $1", adm1_id) if filter_level >= 1
           builder.add_condition_unless_nil_param("location_mkt_id = $1", mkt_id) if filter_level >= 2

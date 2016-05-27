@@ -39,6 +39,23 @@ describe ::MvamBot::Bot do
       messages[0][:reply_markup].as(TelegramBot::InlineKeyboardMarkup).inline_keyboard.flatten.size.should eq(3)
     end
 
+    it "should return help" do
+      DB.cleanup
+      messages = handle_message("/help")
+      messages.size.should eq(1)
+      messages[0][:text].should contain("You can ask for the price of a commodity in your location using the `/price` command.")
+      messages[0][:text].should_not contain("For example, try sending `/price")
+    end
+
+    it "should return help with example if user has location" do
+      DB.cleanup
+      user = Factory.user_with_location
+      messages = handle_message("/help", user)
+      messages.size.should eq(1)
+      messages[0][:text].should contain("You can ask for the price of a commodity in your location using the `/price` command.")
+      messages[0][:text].should contain("For example, try sending `/price rice`.")
+    end
+
   end
 
 end

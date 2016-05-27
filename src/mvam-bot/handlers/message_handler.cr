@@ -17,6 +17,8 @@ module MvamBot
 
       if message.text =~ /^\/price(.*)/
         handle_price($~[1])
+      elsif message.text == "/help"
+        handle_help
       elsif message.text == "/start location" || message.text == "/location"
         handle_init_location
       elsif user.conversation_step == "location/adm0"
@@ -35,9 +37,7 @@ module MvamBot
 
       # If the user sent no query, show usage with an example
       if query.strip.empty?
-        sample_prices = Price.search_by_commodity_id(nil, limit: 1, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
-        example = sample_prices.empty? ? "" : " For example, try `/price #{sample_prices[0].short_commodity_name.downcase}`."
-        return answer("Send `/price FOOD` to get the prices of a food near you.#{example}")
+        return answer("Send `/price FOOD` to get the prices of a food near you.#{sample_price_query}")
       end
 
       prices = Price.search_by_name(query.strip, limit: 50, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
@@ -55,6 +55,22 @@ module MvamBot
       else
         answer(Price.description(prices, user: user, format: :markdown))
       end
+    end
+
+    def handle_help
+      sample = user.location_adm0_id ? sample_price_query : ""
+      answer <<-ANSWER
+        You can ask for the price of a commodity in your location using the `/price` command.#{sample}
+
+        You can also ask for prices in any chat screen by mentioning me. Try typing `@#{MvamBot::Config.telegram_bot_name}` on any conversation with a friend.
+
+        At any time, you can change your location by sending me the command `/location`.
+        ANSWER
+    end
+
+    private def sample_price_query
+      sample_prices = Price.search_by_commodity_id(nil, limit: 1, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
+      sample_prices.empty? ? "" : " For example, try sending `/price #{sample_prices[0].short_commodity_name.downcase}`."
     end
 
     def handle_init_location(extra_text = nil)
