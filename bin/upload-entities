@@ -1,0 +1,41 @@
+#! /usr/bin/env crystal
+
+require "http/client"
+
+require "../src/mvam-bot/wit/*"
+require "../src/mvam-bot/models/*"
+require "../src/mvam-bot/*"
+
+API_VERSION = "20160511"
+COMMODITY_ENTITY = "commodity"
+
+token = MvamBot::Config.wit_access_token
+raise "Wit.ai access token is required" if token.nil? || token.empty?
+
+names = MvamBot::Price.commodity_names.map(&.downcase).group_by { |name| name.downcase.gsub(/\s+\(.+\)/, "") }
+values = names.map do |name, full_names|
+  # Livestock and meat have additional names between brackets after the name, such as Livestock (pig)
+  # unlike othe commodities that only have clarifications
+  expressions = if name == "livestock" || name == "meat"
+    full_names.map do |n|
+      m = /\((\w+)(?:,[^)]+)?\)/.match(n)
+      m ? m[1] : nil
+    end.compact.uniq
+  else
+    Array(String).new
+  end
+  { "value" => name, "expressions" => (expressions + [name]) }
+end
+
+json = { "values" => values}
+
+headers = HTTP::Headers.new
+headers.add("authorization", "Bearer #{token}")
+headers.add("accept", "application/vnd.wit.20160519+json")
+headers.add("Content-Type", "application/json")
+
+puts "https://api.wit.ai/entities/#{COMMODITY_ENTITY}?v=#{API_VERSION}"
+response = HTTP::Client.put("https://api.wit.ai/entities/#{COMMODITY_ENTITY}?v=#{API_VERSION}", headers, json.to_json)
+puts "Uploaded #{values.size} to entity #{COMMODITY_ENTITY}"
+puts "Response: #{response.status_code}"
+puts " #{response.body}"

@@ -32,6 +32,10 @@ module MvamBot
         search_on_locations("commodity_id = $1", commodity_id, adm0_id, adm1_id, mkt_id, filter_level, limit, offset)
       end
 
+      def self.commodity_names
+        DB.exec({String}, "SELECT DISTINCT(commodity_name) FROM prices;").rows.map(&.first)
+      end
+
       private def self.search_on_locations(condition, value, adm0_id : Int32? = nil, adm1_id : Int32? = nil, mkt_id : Int32? = nil, filter_level : Int32 = 0, limit : Int32? = nil, offset : Int32? = nil)
         DB.exec_with_builder(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM prices", limit, offset) do |builder|
           builder.add_condition_unless_nil_param(condition, value)

@@ -6,9 +6,21 @@ WFP mVAM food prices Telegram bot.
 
 ## Dependencies
 
-A PostgreSQL database, which can be created with the `db/psql.sql` script and seeded via `crystal tasks/load.cr`.
+* A PostgreSQL database, which can be provisioned via micrate and seeded via `bin/load-prices`.
+* A Telegram bot, created by talking to [BotFather](telegram.me/BotFather)
+* A Wit.ai application
 
-## Bot setup
+### Database setup
+
+To create a development database and run migrations:
+```
+$ createdb -E utf8 -O `whoami` mvam-chatbot
+$ bin/micrate up
+```
+
+Prices can be seeded by running `bin/load-prices`
+
+### Bot setup
 
 To set up a Telegram bot to use for this project, talk to [BotFather](telegram.me/BotFather) and run the following slash commands:
 
@@ -17,6 +29,21 @@ To set up a Telegram bot to use for this project, talk to [BotFather](telegram.m
 * `/setinline` to enable inline mode, with a description like `search prices...`
 * `/seteinlinegeo` to send user GPS coordinates with inline queries
 * `/setcommands` with `location - Set your location` and `price - Get prices on a commodity near you`
+
+### Bot certificate
+
+To create a sample certificate to use in Telegram serve mode:
+```
+openssl req -newkey rsa:2048 -sha256 -nodes -keyout cert.key -x509 -days 365 -out cert.pem -subj "/C=US/ST=New York/L=Brooklyn/O=Example Brooklyn Company/CN=cert"
+```
+
+### Wit.ai application
+
+An application that should be able to identify the following intents:
+* Whois: questions on the nature of the bot, such as "who are you?"
+* QueryPrice: a request for the price of a commodity; should provide a `commodity` entity, and invoke a `show-price` action
+
+The `commodity` entity can be seeded with all the WFP DB prices by running `bin/upload-entities`.
 
 ## Environment
 
@@ -37,23 +64,9 @@ To forward all not-understood messages to wit.ai:
 
 * `WIT_ACCESS_TOKEN`: access token for wit.ai application
 
-## Database setup
-
-To create a development database and run migrations:
-```
-$ createdb -E utf8 -O `whoami` mvam-chatbot
-$ bin/micrate up
-```
-
-## Certificate
-
-```
-openssl req -newkey rsa:2048 -sha256 -nodes -keyout spalladino-manas.ddns.net.key -x509 -days 365 -out spalladino-manas.ddns.net.pem -subj "/C=US/ST=New York/L=Brooklyn/O=Example Brooklyn Company/CN=spalladino-manas.ddns.net"
-```
-
 ## Running
 
-Run with `crystal src/mvam-bot.cr`
+Run locally with `crystal src/mvam-bot.cr`
 
 ## Tests
 
