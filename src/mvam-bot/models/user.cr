@@ -5,6 +5,8 @@ module MvamBot
 
     SESSION_LIFESPAN = 30.minutes
 
+    alias ConversationState = Hash(String, Bool | Float64 | Int64 | String | Nil)
+
     property :id
     property :username
     property :name
@@ -84,7 +86,7 @@ module MvamBot
     end
 
     def conversation_state
-      @conversation_state ||= Wit::State.new.tap do |state|
+      @conversation_state ||= ConversationState.new.tap do |state|
         if json = @conversation_state_json
           JSON.parse(json).as_h.each do |key, value|
             case value
