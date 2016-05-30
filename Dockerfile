@@ -13,5 +13,5 @@ RUN crystal deps
 ADD . /app
 RUN crystal build src/mvam-bot.cr --release
 
-# Run migrations and start the bot
-CMD ["./mvam-bot", "--micrate", "up"]
+# Start the bot
+CMD "./mvam-bot"
