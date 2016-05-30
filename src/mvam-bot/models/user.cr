@@ -31,7 +31,7 @@ module MvamBot
     @conversation_at : Time?
     @conversation_session_id : String?
     @conversation_state_json : String?
-    @conversation_state : Wit::State?
+    @conversation_state : ConversationState?
 
     def initialize(@id : Int32,
                    @username : String? = nil,
