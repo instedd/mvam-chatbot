@@ -46,5 +46,13 @@ module MvamBot
     def self.wit_access_token : String | Nil
       ENV["WIT_ACCESS_TOKEN"]?
     end
+
+    def self.web_username : String
+      ENV["WEB_USERNAME"]
+    end
+
+    def self.web_password : String
+      ENV["WEB_PASSWORD"]
+    end
   end
 end

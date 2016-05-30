@@ -4,6 +4,14 @@ shards:
     github: spalladino/TelegramBot
     commit: 8f958d4cb6b172ea30aef8c7cca46f4a0c607da0
 
+  kemal:
+    github: sdogruyol/kemal
+    version: 0.12.0
+
+  kilt:
+    github: jeromegn/kilt
+    version: 0.3.3
+
   micrate:
     github: juanedi/micrate
     commit: 8a7db21ae9f0f1d37781d55f6962c37dadfb0693
@@ -11,6 +19,14 @@ shards:
   pg:
     github: will/crystal-pg
     commit: cafe4748b64a9c95ab93b4c19315780e8e254291
+
+  pool:
+    github: ysbaddaden/pool
+    commit: c4ecfad1b87fbd8c6484d1fd536ccfd14c40cc94
+
+  radix:
+    github: luislavena/radix
+    version: 0.3.0
 
   wit:
     github: spalladino/wit-crystal

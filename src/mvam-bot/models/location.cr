@@ -12,6 +12,12 @@ module MvamBot
       end
     end
 
+    def self.long_description(adm0_id, adm1_id, mkt_id)
+      [adm0_id ? Adm0.find(adm0_id).name : nil,
+       adm1_id ? Adm1.find(adm1_id).name : nil,
+       mkt_id ? Mkt.find(mkt_id).name : nil].compact.reverse.join(", ")
+    end
+
     record Adm0, id : Int32, name : String do
       @@cache : Hash(Int32, Adm0)?
 
