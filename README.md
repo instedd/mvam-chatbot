@@ -6,7 +6,7 @@ WFP mVAM food prices Telegram bot.
 
 ## Dependencies
 
-* A PostgreSQL database, which can be provisioned via micrate and seeded via `bin/load-prices`.
+* A PostgreSQL database version `9.5`, which can be provisioned via micrate and seeded via `bin/load-prices`.
 * A Telegram bot, created by talking to [BotFather](telegram.me/BotFather)
 * A Wit.ai application
 
@@ -62,6 +62,7 @@ The `commodity` entity can be seeded with all the WFP DB prices by running `bin/
 
 Set the following environment variables:
 
+* `WFP_DATA_URL`: URL to WFP dataset in CSV format, such as `http://vam.wfp.org/sites/data/WFPVAM_FoodPrices_18-05-2016.csv`
 * `TELEGRAM_TOKEN`: access token for the Telegram bot
 * `TELEGRAM_BOT_NAME`: name of the bot, defaults to `wfpBot`
 * `PG_URL`: URL to the postgres DB
@@ -85,8 +86,8 @@ Run locally with `crystal src/mvam-bot.cr`
 ## Tests
 
 * Create test db with `createdb mvambot-test`
-* Run migrations with `PG_URL=postgres://ubuntu@localhost/mvambot-test`, replacing `ubuntu@localhost` accordingly
-* Load seeds with `psql -U ubuntu mvambot-test < spec/db/seeds.sql`
+* Run migrations `bin/micrate up` with `PG_URL=postgres://ubuntu@localhost/mvambot-test`
+* Seed test DB running `bin/load-prices` with `PG_URL=postgres://ubuntu@localhost/mvambot-test`
 * Run tests with `crystal spec`
 
 ## Roadmap

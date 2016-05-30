@@ -1,0 +1,7 @@
+#! /usr/bin/env crystal
+
+require "../src/mvam-bot/*"
+
+MvamBot::DB.exec "DELETE FROM prices;"
+MvamBot::DB.exec "DELETE FROM prices_history;"
+puts "Deleted all rows from prices and prices_history tables"
