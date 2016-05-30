@@ -109,6 +109,18 @@ module MvamBot
         DB.exec({Int32, String, Int32}, "SELECT id, name, location_adm1_id FROM locations_mkt #{condition}", params).rows.map{ |row| self.new(*row) }
       end
 
+      def self.around(lat : Float64, lng : Float64, count = 5, kilometers = 200) : Array({Location::Mkt, Float64})
+        query = "SELECT id, name, location_adm1_id, (ST_Distance(position::geography, ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')')) / 1000) AS distance"\
+                " FROM locations_mkt"\
+                " WHERE (ST_Distance(position::geography, ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')')) / 1000) < $3"\
+                " ORDER BY distance LIMIT $4;"
+
+        DB.exec({Int32, String, Int32, Float64}, query, [lng, lat, kilometers, count]).rows.map do |row|
+          id, name, location_adm1_id, distance = row
+          {self.new(id, name, location_adm1_id), distance}
+        end
+      end
+
       def self.set_position(id : String, lat : Float64, lng : Float64)
         DB.exec("UPDATE locations_mkt SET position = ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')') WHERE id = $3", [lng, lat, id])
       end
