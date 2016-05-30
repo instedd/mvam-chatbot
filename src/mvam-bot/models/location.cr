@@ -108,6 +108,10 @@ module MvamBot
       def self.select(condition = nil, params = Array(PG::PGValue).new(0))
         DB.exec({Int32, String, Int32}, "SELECT id, name, location_adm1_id FROM locations_mkt #{condition}", params).rows.map{ |row| self.new(*row) }
       end
+
+      def self.set_position(id : String, lat : Float64, lng : Float64)
+        DB.exec("UPDATE locations_mkt SET position = ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')') WHERE id = $3", [lng, lat, id])
+      end
     end
 
   end
