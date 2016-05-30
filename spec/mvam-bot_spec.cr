@@ -17,7 +17,7 @@ describe ::MvamBot::Bot do
 
     it "should return the requested price for the user location" do
       DB.cleanup
-      user = Factory.user_with_location
+      user = Factory::DB.user_with_location
       messages = handle_message("/price rice", user)
       messages.size.should eq(1)
       messages[0][:text].should match(/Rice.+85.+DZD per KG.+Algiers.+/)
@@ -25,7 +25,7 @@ describe ::MvamBot::Bot do
 
     it "should handle query with no prices associated" do
       DB.cleanup
-      user = Factory.user_with_location
+      user = Factory::DB.user_with_location
       messages = handle_message("/price foobar", user)
       messages.size.should eq(1)
       messages[0][:text].should match(/Sorry.+foobar.+/)
@@ -33,7 +33,7 @@ describe ::MvamBot::Bot do
 
     it "should handle query with multiple commodities associated" do
       DB.cleanup
-      user = Factory.user_with_location
+      user = Factory::DB.user_with_location
       messages = handle_message("/price o", user)
       messages.size.should eq(1)
       messages[0][:text].should eq("I have information on Oil, Onions; please choose one.")
@@ -50,7 +50,7 @@ describe ::MvamBot::Bot do
 
     it "should return help with example if user has location" do
       DB.cleanup
-      user = Factory.user_with_location
+      user = Factory::DB.user_with_location
       messages = handle_message("/help", user)
       messages.size.should eq(1)
       messages[0][:text].should contain("You can ask for the price of a commodity in your location using the `/price` command.")
@@ -61,7 +61,7 @@ describe ::MvamBot::Bot do
 
       it "should return commodity price" do
         DB.cleanup
-        user = Factory.user_with_location
+        user = Factory::DB.user_with_location
         messages = handle_message_with_wit("How much is rice?", user) do |msg, sid, actions|
           context = actions.merge(sid, user.conversation_state, entities({ "intent" => "QueryPrice", "commodity" => "rice" }), msg)
           actions.custom("show-price", sid, context)
@@ -74,7 +74,7 @@ describe ::MvamBot::Bot do
       it "should ask commodity to user and then return its price" do
         DB.cleanup
         bot = Bot.new
-        user = Factory.user_with_location
+        user = Factory::DB.user_with_location
 
         handle_message_with_wit("How much?", user: user, bot: bot) do |msg, sid, actions|
           context = actions.merge(sid, user.conversation_state, entities({ "intent" => "QueryPrice"}), msg)
@@ -94,7 +94,7 @@ describe ::MvamBot::Bot do
 
       it "should return not understood when not-understood if fired from wit" do
         DB.cleanup
-        user = Factory.user_with_location
+        user = Factory::DB.user_with_location
 
         messages = handle_message_with_wit("Lorem ipsum dolor sit amet", user: user) do |msg, sid, actions|
           context = actions.merge(sid, user.conversation_state, entities(Hash(String, String).new), msg)
@@ -107,7 +107,7 @@ describe ::MvamBot::Bot do
 
       it "should return not understood if wit is not set" do
         DB.cleanup
-        user = Factory.user_with_location
+        user = Factory::DB.user_with_location
 
         messages = handle_message("Lorem ipsum dolor sit amet", user: user)
         messages.size.should eq(1)
@@ -116,7 +116,7 @@ describe ::MvamBot::Bot do
 
       it "should offer /help if not understood at least three times" do
         DB.cleanup
-        user = Factory.user_with_location
+        user = Factory::DB.user_with_location
         bot = Bot.new
 
         3.times do
