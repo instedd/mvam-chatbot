@@ -29,6 +29,8 @@ module MvamBot
         handle_step_location_mkt
       elsif wit = wit_client
         wit.converse(message.text.not_nil!)
+      else
+        handle_not_understood
       end
     end
 
@@ -38,7 +40,15 @@ module MvamBot
       end
     end
 
+    def handle_not_understood
+      strike = user.conversation_step =~ /^misunderstood\/(\d+)/ ? ($~[1].to_i + 1) : 1
+      user.conversation_step = "misunderstood/#{strike}"
+      extra = strike > 2 ? " Send `/help` if you want more information on how I can be of assistance." : ""
+      answer("Sorry, I did not understand what you just said.#{extra}")
+    end
+
     def handle_price(query)
+      user.conversation_step = nil
       return handle_init_location("Before we start, I need to know where you are. ") if user.location_adm0_id.nil?
 
       # If the user sent no query, show usage with an example
@@ -64,6 +74,7 @@ module MvamBot
     end
 
     def handle_help
+      user.conversation_step = nil
       sample = user.location_adm0_id ? sample_price_query : ""
       answer <<-ANSWER
         You can ask for the price of a commodity in your location using the `/price` command.#{sample}

@@ -17,6 +17,7 @@ module MvamBot
     end
 
     def say(session_id : String, context : Wit::State, message : String)
+      user.conversation_step = nil
       requestor.answer message, update_user: false
     end
 
@@ -25,7 +26,7 @@ module MvamBot
       extract_value_into(entities, "intent", context)
 
       # On queryPrice, set commodity
-      case context["intent"]
+      case context["intent"]?
       when WHO_IS
         context["commodity"] = nil
       when QUERY_PRICE
@@ -58,6 +59,8 @@ module MvamBot
       case action_name
       when "show-price"
         requestor.handle_price(context["commodity"].try(&.to_s) || "")
+      when "not-understood"
+        requestor.handle_not_understood
       else
         logger.warn("Unknown custom action: #{action_name}")
       end

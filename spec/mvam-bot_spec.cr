@@ -83,13 +83,58 @@ describe ::MvamBot::Bot do
         end
 
         handle_message_with_wit("Rice", user: user, bot: bot) do |msg, sid, actions|
-          context = actions.merge(sid, user.conversation_state, entities({ "commodity" => "rice"}), msg)
+          context = actions.merge(sid, user.conversation_state, entities({ "commodity" => "rice" }), msg)
           actions.custom("show-price", sid, context)
         end
 
         bot.messages.size.should eq(2)
         bot.messages[0][:text].should eq("What do you want to know the price of?")
         bot.messages[1][:text].should match(/Rice.+85.+DZD per KG.+Algiers.+/)
+      end
+
+      it "should return not understood when not-understood if fired from wit" do
+        DB.cleanup
+        user = Factory.user_with_location
+
+        messages = handle_message_with_wit("Lorem ipsum dolor sit amet", user: user) do |msg, sid, actions|
+          context = actions.merge(sid, user.conversation_state, entities(Hash(String, String).new), msg)
+          actions.custom("not-understood", sid, context)
+        end
+
+        messages.size.should eq(1)
+        messages[0][:text].should contain("Sorry, I did not understand what you just said.")
+      end
+
+      it "should return not understood if wit is not set" do
+        DB.cleanup
+        user = Factory.user_with_location
+
+        messages = handle_message("Lorem ipsum dolor sit amet", user: user)
+        messages.size.should eq(1)
+        messages[0][:text].should contain("Sorry, I did not understand what you just said.")
+      end
+
+      it "should offer /help if not understood at least three times" do
+        DB.cleanup
+        user = Factory.user_with_location
+        bot = Bot.new
+
+        3.times do
+          handle_message_with_wit("Lorem ipsum dolor sit amet", user: user, bot: bot) do |msg, sid, actions|
+            context = actions.merge(sid, user.conversation_state, entities(Hash(String, String).new), msg)
+            actions.custom("not-understood", sid, context)
+          end
+        end
+
+        bot.messages.size.should eq(3)
+
+        bot.messages[0][:text].should contain("Sorry, I did not understand what you just said.")
+        bot.messages[1][:text].should contain("Sorry, I did not understand what you just said.")
+        bot.messages[2][:text].should contain("Sorry, I did not understand what you just said.")
+
+        bot.messages[0][:text].should_not contain("Send `/help` if you want more information on how I can be of assistance.")
+        bot.messages[1][:text].should_not contain("Send `/help` if you want more information on how I can be of assistance.")
+        bot.messages[2][:text].should contain("Send `/help` if you want more information on how I can be of assistance.")
       end
 
     end
