@@ -1,7 +1,7 @@
 module MvamBot
 
   record Price,
-    id : Int64,
+    id : String,
     location_adm0_id : Int32,
     location_adm1_id : Int32?,
     location_mkt_id : Int32?,
@@ -15,13 +15,24 @@ module MvamBot
     year : Int32,
     price : Float64 do
 
-      FIELD_TYPES = {Int64, Int32, Int32 | Nil, Int32 | Nil, Int32, String, Int32, String, Int32, String, Int32, Int32, Float64 }
+      FIELD_TYPES = {String, Int32, Int32 | Nil, Int32 | Nil, Int32, String, Int32, String, Int32, String, Int32, Int32, Float64 }
       FIELD_NAMES = [ "id", "location_adm0_id", "location_adm1_id", "location_mkt_id", "commodity_id", "commodity_name", "currency_id", "currency_name", "unit_id", "unit_name", "month", "year", "price" ]
 
-      def self.create(location_adm0_id : Int, location_adm1_id : Int?, location_mkt_id : Int?, commodity_id : Int, commodity_name : String, currency_id : Int, currency_name : String, unit_id : Int, unit_name : String, month : Int, year : Int, price : Float64)
-        DB.exec({Int64}, "INSERT INTO prices (location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price)
-                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id",
-                   [location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price])
+      def self.create(id : String, location_adm0_id : Int, location_adm1_id : Int?, location_mkt_id : Int?, commodity_id : Int, commodity_name : String, currency_id : Int, currency_name : String, unit_id : Int, unit_name : String, month : Int, year : Int, price : Float64)
+        DB.exec({Int64}, "INSERT INTO prices (id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price)
+                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
+                   [id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price])
+      end
+
+      def self.find(id : String)
+        row = DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM prices WHERE id = $1").rows[0]
+        return self.new(*row)
+      end
+
+      def self.historic_by_id(id : String)
+        historic_field_names = FIELD_NAMES.clone
+        historic_field_names[0] = "price_id"
+        DB.exec(FIELD_TYPES, "SELECT #{historic_field_names.join(", ")} FROM prices_history WHERE price_id = $1 ORDER BY year DESC, month DESC", [id]).rows.map {|r| self.new(*r)}
       end
 
       def self.search_by_name(name : String?, adm0_id : Int32? = nil, adm1_id : Int32? = nil, mkt_id : Int32? = nil, filter_level : Int32 = 0, limit : Int32? = nil, offset : Int32? = nil)
@@ -55,7 +66,7 @@ module MvamBot
 
         # If there is a result for the specific market where the user is, return it
         elsif prices[0].location_mkt_id && prices[0].location_mkt_id == user.location_mkt_id
-          return prices[0].long_description(format: format)
+          return prices[0].long_description(format: format, include_trend: true)
 
         # If the results are for the same adm1 location, return those
         elsif prices[0].location_adm1_id && prices[0].location_adm1_id == user.location_adm1_id
@@ -69,10 +80,47 @@ module MvamBot
         end
       end
 
-      def long_description(format = nil)
-        time = Time.new(year, month, 1).to_s(year == Time.now.year ? "%B" : "%B %Y")
+      def self.trend_description(history, format = nil)
+        return nil if history.size < 2
+
+        trend_sign = (history[0].price - history[1].price).sign
+        start = history.first
+        last = history.zip?(history[1..-1]).take_while { |(h1, h2)| h2 && (h1.price - h2.not_nil!.price).sign == trend_sign }.map(&.last).last.not_nil!
+
+        months = (start.year - last.year) * 12 + (start.month - last.month)
+        time_period_description = if months > 18
+          years = (months / 12.to_f).round
+          years == 1 ? "year" : "#{years} years"
+        else
+          months == 1 ? "month" : "#{months} months"
+        end
+
+        price_trend = ((start.price / last.price - 1) * 100).round
+        price_trend_description = if price_trend.abs == 0
+          "has not changed"
+        elsif trend_sign > 0
+          "went up #{price_trend}%"
+        else
+          "went down #{price_trend.abs}%"
+        end
+
+        price_trend_description = (format == :markdown) ? "*#{price_trend_description}*" : price_trend_description
+
+        last_details = (price_trend.abs == 0) ? "" : " (it was #{last.price_description} on #{last.time_description})"
+
+        return "The price #{price_trend_description} in the previous #{time_period_description}#{last_details}."
+      end
+
+      def trend_description(format = nil)
+        history = Price.historic_by_id(self.id)
+        Price.trend_description(history, format)
+      end
+
+      def long_description(format = nil, include_trend = false)
         location = Location.short_description(location_adm0_id, location_adm1_id, location_mkt_id)
-        "#{commodity_name} is #{price_description(format)} in #{location} as of #{time}."
+        trend = include_trend ? trend_description(format) : nil
+        trend = trend ? "\n\n#{trend}" : ""
+        "#{commodity_name} is #{price_description(format)} in #{location} as of #{time_description}.#{trend}"
       end
 
       def short_description(format = nil)
@@ -83,6 +131,10 @@ module MvamBot
       def price_description(format = nil)
         description = "#{price} #{currency_name} per #{unit_name}"
         return (format == :markdown) ? "*#{description}*" : description
+      end
+
+      def time_description
+        Time.new(year, month, 1).to_s(year == Time.now.year ? "%B" : "%B %Y")
       end
 
       def short_commodity_name

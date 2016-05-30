@@ -28,7 +28,7 @@ module MvamBot::Spec
   def message_handler(msg, user = nil, bot = nil)
     bot ||= Bot.new
     message = Telegram.message(msg)
-    user = user || Factory.user
+    user = user || Factory::DB.user
     MessageHandler.new(message, user, bot)
   end
 

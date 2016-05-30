@@ -2,13 +2,23 @@ module MvamBot::Spec
 
   module Factory
 
-    def self.user(id = 100000000, username = "jdoe", name = "John Doe")
-      MvamBot::User.create(id, username, name)
+    # Bread per KG in Algiers
+    def self.price(price = 50.0, location_adm0_id = 4, location_adm1_id = 344, location_mkt_id = 1794, commodity_id = 55, commodity_name = "Bread", currency_id = 87, currency_name = "AFN", unit_id = 5, unit_name = "KG", month = 4, year = 2016)
+      id = "#{location_adm0_id}.#{location_adm1_id}.#{location_mkt_id}.#{commodity_id}"
+      MvamBot::Price.new(id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price)
     end
 
-    # Algeria, Alger, Algiers
-    def self.user_with_location(id = 100000000, username = "jdoe", name = "John Doe", location_adm0_id = 4, location_adm1_id = 344, location_mkt_id = 1794)
-      MvamBot::User.create(id, username, name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id)
+    module DB
+
+      def self.user(id = 100000000, username = "jdoe", name = "John Doe")
+        MvamBot::User.create(id, username, name)
+      end
+
+      # Algeria, Alger, Algiers
+      def self.user_with_location(id = 100000000, username = "jdoe", name = "John Doe", location_adm0_id = 4, location_adm1_id = 344, location_mkt_id = 1794)
+        MvamBot::User.create(id, username, name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id)
+      end
+
     end
 
   end
