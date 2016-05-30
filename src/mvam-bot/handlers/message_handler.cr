@@ -95,7 +95,7 @@ module MvamBot
       user.location_adm1_id = nil
       user.location_mkt_id = nil
       user.conversation_step = "location/adm0"
-      answer_with_keyboard "#{extra_text}What country do you live in?", Location::Adm0.all.map(&.name)
+      answer_with_keyboard "#{extra_text}What country do you live in?", Location::Adm0.all.map(&.name).sort
     end
 
     def handle_step_location_adm0
@@ -103,7 +103,7 @@ module MvamBot
         user.location_adm0_id = location.id
         request_location_adm1(location)
       else
-        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a country from the list.", Location::Adm0.all.map(&.name)
+        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a country from the list.", Location::Adm0.all.map(&.name).sort
       end
     end
 
@@ -118,7 +118,7 @@ module MvamBot
         request_location_mkt(location_adm1)
       else
         user.conversation_step = "location/adm1"
-        answer_with_keyboard "And where in #{location_adm0.name} are you?", locations.map(&.name)
+        answer_with_keyboard "And where in #{location_adm0.name} are you?", locations.map(&.name).sort
       end
     end
 
@@ -127,7 +127,7 @@ module MvamBot
         user.location_adm1_id = location.id
         request_location_mkt(location)
       else
-        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a region from the list.", Location::Adm1.where_adm0_id(user.location_adm0_id.not_nil!).map(&.name)
+        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a region from the list.", Location::Adm1.where_adm0_id(user.location_adm0_id.not_nil!).map(&.name).sort
       end
     end
 
@@ -143,7 +143,7 @@ module MvamBot
         answer_location_complete(location_mkt)
       else
         user.conversation_step = "location/mkt"
-        answer_with_keyboard "And which city in #{location_adm1.name} would you like information from?", locations.map(&.name)
+        answer_with_keyboard "And which city in #{location_adm1.name} would you like information from?", locations.map(&.name).sort
       end
     end
 
@@ -153,7 +153,7 @@ module MvamBot
         user.conversation_step = nil
         answer_location_complete(location)
       else
-        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a city from the list.", Location::Mkt.where_adm1_id(user.location_adm1_id.not_nil!).map(&.name)
+        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a city from the list.", Location::Mkt.where_adm1_id(user.location_adm1_id.not_nil!).map(&.name).sort
       end
     end
 
