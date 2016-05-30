@@ -36,8 +36,8 @@ describe ::MvamBot::Bot do
       user = Factory.user_with_location
       messages = handle_message("/price o", user)
       messages.size.should eq(1)
-      messages[0][:text].should eq("I have information on Oil, Onions, Oranges; please choose one.")
-      messages[0][:reply_markup].as(TelegramBot::InlineKeyboardMarkup).inline_keyboard.flatten.size.should eq(3)
+      messages[0][:text].should eq("I have information on Oil, Onions; please choose one.")
+      messages[0][:reply_markup].as(TelegramBot::InlineKeyboardMarkup).inline_keyboard.flatten.size.should eq(2)
     end
 
     it "should return help" do

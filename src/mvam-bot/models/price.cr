@@ -1,7 +1,7 @@
 module MvamBot
 
   record Price,
-    id : Int64,
+    id : String,
     location_adm0_id : Int32,
     location_adm1_id : Int32?,
     location_mkt_id : Int32?,
@@ -15,13 +15,13 @@ module MvamBot
     year : Int32,
     price : Float64 do
 
-      FIELD_TYPES = {Int64, Int32, Int32 | Nil, Int32 | Nil, Int32, String, Int32, String, Int32, String, Int32, Int32, Float64 }
+      FIELD_TYPES = {String, Int32, Int32 | Nil, Int32 | Nil, Int32, String, Int32, String, Int32, String, Int32, Int32, Float64 }
       FIELD_NAMES = [ "id", "location_adm0_id", "location_adm1_id", "location_mkt_id", "commodity_id", "commodity_name", "currency_id", "currency_name", "unit_id", "unit_name", "month", "year", "price" ]
 
-      def self.create(location_adm0_id : Int, location_adm1_id : Int?, location_mkt_id : Int?, commodity_id : Int, commodity_name : String, currency_id : Int, currency_name : String, unit_id : Int, unit_name : String, month : Int, year : Int, price : Float64)
-        DB.exec({Int64}, "INSERT INTO prices (location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price)
-                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id",
-                   [location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price])
+      def self.create(id : String, location_adm0_id : Int, location_adm1_id : Int?, location_mkt_id : Int?, commodity_id : Int, commodity_name : String, currency_id : Int, currency_name : String, unit_id : Int, unit_name : String, month : Int, year : Int, price : Float64)
+        DB.exec({Int64}, "INSERT INTO prices (id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price)
+                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
+                   [id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price])
       end
 
       def self.search_by_name(name : String?, adm0_id : Int32? = nil, adm1_id : Int32? = nil, mkt_id : Int32? = nil, filter_level : Int32 = 0, limit : Int32? = nil, offset : Int32? = nil)
