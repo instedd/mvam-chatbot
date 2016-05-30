@@ -3,16 +3,24 @@ require "pg"
 module MvamBot
 
   class DB
-    @@db : PG::Connection = PG.connect(MvamBot::Config.pg_url)
+    @@db : PG::Connection?
 
     def self.exec(*args)
-      @@db.exec(*args)
+      db.exec(*args)
+    end
+
+    def self.db : PG::Connection
+      @@db ||= PG.connect(MvamBot::Config.pg_url)
+    end
+
+    def self.db=(value : PG::Connection)
+      @@db = value
     end
 
     def self.exec_with_builder(types, head : String, limit : Int32? = nil, offset : Int32? = nil)
       builder = QueryBuilder.new(head, limit, offset)
       yield builder
-      @@db.exec(types, builder.query, builder.params)
+      db.exec(types, builder.query, builder.params)
     end
 
     class QueryBuilder
