@@ -9,9 +9,10 @@ ADD shard.lock /app/
 WORKDIR /app
 RUN crystal deps
 
-# Add and build app
+# Add and build bot and web
 ADD . /app
 RUN crystal build src/mvam-bot.cr --release
+RUN crystal build src/mvam-web.cr --release
 
 # Start the bot
 CMD "./mvam-bot"
