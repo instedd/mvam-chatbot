@@ -1,0 +1,10 @@
+#! /bin/bash
+
+WFP_LOCAL_FILE=`basename $WFP_DATA_URL`
+
+if [ ! -f "$WFP_LOCAL_FILE" ]
+then
+  curl -X GET -o $WFP_LOCAL_FILE $WFP_DATA_URL
+fi
+
+cat $WFP_LOCAL_FILE
