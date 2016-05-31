@@ -33,4 +33,10 @@ get "/users/:id" do |env|
   end
 end
 
+Kemal.config.tap do |config|
+  config.host_binding = MvamBot::Config.web_bind_address
+  config.port = MvamBot::Config.web_bind_port
+  config.logger = MvamBot::KemalLogger.new(config.env)
+end
+
 Kemal.run
