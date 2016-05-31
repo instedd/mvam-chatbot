@@ -1,123 +1,71 @@
-#! /usr/bin/env crystal
+#! /bin/bash
 
-require "http/client"
-require "file"
+psql $PG_URL << SQL_SCRIPT
 
-require "../src/mvam-bot/*"
+\echo Create temp table to load CSV into, as we cannot skip columns when importing a CSV in postgres
+CREATE TEMPORARY TABLE prices_import (
+  location_adm0_id INT,
+  location_adm0_name VARCHAR,
+  location_adm1_id INT,
+  location_adm1_name VARCHAR,
+  location_mkt_id INT,
+  location_mkt_name VARCHAR,
+  commodity_id INT,
+  commodity_name CITEXT,
+  currency_id INT,
+  currency_name VARCHAR(30),
+  point_id INT,
+  point_name VARCHAR(60),
+  unit_id INT,
+  unit_name VARCHAR(30),
+  month INT,
+  year INT,
+  price DOUBLE PRECISION,
+  source VARCHAR
+);
 
-DATA_URL = ENV["WFP_DATA_URL"]
-FILE_PATH = "prices.csv"
+\echo Import full CSV into temp table
+\copy prices_import FROM program 'bin/get-prices' WITH (FORMAT csv, HEADER true, ENCODING 'latin1');
 
-def download_prices_csv
-  puts "Downloading #{DATA_URL} into prices.csv"
-  HTTP::Client.get(DATA_URL) do |response|
-    File.open(FILE_PATH, "w") do |file|
-      IO.copy(response.body_io, file)
-    end
-  end
-end
+\echo Pick the columns we are interested in and insert them into prices_history
+INSERT INTO prices_history (price_id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price)
+SELECT concat_ws('.', location_adm0_id, location_adm1_id, location_mkt_id, commodity_id) AS price_id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price
+FROM prices_import
+WHERE location_adm0_id != 0 AND location_adm1_id != 0 AND location_mkt_id != 0
+AND location_adm0_name IS NOT NULL AND location_adm1_name IS NOT NULL AND location_mkt_name IS NOT NULL;
 
-def main
-  download_prices_csv if !File.exists?(FILE_PATH)
-  full_path = File.expand_path(FILE_PATH)
+\echo Upsert locations level 0
+INSERT INTO locations_adm0 (id, name)
+SELECT DISTINCT location_adm0_id, location_adm0_name
+FROM prices_import
+WHERE location_adm0_id != 0 AND location_adm1_id != 0 AND location_mkt_id != 0
+AND location_adm0_name IS NOT NULL AND location_adm1_name IS NOT NULL AND location_mkt_name IS NOT NULL
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
 
-  MvamBot::DB.exec <<-SQL
-    -- Create temp table to load CSV into, as we cannot skip columns when importing a CSV in postgres
-    CREATE TEMPORARY TABLE prices_import (
-      location_adm0_id INT,
-      location_adm0_name VARCHAR,
-      location_adm1_id INT,
-      location_adm1_name VARCHAR,
-      location_mkt_id INT,
-      location_mkt_name VARCHAR,
-      commodity_id INT,
-      commodity_name CITEXT,
-      currency_id INT,
-      currency_name VARCHAR(30),
-      point_id INT,
-      point_name VARCHAR(60),
-      unit_id INT,
-      unit_name VARCHAR(30),
-      month INT,
-      year INT,
-      price DOUBLE PRECISION,
-      source VARCHAR
-    );
-  SQL
+\echo Upsert locations level 1
+INSERT INTO locations_adm1 (id, name, location_adm0_id)
+SELECT DISTINCT location_adm1_id, location_adm1_name, location_adm0_id
+FROM prices_import
+WHERE location_adm0_id != 0 AND location_adm1_id != 0 AND location_mkt_id != 0
+AND location_adm0_name IS NOT NULL AND location_adm1_name IS NOT NULL AND location_mkt_name IS NOT NULL
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, location_adm0_id = EXCLUDED.location_adm0_id;
 
-  MvamBot::DB.exec <<-SQL
-    -- Import full CSV into temp table
-    COPY prices_import FROM '#{full_path}' WITH (FORMAT csv, HEADER true, ENCODING 'latin1');
-  SQL
+\echo Upsert locations mkt
+INSERT INTO locations_mkt (id, name, location_adm1_id)
+SELECT DISTINCT location_mkt_id, location_mkt_name, location_adm1_id
+FROM prices_import
+WHERE location_adm0_id != 0 AND location_adm1_id != 0 AND location_mkt_id != 0
+AND location_adm0_name IS NOT NULL AND location_adm1_name IS NOT NULL AND location_mkt_name IS NOT NULL
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, location_adm1_id = EXCLUDED.location_adm1_id;
 
-  puts "Imported CSV #{full_path} into prices_import temporary table"
+\echo Select the rows with the most recent value for pricing for each commodity in each mkt and insert them into prices
+WITH pmax AS (SELECT location_mkt_id, commodity_id, max(concat(year, month)) AS ym FROM prices_import GROUP BY location_mkt_id, commodity_id)
+INSERT INTO prices (id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price)
+SELECT price_id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price
+FROM prices_history
+WHERE (location_mkt_id, commodity_id, concat(year, month)) IN (SELECT location_mkt_id, commodity_id, ym FROM pmax);
 
-  MvamBot::DB.exec <<-SQL
-    -- Pick the columns we are interested in and insert them into prices_history
-    INSERT INTO prices_history (price_id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price)
-    SELECT concat_ws('.', location_adm0_id, location_adm1_id, location_mkt_id, commodity_id) AS price_id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price
-    FROM prices_import
-    WHERE location_adm0_id != 0 AND location_adm1_id != 0 AND location_mkt_id != 0
-    AND location_adm0_name IS NOT NULL AND location_adm1_name IS NOT NULL AND location_mkt_name IS NOT NULL;
-  SQL
+\echo Drop temp table
+DROP TABLE prices_import;
 
-  puts "Imported data into prices_history"
-
-  MvamBot::DB.exec <<-SQL
-    -- Upsert locations level 0
-    INSERT INTO locations_adm0 (id, name)
-    SELECT DISTINCT location_adm0_id, location_adm0_name
-    FROM prices_import
-    WHERE location_adm0_id != 0 AND location_adm1_id != 0 AND location_mkt_id != 0
-    AND location_adm0_name IS NOT NULL AND location_adm1_name IS NOT NULL AND location_mkt_name IS NOT NULL
-    ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
-  SQL
-
-  MvamBot::DB.exec <<-SQL
-    -- Upsert locations level 1
-    INSERT INTO locations_adm1 (id, name, location_adm0_id)
-    SELECT DISTINCT location_adm1_id, location_adm1_name, location_adm0_id
-    FROM prices_import
-    WHERE location_adm0_id != 0 AND location_adm1_id != 0 AND location_mkt_id != 0
-    AND location_adm0_name IS NOT NULL AND location_adm1_name IS NOT NULL AND location_mkt_name IS NOT NULL
-    ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, location_adm0_id = EXCLUDED.location_adm0_id;
-  SQL
-
-  MvamBot::DB.exec <<-SQL
-    -- Upsert locations mkt
-    INSERT INTO locations_mkt (id, name, location_adm1_id)
-    SELECT DISTINCT location_mkt_id, location_mkt_name, location_adm1_id
-    FROM prices_import
-    WHERE location_adm0_id != 0 AND location_adm1_id != 0 AND location_mkt_id != 0
-    AND location_adm0_name IS NOT NULL AND location_adm1_name IS NOT NULL AND location_mkt_name IS NOT NULL
-    ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, location_adm1_id = EXCLUDED.location_adm1_id;
-  SQL
-
-  puts "Extracted locations"
-
-  MvamBot::DB.exec <<-SQL
-    -- Select the rows with the most recent value for pricing for each commodity in each mkt and insert them into prices
-    WITH pmax AS (SELECT location_mkt_id, commodity_id, max(concat(year, month)) AS ym FROM prices_import GROUP BY location_mkt_id, commodity_id)
-    INSERT INTO prices (id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price)
-    SELECT price_id, location_adm0_id, location_adm1_id, location_mkt_id, commodity_id, commodity_name, currency_id, currency_name, unit_id, unit_name, month, year, price
-    FROM prices_history
-    WHERE (location_mkt_id, commodity_id, concat(year, month)) IN (SELECT location_mkt_id, commodity_id, ym FROM pmax);
-  SQL
-
-  MvamBot::DB.exec <<-SQL
-    -- Drop temp table
-    DROP TABLE prices_import;
-  SQL
-
-  puts "Extracted latest prices per commodity\n"
-end
-
-def stats
-  ["locations_adm0", "locations_adm1", "locations_mkt", "prices", "prices_history"].each do |table|
-    count = MvamBot::DB.exec({Int64}, "SELECT COUNT(*) FROM #{table};").rows[0][0]
-    puts "Table #{table} has now #{count} rows"
-  end
-end
-
-main
-stats
+SQL_SCRIPT

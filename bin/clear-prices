@@ -1,7 +1,9 @@
-#! /usr/bin/env crystal
+#! /bin/bash
 
-require "../src/mvam-bot/*"
+psql $PG_URL << SQL_SCRIPT
 
-MvamBot::DB.exec "DELETE FROM prices;"
-MvamBot::DB.exec "DELETE FROM prices_history;"
-puts "Deleted all rows from prices and prices_history tables"
+\echo Delete all rows from prices and prices_history tables
+DELETE FROM prices;
+DELETE FROM prices_history;
+
+SQL_SCRIPT
