@@ -24,5 +24,6 @@ test:
     - crystal deps
     - ./bin/micrate up
     - ./bin/load-prices
+    - ./bin/load-positions
   override:
     - crystal spec
