@@ -1,0 +1,10 @@
+#! /bin/bash
+
+crystal eval <<CRYSTAL > data/survey.dot
+  require "file"
+  require "./src/mvam-bot/surveys/*"
+  MvamBot::Surveys::DotGenerator.draw("data/survey.yml")
+CRYSTAL
+
+dot -Tpng -odata/survey.png data/survey.dot
+open data/survey.png

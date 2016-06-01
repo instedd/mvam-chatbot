@@ -1,0 +1,105 @@
+states:
+
+  initial:
+    transitions:
+      - message: /start
+        target: start
+
+  start:
+    converse: true
+    transitions:
+      - action: start-survey
+        target: ask_age
+      - action: reschedule-survey
+        target: end
+      - action: no-survey
+        target: end
+      - intent: WhySurvey
+        target: why
+      - intent: Whois
+        target: who
+
+  ask_age:
+    say: How old are you?
+    transitions:
+      - entity: { age: wit/age_of_person }
+        target: ask_gender
+      - entity: { age: wit/number }
+        target: ask_gender
+      - intent: WhySurvey
+        target: why
+      - intent: Whois
+        target: who
+
+  ask_gender:
+    say: Are you a man or a woman?
+    transitions:
+      - entity: { gender: gender }
+        target: thank_you
+      - intent: WhySurvey
+        target: why
+      - intent: Whois
+        target: who
+
+  thank_you:
+    say: Thank you for your answers.
+    final: true
+
+  end:
+    final: true
+
+  why:
+    say: We are asking you and other people in your community this information because we are tracking food security in your region.
+    transitions:
+      - target: back
+        after: 5
+      - intent: Whois
+        target: who
+
+  who:
+    say: I am a WFP bot assistant, for tracking food security in your region.
+    transitions:
+      - target: back
+        after: 5
+      - intent: WhySurvey
+        target: why
+
+
+# deprecated:
+#
+#   hello:
+#     actions:
+#       - say: Hi, I'm a WFP bot assistant, I'd like to ask you a few questions if you have a minute.
+#     transitions:
+#       - intent: AnswerYes
+#         target: ask_age
+#       - intent: AnswerNo
+#         target: survey_no
+#
+#   survey_no:
+#     actions:
+#       - say: Would you be available later? It is just a minute.
+#     transitions:
+#       - entity: { survey_at: wit/datetime }
+#         target: rescheduled
+#       - intent: AnswerYes
+#         target: reschedule
+#       - intent: AnswerNo
+#         target: no_reschedule
+#
+#   reschedule:
+#     actions:
+#       - say: When can I bother you?
+#     transitions:
+#       - entity: { survey_at: wit/datetime }
+#         target: rescheduled
+#       - intent: AnswerNo
+#         target: no_reschedule
+#
+#   rescheduled:
+#     actions:
+#       - say: Great, I'll talk to you then. Thank you!
+#
+#   no_reschedule:
+#     actions:
+#       - say: OK, sorry to hear that. Just say "hello" any time if you change your mind!
