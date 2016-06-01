@@ -8,7 +8,7 @@ db:
 
 bot:
   image: manastech/mvam-chatbot:latest
-  command: /bin/sh -c "sleep 1 && ./mvam-bot --micrate up"
+  command: /bin/sh -c "sleep 1 && ./bin/micrate up && ./mvam-bot"
   autorestart: always
   autoredeploy: true
   ports:
@@ -22,3 +22,18 @@ bot:
     TELEGRAM_BIND_PORT: 8080
     TELEGRAM_WEBHOOK_URL: https://mvam-bot.instedd.org:443/
     TELEGRAM_CERTIFICATE:
+
+web:
+  image: manastech/mvam-chatbot:latest
+  command: /bin/sh -c "sleep 1 && ./mvam-web"
+  autorestart: always
+  autoredeploy: true
+  ports:
+    - "80"
+  environment:
+    VIRTUAL_HOST: https://mvam-bot.instedd.org
+    PG_URL: postgres://mvambot:POSTGRES_PASSWORD@db/mvambot
+    WEB_USERNAME: admin
+    WEB_PASSWORD: admin
+    WEB_BIND_ADDRESS: 0.0.0.0
+    web_bind_port: 80

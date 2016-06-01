@@ -3,6 +3,7 @@ require "logger"
 require "benchmark"
 require "openssl"
 require "http/server"
+require "tempfile"
 
 module MvamBot
   class Bot < TelegramBot::Bot
