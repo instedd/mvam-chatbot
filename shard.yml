@@ -15,3 +15,5 @@ dependencies:
   micrate:
     github: juanedi/micrate
     branch: master
+  kemal:
+    github: sdogruyol/kemal

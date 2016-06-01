@@ -31,7 +31,10 @@ module MvamBot
     @conversation_at : Time?
     @conversation_session_id : String?
     @conversation_state_json : String?
-    @conversation_state : Wit::State?
+    @conversation_state : ConversationState?
+
+    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float32|Nil, Float32|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
+    FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng conversation_step conversation_at conversation_session_id conversation_state}
 
     def initialize(@id : Int32,
                    @username : String? = nil,
@@ -47,10 +50,13 @@ module MvamBot
                    @conversation_state_json : String? = nil)
     end
 
+    def self.all
+      DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM users").rows.map { |row| User.new(*row) }
+    end
+
     def self.find(id : Int32)
-      result = DB.exec({ Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float32|Nil, Float32|Nil, String|Nil, Time|Nil, String|Nil, String|Nil },
-        "SELECT id, username, name, location_adm0_id, location_adm1_id, location_mkt_id,
-        location_lat, location_lng, conversation_step, conversation_at, conversation_session_id, conversation_state
+      result = DB.exec(FIELD_TYPES,
+        "SELECT #{FIELD_NAMES.join(", ")}
         FROM users WHERE id = $1", [id])
       return nil if result.rows.size == 0
       User.new(*(result.rows[0]))
@@ -71,8 +77,20 @@ module MvamBot
                 @location_lat, @location_lng, @conversation_step, @conversation_at, @conversation_session_id, @conversation_state_json, @id])
     end
 
+    def full_name
+      if username && name
+        "#{name} (#{username})"
+      else
+        username || name
+      end
+    end
+
     def location_description
       Location.short_description(location_adm0_id, location_adm1_id, location_mkt_id)
+    end
+
+    def location_long_description
+      Location.long_description(location_adm0_id, location_adm1_id, location_mkt_id)
     end
 
     def ensure_session_id

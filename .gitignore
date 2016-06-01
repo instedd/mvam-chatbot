@@ -9,3 +9,4 @@ positions.csv
 src/foo.cr
 docker-cloud.yml
 /mvam-bot
+/WFPVAM_FoodPrices_*.csv

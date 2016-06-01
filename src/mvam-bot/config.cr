@@ -46,5 +46,21 @@ module MvamBot
     def self.wit_access_token : String | Nil
       ENV["WIT_ACCESS_TOKEN"]?
     end
+
+    def self.web_username : String
+      ENV["WEB_USERNAME"]
+    end
+
+    def self.web_password : String
+      ENV["WEB_PASSWORD"]
+    end
+
+    def self.web_bind_address : String
+      ENV["WEB_BIND_ADDRESS"]? || "0.0.0.0"
+    end
+
+    def self.web_bind_port : Int32
+      ENV["WEB_BIND_PORT"]?.try(&.to_i) || 3000
+    end
   end
 end

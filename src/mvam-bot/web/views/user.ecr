@@ -1,0 +1,23 @@
+<h1><%= user.username %></h1>
+<h3><%= user.name %></h3>
+<p>Location: <%= user.location_long_description %></p>
+
+<br/>
+
+<p>Showing <%= messages.size %> of <%= message_count %></p>
+<ul class="list-group">
+<% messages.reverse.each do |message| %>
+  <li class="list-group-item">
+    <span class="<%= log_icon(message.kind) %>" aria-hidden="true"></span>
+    <span><%= message.text %></span>
+    <% if message.kind == MvamBot::Logs::QUERY && message.query_offset && message.query_offset.not_nil! > 0 %>
+    <span>[offset <%= message.query_offset %>]</span>
+    <% end %>
+    <% if message.answer %>
+    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <span><%= message.kind == MvamBot::Logs::QUERY ? "#{message.answer_size} results" : message.answer %></span>
+    <% end %>
+    <span class="pull-right text-muted"><%= message.timestamp %></span>
+  </li>
+<% end %>
+</ul>
