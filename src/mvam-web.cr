@@ -39,4 +39,5 @@ Kemal.config.tap do |config|
   config.logger = MvamBot::KemalLogger.new(config.env)
 end
 
+MvamBot.logger.info "Starting web server on #{MvamBot::Config.web_bind_address}:#{MvamBot::Config.web_bind_port}"
 Kemal.run
