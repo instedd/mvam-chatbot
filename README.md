@@ -75,13 +75,23 @@ In addition, if using the Telegram webhook to get updates, instead of polling:
 * `TELEGRAM_BIND_ADDRESS`: bind address for listening to Telegram updates
 * `TELEGRAM_BIND_PORT`: bind port for listening to Telegram updates
 
+To run the web application:
+
+* `WEB_USERNAME`: user for basic-auth access
+* `WEB_PASSWORD`: pass for basic-auth access
+* `WEB_BIND_ADDRESS`: address for binding the web app
+* `WEB_BIND_PORT`:  port for binding the web app
+
+
 To forward all not-understood messages to wit.ai:
 
 * `WIT_ACCESS_TOKEN`: access token for wit.ai application
 
 ## Running
 
-Run locally with `crystal src/mvam-bot.cr`
+Run locally with `crystal src/mvam-bot.cr`.
+
+A supporting web application can be run with `crystal src/mvam-web.cr`.
 
 ## Tests
 
