@@ -81,34 +81,24 @@ module MvamBot
       end
 
       def self.trend_description(history, format = nil)
-        return nil if history.size < 2
+        return nil if history.size < 3
 
-        trend_sign = (history[0].price - history[1].price).sign
-        start = history.first
-        last = history.zip?(history[1..-1]).take_while { |(h1, h2)| h2 && (h1.price - h2.not_nil!.price).sign == trend_sign }.map(&.last).last.not_nil!
+        start = history[0]
+        last = history[2]
 
-        months = (start.year - last.year) * 12 + (start.month - last.month)
-        time_period_description = if months > 18
-          years = (months / 12.to_f).round
-          years == 1 ? "year" : "#{years} years"
-        else
-          months == 1 ? "month" : "#{months} months"
-        end
+        last_price = (history[1].price + history[2].price) / 2.0
 
-        price_trend = ((start.price / last.price - 1) * 100).round
+        price_trend = ((start.price / last_price - 1) * 100).round
         price_trend_description = if price_trend.abs == 0
           "has not changed"
-        elsif trend_sign > 0
+        elsif price_trend > 0
           "went up #{price_trend}%"
         else
           "went down #{price_trend.abs}%"
         end
 
         price_trend_description = (format == :markdown) ? "*#{price_trend_description}*" : price_trend_description
-
-        last_details = (price_trend.abs == 0) ? "" : " (it was #{last.price_description} on #{last.time_description})"
-
-        return "The price #{price_trend_description} in the previous #{time_period_description}#{last_details}."
+        return "The price #{price_trend_description} since #{last.time_description}."
       end
 
       def trend_description(format = nil)
