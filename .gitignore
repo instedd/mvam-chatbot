@@ -4,7 +4,8 @@
 /.shards/
 /.env
 /.docker-env
-prices.csv
+/prices.csv
 src/foo.cr
 docker-cloud.yml
 /mvam-bot
+/WFPVAM_FoodPrices_*.csv
