@@ -15,7 +15,7 @@
     <% end %>
     <% if message.answer %>
     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-    <span><%= message.kind == MvamBot::Logs::QUERY ? "#{message.answer} results" : message.answer %></span>
+    <span><%= message.kind == MvamBot::Logs::QUERY ? "#{message.answer_size} results" : message.answer %></span>
     <% end %>
     <span class="pull-right text-muted"><%= message.timestamp %></span>
   </li>
