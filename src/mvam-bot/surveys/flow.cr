@@ -35,7 +35,8 @@ module MvamBot
         say: { type: String, nilable: true },
         transitions: { type: Array(FlowTransition), default: Array(FlowTransition).new },
         initial: { type: Bool, default: false },
-        final: { type: Bool, default: false }
+        final: { type: Bool, default: false },
+        options: { type: Array(String), nilable: true }
       })
 
       getter id
@@ -52,21 +53,12 @@ module MvamBot
         target: { type: String },
         after: { type: Int32, nilable: true },
         action: { type: String, nilable: true },
-        entity: { type: Hash(String, String), nilable: true },
-        intent: { type: String, nilable: true }
+        entity: { type: String, nilable: true },
+        intent: { type: String, nilable: true },
+        message: { type: Array(String), nilable: true },
+        default: { type: Bool, default: false },
+        store: { type: String, nilable: true },
       })
-
-      def entity_name
-        if entity = @entity
-          entity.first[1]
-        end
-      end
-
-      def context_target
-        if entity = @entity
-          entity.first[0]
-        end
-      end
 
     end
 

@@ -202,9 +202,9 @@ module MvamBot
       answer "Got it, I will send you food prices from #{location.name}. If you want to change it at anytime, just send `/location`."
     end
 
-    def answer_with_keyboard(text : String, buttons : Array(String))
+    def answer_with_keyboard(text : String, buttons : Array(String), update_user : Bool = true)
       keyboard = TelegramBot::ReplyKeyboardMarkup.new(buttons.map {|b| [b]}, one_time_keyboard: true)
-      answer(text, keyboard)
+      answer(text, keyboard, update_user)
     end
 
     def answer_with_inline(text : String, buttons : Array(Tuple(String, String)))

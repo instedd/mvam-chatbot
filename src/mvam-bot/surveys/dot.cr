@@ -48,7 +48,7 @@ module MvamBot
             label = if transition.action
               "action:#{transition.action}"
             elsif transition.entity
-              "entity:#{transition.entity_name}"
+              "entity:#{transition.entity}"
             elsif transition.intent
               "intent:#{transition.intent}"
             end

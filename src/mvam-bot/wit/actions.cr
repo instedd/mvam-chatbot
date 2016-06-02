@@ -12,10 +12,6 @@ module MvamBot
     include Wit::Actions
     include MvamBot::WitUtils
 
-    QUERY_PRICE = "QueryPrice"
-    SCHEDULE = "Schedule"
-    WHO_IS = "Whois"
-
     def initialize(@user : User, @requestor : MessageHandler, @logger : Logger)
     end
 

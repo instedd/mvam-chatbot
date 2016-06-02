@@ -1,6 +1,12 @@
 module MvamBot
   module WitUtils
 
+    QUERY_PRICE = "QueryPrice"
+    SCHEDULE = "Schedule"
+    WHO_IS = "Whois"
+    ANSWER_YES = "AnswerYes"
+    ANSWER_NO = "AnswerNo"
+
     def extract_value(entities, key)
       if entities[key]? && entities[key].size > 0 && entities[key][0]["value"]?
         entities[key][0]["value"].raw.as(String | Int64 | Bool)
@@ -13,6 +19,17 @@ module MvamBot
         context[context_key] = value
       end
       context
+    end
+
+    def intent_answer_value(intent)
+      case intent
+      when ANSWER_YES
+        "Yes"
+      when ANSWER_NO
+        "No"
+      else
+        intent
+      end
     end
 
   end

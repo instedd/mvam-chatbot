@@ -32,7 +32,7 @@ module MvamBot
       end
     end
 
-    def self.save_response(user_id : Int32, session_id : String, data : SurveyData = SurveyData.new, completed : Bool = false, timestamp : Time = Time.utc_now)
+    def self.save_response(user_id : Int32, session_id : String, data : SurveyData, completed : Bool = false, timestamp : Time = Time.utc_now)
       id = DB.exec({Int64},
         "INSERT INTO survey_responses (user_id, session_id, data, completed, timestamp)
          VALUES ($1, $2, $3, $4, $5)

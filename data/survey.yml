@@ -4,8 +4,9 @@ states:
     initial: true
     say: How old are you?
     transitions:
-      - entity: { age: number }
+      - entity: number
         target: ask_gender
+        store: age
       - intent: WhySurvey
         target: why
       - intent: Whois
@@ -14,12 +15,29 @@ states:
   ask_gender:
     say: Are you a man or a woman?
     transitions:
-      - entity: { gender: gender }
-        target: thank_you
+      - entity: gender
+        target: ask_enough_food
+        store: gender
       - intent: WhySurvey
         target: why
       - intent: Whois
         target: who
+
+  ask_enough_food:
+    say: In the past seven days, were there days in which you did not have enough food or money to buy food?
+    options:
+      - Yes
+      - No
+    transitions:
+      - target: thank_you
+        message: ["Yes", "No"]
+        store: enough_food
+      - target: thank_you
+        intent: AnswerNo
+        store: enough_food
+      - target: thank_you
+        intent: AnswerYes
+        store: enough_food
 
   thank_you:
     say: Thank you for your answers.
@@ -44,6 +62,7 @@ states:
 data:
   - age
   - gender
+  - enough_food
 
 # deprecated:
 #
