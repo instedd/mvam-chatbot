@@ -62,7 +62,7 @@ describe ::MvamBot::Bot do
       it "should return commodity price" do
         DB.cleanup
         user = Factory::DB.user_with_location
-        messages = handle_message_with_wit("How much is rice?", user) do |msg, sid, actions|
+        messages = handle_message("How much is rice?", user) do |msg, sid, actions|
           context = actions.merge(sid, user.conversation_state, entities({ "intent" => "QueryPrice", "commodity" => "rice" }), msg, 0.9)
           actions.custom("show-price", sid, context, 0.9)
         end
@@ -76,13 +76,13 @@ describe ::MvamBot::Bot do
         bot = Bot.new
         user = Factory::DB.user_with_location
 
-        handle_message_with_wit("How much?", user: user, bot: bot) do |msg, sid, actions|
+        handle_message("How much?", user: user, bot: bot) do |msg, sid, actions|
           context = actions.merge(sid, user.conversation_state, entities({ "intent" => "QueryPrice"}), msg, 0.9)
           actions.say(sid, context, "What do you want to know the price of?", 0.9)
           context
         end
 
-        handle_message_with_wit("Rice", user: user, bot: bot) do |msg, sid, actions|
+        handle_message("Rice", user: user, bot: bot) do |msg, sid, actions|
           context = actions.merge(sid, user.conversation_state, entities({ "commodity" => "rice" }), msg, 0.9)
           actions.custom("show-price", sid, context, 0.9)
         end
@@ -96,7 +96,7 @@ describe ::MvamBot::Bot do
         DB.cleanup
         user = Factory::DB.user_with_location
 
-        messages = handle_message_with_wit("Lorem ipsum dolor sit amet", user: user) do |msg, sid, actions|
+        messages = handle_message("Lorem ipsum dolor sit amet", user: user) do |msg, sid, actions|
           context = actions.merge(sid, user.conversation_state, entities(Hash(String, String).new), msg, 0.9)
           actions.custom("not-understood", sid, context, 0.9)
         end
@@ -109,7 +109,10 @@ describe ::MvamBot::Bot do
         DB.cleanup
         user = Factory::DB.user_with_location
 
-        messages = handle_message("Lorem ipsum dolor sit amet", user: user)
+        handler = message_handler("Lorem ipsum dolor sit amet", user: user)
+        handler.handle
+        messages = handler.bot.as(Bot).messages
+
         messages.size.should eq(1)
         messages[0][:text].should contain("Sorry, I did not understand what you just said.")
       end
@@ -120,7 +123,7 @@ describe ::MvamBot::Bot do
         bot = Bot.new
 
         3.times do
-          handle_message_with_wit("Lorem ipsum dolor sit amet", user: user, bot: bot) do |msg, sid, actions|
+          handle_message("Lorem ipsum dolor sit amet", user: user, bot: bot) do |msg, sid, actions|
             context = actions.merge(sid, user.conversation_state, entities(Hash(String, String).new), msg, 0.9)
             actions.custom("not-understood", sid, context, 0.9)
           end
@@ -132,9 +135,9 @@ describe ::MvamBot::Bot do
         bot.messages[1][:text].should contain("Sorry, I did not understand what you just said.")
         bot.messages[2][:text].should contain("Sorry, I did not understand what you just said.")
 
-        bot.messages[0][:text].should_not contain("Send `/help` if you want more information on how I can be of assistance.")
-        bot.messages[1][:text].should_not contain("Send `/help` if you want more information on how I can be of assistance.")
-        bot.messages[2][:text].should contain("Send `/help` if you want more information on how I can be of assistance.")
+        bot.messages[0][:text].should_not contain("Send `/help` if you want information on how I can be of assistance.")
+        bot.messages[1][:text].should_not contain("Send `/help` if you want information on how I can be of assistance.")
+        bot.messages[2][:text].should contain("Send `/help` if you want information on how I can be of assistance.")
       end
 
     end

@@ -18,6 +18,15 @@ module MvamBot
       user.update
     end
 
+    def understand(message : String)
+      session = user.ensure_session_id
+      get_message(message, session)
+    end
+
+    protected def get_message(message : String, session : String)
+      @app.message(message, thread_id: session)
+    end
+
     protected def run_actions(message : String, session : String)
       @app.run_actions(session, message, context: user.conversation_state, max_steps: 10)
     end

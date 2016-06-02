@@ -1,4 +1,5 @@
 require "wit"
+require "./utils"
 
 module MvamBot
 
@@ -9,8 +10,10 @@ module MvamBot
     getter requestor
 
     include Wit::Actions
+    include MvamBot::WitUtils
 
     QUERY_PRICE = "QueryPrice"
+    SCHEDULE = "Schedule"
     WHO_IS = "Whois"
 
     def initialize(@user : User, @requestor : MessageHandler, @logger : Logger)
@@ -29,25 +32,13 @@ module MvamBot
       case context["intent"]?
       when QUERY_PRICE
         extract_value_into(entities, "commodity", context)
+      when SCHEDULE
+        extract_value_into(entities, "wit/datetime", context, context_key: "survey_at")
       else
         context.delete("commodity")
       end
 
       context
-    end
-
-    private def extract_value_into(entities, key, context, context_key=nil)
-      context_key ||= key
-      if value = extract_value(entities, key)
-        context[context_key] = value
-      end
-      context
-    end
-
-    private def extract_value(entities, key)
-      if entities[key]? && entities[key].size > 0 && entities[key][0]["value"]?
-        entities[key][0]["value"].as_s
-      end
     end
 
     def error(session_id : String, context : Wit::State, error : Wit::WitException, confidence : Float64) : Wit::State
@@ -61,6 +52,12 @@ module MvamBot
         requestor.handle_price(context["commodity"].try(&.to_s) || "")
       when "not-understood"
         requestor.handle_not_understood
+      when "start-survey"
+        MvamBot::Surveys::Survey.new(user, requestor).start
+      when "reschedule-survey"
+        MvamBot::Surveys::Survey.new(user, requestor).reschedule(context["survey_at"].to_s)
+      when "no-survey"
+        MvamBot::Surveys::Survey.new(user, requestor).cancel
       else
         logger.warn("Unknown custom action: #{action_name}")
       end

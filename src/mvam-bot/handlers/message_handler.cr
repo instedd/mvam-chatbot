@@ -23,12 +23,16 @@ module MvamBot
         handle_init_location
       elsif message.text =~ /^\/reset(.*)/
         handle_reset($~[1])
+      elsif message.text == "/start"
+        handle_start
       elsif user.conversation_step == "location/adm0"
         handle_step_location_adm0
       elsif user.conversation_step == "location/adm1"
         handle_step_location_adm1
       elsif user.conversation_step == "location/mkt"
         handle_step_location_mkt
+      elsif user.conversation_step =~ /^survey\/(.*)/
+        handle_survey($~[1])
       elsif wit = wit_client
         wit.converse(message.text.not_nil!)
       else
@@ -45,8 +49,20 @@ module MvamBot
     def handle_not_understood
       strike = user.conversation_step =~ /^misunderstood\/(\d+)/ ? ($~[1].to_i + 1) : 1
       user.conversation_step = "misunderstood/#{strike}"
-      extra = strike > 2 ? " Send `/help` if you want more information on how I can be of assistance." : ""
+      extra = strike > 2 ? " Send `/help` if you want information on how I can be of assistance." : ""
       answer("Sorry, I did not understand what you just said.#{extra}")
+    end
+
+    def handle_survey(step)
+      MvamBot::Surveys::Survey.new(user, self, state_id: step).handle(message)
+    end
+
+    def handle_start
+      if wit = wit_client
+        wit.converse("/start")
+      else
+        answer("Hello! I'm a WFP bot assistant. Send `/help` if you want information on how I can be of assistance.")
+      end
     end
 
     def handle_reset(what)
@@ -58,7 +74,7 @@ module MvamBot
       when "session"
         user.conversation_step = nil
         user.conversation_session_id = nil
-        user.conversation_state = nil
+        user.conversation_state.clear
         return answer("Your session has been reset.")
       when "location"
         user.location_adm0_id = nil

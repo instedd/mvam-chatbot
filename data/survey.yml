@@ -4,9 +4,7 @@ states:
     initial: true
     say: How old are you?
     transitions:
-      - entity: { age: wit/age_of_person }
-        target: ask_gender
-      - entity: { age: wit/number }
+      - entity: { age: number }
         target: ask_gender
       - intent: WhySurvey
         target: why

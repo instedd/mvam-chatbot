@@ -18,6 +18,7 @@ module MvamBot
     property :conversation_step
     property :conversation_at
     property :conversation_session_id
+    property :conversation_state
 
     @id : Int32
     @username : String?
@@ -30,8 +31,7 @@ module MvamBot
     @conversation_step : String?
     @conversation_at : Time?
     @conversation_session_id : String?
-    @conversation_state_json : String?
-    @conversation_state : ConversationState?
+    @conversation_state : ConversationState
 
     FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float32|Nil, Float32|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
     FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng conversation_step conversation_at conversation_session_id conversation_state}
@@ -47,7 +47,19 @@ module MvamBot
                    @conversation_step : String? = nil,
                    @conversation_at : Time? = nil,
                    @conversation_session_id : String? = nil,
-                   @conversation_state_json : String? = nil)
+                   conversation_state_json : String? = nil)
+       @conversation_state = ConversationState.new.tap do |state|
+         if json = conversation_state_json
+           JSON.parse(json).as_h.each do |key, value|
+             case value
+             when Bool then state[key] = value
+             when Float64 then state[key] = value
+             when Int64 then state[key] = value
+             when String then state[key] = value
+             end
+           end
+         end
+       end
     end
 
     def self.all
@@ -62,9 +74,9 @@ module MvamBot
       User.new(*(result.rows[0]))
     end
 
-    def self.create(id : Int32, username : String?, name : String?, location_adm0_id : Int32? = nil, location_adm1_id : Int32? = nil, location_mkt_id : Int32? = nil)
-      DB.exec("INSERT INTO users (id, username, name, location_adm0_id, location_adm1_id, location_mkt_id) VALUES ($1, $2, $3, $4, $5, $6)", [id, username, name, location_adm0_id, location_adm1_id, location_mkt_id])
-      User.new(id, username, name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id)
+    def self.create(id : Int32, username : String?, name : String?, location_adm0_id : Int32? = nil, location_adm1_id : Int32? = nil, location_mkt_id : Int32? = nil, conversation_step : String? = nil)
+      DB.exec("INSERT INTO users (id, username, name, location_adm0_id, location_adm1_id, location_mkt_id, conversation_step) VALUES ($1, $2, $3, $4, $5, $6, $7)", [id, username, name, location_adm0_id, location_adm1_id, location_mkt_id, conversation_step])
+      User.new(id, username, name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id, conversation_step: conversation_step)
     end
 
     def update
@@ -74,7 +86,7 @@ module MvamBot
                conversation_session_id = $10, conversation_state = $11
                WHERE id = $12",
                [@username, @name, @location_adm0_id, @location_adm1_id, @location_mkt_id,
-                @location_lat, @location_lng, @conversation_step, @conversation_at, @conversation_session_id, @conversation_state_json, @id])
+                @location_lat, @location_lng, @conversation_step, @conversation_at, @conversation_session_id, conversation_state_json, @id])
     end
 
     def full_name
@@ -97,30 +109,13 @@ module MvamBot
       # Generate a new session id if last conversation was too long ago, or return the current one
       if conversation_session_id.nil? || conversation_at.nil? || conversation_at.not_nil! < (Time.utc_now - SESSION_LIFESPAN)
         self.conversation_session_id = SecureRandom.uuid
-        @conversation_state = nil
-        @conversation_state_json = nil
+        @conversation_state.clear
       end
       conversation_session_id.not_nil!
     end
 
-    def conversation_state
-      @conversation_state ||= ConversationState.new.tap do |state|
-        if json = @conversation_state_json
-          JSON.parse(json).as_h.each do |key, value|
-            case value
-            when Bool then state[key] = value
-            when Float64 then state[key] = value
-            when Int64 then state[key] = value
-            when String then state[key] = value
-            end
-          end
-        end
-      end
-    end
-
-    def conversation_state=(value)
-      @conversation_state_json = value.try(&.to_json)
-      @conversation_state = value
+    private def conversation_state_json
+      @conversation_state.to_json
     end
 
   end
