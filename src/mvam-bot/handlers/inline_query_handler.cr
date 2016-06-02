@@ -41,8 +41,7 @@ module MvamBot
     end
 
     protected def try_match_position
-      user.location_lat = @query.location.not_nil!.latitude
-      user.location_lng = @query.location.not_nil!.longitude
+      user.set_gps_position(@query.location.not_nil!.latitude, @query.location.not_nil!.longitude)
 
       near_locations = MvamBot::Location::Mkt.around(user.location_lat.not_nil!, user.location_lng.not_nil!, kilometers: search_radius_kilometers)
       if near_locations.size == 1

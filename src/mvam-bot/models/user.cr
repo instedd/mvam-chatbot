@@ -18,6 +18,7 @@ module MvamBot
     property :conversation_step
     property :conversation_at
     property :conversation_session_id
+    property :gps_timestamp
 
     @id : Int32
     @username : String?
@@ -32,6 +33,7 @@ module MvamBot
     @conversation_session_id : String?
     @conversation_state_json : String?
     @conversation_state : ConversationState?
+    @gps_timestamp : Time?
 
     FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float64|Nil, Float64|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
     FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng conversation_step conversation_at conversation_session_id conversation_state}
@@ -121,6 +123,12 @@ module MvamBot
     def conversation_state=(value)
       @conversation_state_json = value.try(&.to_json)
       @conversation_state = value
+    end
+
+    def set_gps_position(lat : Float64, lng : Float64, timestamp = Time.now)
+      @location_lat = lat
+      @location_lng = lng
+      @gps_timestamp = timestamp
     end
 
   end

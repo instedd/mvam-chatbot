@@ -23,6 +23,8 @@ module MvamBot
         handle_init_location
       elsif user.conversation_step == "location/gps"
         handle_step_gps
+      elsif user.conversation_step == "location/gps_multiple_matches"
+        handle_step_gps_multiple_matches
       elsif user.conversation_step == "location/adm0"
         handle_step_location_adm0
       elsif user.conversation_step == "location/adm1"
@@ -98,7 +100,7 @@ module MvamBot
       user.location_mkt_id = nil
 
       if user.location_lat
-        init_location_from_gps(user.location_lat.not_nil!, user.location_lng.not_nil!)
+        set_location_from_gps(user.location_lat.not_nil!, user.location_lng.not_nil!)
       else
         user.conversation_step = "location/gps"
 
@@ -113,33 +115,50 @@ module MvamBot
 
     def handle_step_gps(extra_text = nil)
       if message.location
-        init_location_from_gps(message.location.not_nil!)
+        user.set_gps_position(message.location.not_nil!.latitude, message.location.not_nil!.longitude)
+
+        set_location_from_gps(message.location.not_nil!)
       else
         init_step_location_adm0(extra_text)
       end
     end
 
-    def init_location_from_gps(location : TelegramBot::Location)
-      init_location_from_gps(location.latitude, location.longitude)
+    def set_location_from_gps(location : TelegramBot::Location)
+      set_location_from_gps(location.latitude, location.longitude)
     end
 
-    def init_location_from_gps(latitude : Float64, longitude : Float64)
+    def set_location_from_gps(latitude : Float64, longitude : Float64)
       near_locations = MvamBot::Location::Mkt.around(latitude, longitude, count: 5, kilometers: 10)
 
       if near_locations.empty?
         init_step_location_adm0
       elsif near_locations.size > 1
-        # TODO: add "none of the above" option
+        user.conversation_step = "location/gps_multiple_matches"
         answer_with_keyboard "Where would you like prices from?", near_locations.map(&.first.name)
       else
         mkt = near_locations[0][0]
-        mkt_id, adm1_id, adm0_id = MvamBot::Location::Mkt.full_path(mkt.id).map(&.first)
-        user.location_adm0_id = adm0_id
-        user.location_adm1_id = adm1_id
-        user.location_mkt_id = mkt_id
+        set_location_from_gps_match(mkt)
+      end
+    end
 
-        user.conversation_step = nil
-        answer_location_complete(mkt)
+    def set_location_from_gps_match(mkt)
+      mkt_id, adm1_id, adm0_id = MvamBot::Location::Mkt.full_path(mkt.id).map(&.first)
+
+      user.location_adm0_id = adm0_id
+      user.location_adm1_id = adm1_id
+      user.location_mkt_id = mkt_id
+
+      user.conversation_step = nil
+      answer_location_complete(mkt)
+    end
+
+    def handle_step_gps_multiple_matches
+      near_locations = MvamBot::Location::Mkt.around(user.location_lat.not_nil!, user.location_lng.not_nil!, count: 5, kilometers: 10)
+      match = near_locations.map(&.first).find { |m| m.name == message.text }
+      if match
+        set_location_from_gps_match(match)
+      else
+        init_step_location_adm0
       end
     end
 
