@@ -21,14 +21,12 @@ def main
   download_positions_csv if !File.exists?(FILE_PATH)
 
   File.open(FILE_PATH, "r") do |file|
-    count = 0
-    CSV.each_row(file) do |row|
-      id, name, country_code, lat, lng = row
+    CSV.new(file, headers: true) do |row|
+      _, _, _, _, _, _, _, _, id, name, lat, lng = row
       puts "Updating position for location #{id} (#{name})"
       MvamBot::Location::Mkt.set_position(id, lat.to_f, lng.to_f)
-      count += 1
     end
-    puts "Done! #{count} locations updated."
+    puts "Done!"
   end
 end
 

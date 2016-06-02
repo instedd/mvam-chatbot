@@ -4,6 +4,15 @@ include MvamBot::Spec
 include MvamBot::Spec::Wit
 
 describe ::MvamBot::Location do
+  describe "Mkt" do
+    it "returns latitude and longitude if present" do
+      location = MvamBot::Location::Mkt.find_by_name("Lindi", 48364).not_nil!
+
+      location.lat.should eq(-10)
+      location.lng.should eq(39.7167)
+    end
+  end
+
   it "allows to query mkts around a point" do
     DB.cleanup
 
@@ -11,10 +20,10 @@ describe ::MvamBot::Location do
                                    .map { |tup| {tup[0].name, tup[1]} }
     expected = [
                 {"Jacmel", 0.0},
-                {"Port-au-Prince", 39.8417},
-                {"Hinche", 115.182},
-                {"Gonaives", 133.846},
-                {"Ouanaminthe", 168.691}
+                {"Port-au-Prince", 39.8118},
+                {"Hinche", 115.157},
+                {"Cayes", 128.603},
+                {"Gonaives", 135.485}
                ] of {String, Float64}
 
     verify_results(expected, result)
@@ -27,8 +36,8 @@ describe ::MvamBot::Location do
                                    .map { |tup| {tup[0].name, tup[1]} }
     expected = [
                 {"Jacmel", 0.0},
-                {"Port-au-Prince", 39.8417},
-                {"Hinche", 115.182},
+                {"Port-au-Prince", 39.8118},
+                {"Hinche", 115.157},
                ] of {String, Float64}
 
     verify_results(expected, result)
@@ -50,7 +59,7 @@ describe ::MvamBot::Location do
 end
 
 def jacmel_center
-  {18.2343, -72.5354}
+  {18.2342, -72.5347}
 end
 
 def verify_results(expected, actual)
