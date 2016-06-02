@@ -82,7 +82,7 @@ module MvamBot
       end
     end
 
-    record Mkt, id : Int32, name : String, adm1_id : Int32 do
+    record Mkt, id : Int32, name : String, adm1_id : Int32, lat : Float64?, lng : Float64? do
       @@cache : Hash(Int32, Mkt)?
 
       def self.cache
@@ -112,18 +112,18 @@ module MvamBot
       end
 
       def self.select(condition = nil, params = Array(PG::PGValue).new(0))
-        DB.exec({Int32, String, Int32}, "SELECT id, name, location_adm1_id FROM locations_mkt #{condition}", params).rows.map{ |row| self.new(*row) }
+        DB.exec({Int32, String, Int32, Float64|Nil, Float64|Nil}, "SELECT id, name, location_adm1_id, ST_Y(position), ST_X(position) FROM locations_mkt #{condition}", params).rows.map{ |row| self.new(*row) }
       end
 
       def self.around(lat : Float64, lng : Float64, count = 5, kilometers = 200) : Array({Location::Mkt, Float64})
-        query = "SELECT id, name, location_adm1_id, (ST_Distance(position::geography, ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')')) / 1000) AS distance"\
+        query = "SELECT id, name, location_adm1_id, ST_Y(position), ST_X(position), (ST_Distance(position::geography, ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')')) / 1000) AS distance"\
                 " FROM locations_mkt"\
                 " WHERE (ST_Distance(position::geography, ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')')) / 1000) < $3"\
                 " ORDER BY distance LIMIT $4;"
 
-        DB.exec({Int32, String, Int32, Float64}, query, [lng, lat, kilometers, count]).rows.map do |row|
-          id, name, location_adm1_id, distance = row
-          {self.new(id, name, location_adm1_id), distance}
+        DB.exec({Int32, String, Int32, Float64, Float64, Float64}, query, [lng, lat, kilometers, count]).rows.map do |row|
+          id, name, location_adm1_id, lat, lng, distance = row
+          {self.new(id, name, location_adm1_id, lat, lng), distance}
         end
       end
 

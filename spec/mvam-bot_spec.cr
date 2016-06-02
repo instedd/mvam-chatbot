@@ -141,4 +141,37 @@ describe ::MvamBot::Bot do
 
   end
 
+  describe "inline queries" do
+    context "user with known location" do
+      it "return results for user location" do
+        DB.cleanup
+        user = Factory::DB.user_with_location
+
+        reply = handle_query("rice", user).first
+        reply[:results].size.should eq(3)
+        reply[:switch_pm_text].should match(/Location is Algiers.*/)
+      end
+
+      it "should use known location regardless of reported gps position" do
+        DB.cleanup
+        user = Factory::DB.user_with_location
+
+        reply = handle_query("rice", user, location: {-34.515951, -58.474975}).first
+        reply[:switch_pm_text].should match(/Location is Algiers.*/)
+      end
+    end
+
+    context "user without location" do
+      it "returns result for inferred location if there is a single close match" do
+        DB.cleanup
+        user = Factory::DB.user
+        location = MvamBot::Location::Mkt.find_by_name("Lindi", 48364).not_nil!
+
+        reply = handle_query("rice", user, location: {location.lat.not_nil!, location.lng.not_nil!}).first
+        reply[:switch_pm_text].should match(/Location is Lindi.*/)
+      end
+    end
+
+  end
+
 end

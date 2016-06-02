@@ -21,6 +21,20 @@ module MvamBot::Spec
       nil
     end
 
+    getter query_replies
+
+    @query_replies = Array({inline_query_id: String, results: Array(TelegramBot::InlineQueryResult), cache_time: Int32?, is_personal: Bool?, next_offset: String?, switch_pm_text: String?, switch_pm_parameter: String?}).new
+
+    def answer_inline_query(inline_query_id : String,
+                            results : Array(TelegramBot::InlineQueryResult),
+                            cache_time : Int32? = nil,
+                            is_personal : Bool? = nil,
+                            next_offset : String? = nil,
+                            switch_pm_text : String? = nil,
+                            switch_pm_parameter : String? = nil) : Bool?
+      @query_replies << { inline_query_id: inline_query_id, results: results.map &.as(TelegramBot::InlineQueryResult), cache_time: cache_time, is_personal: is_personal, next_offset: next_offset, switch_pm_text: switch_pm_text, switch_pm_parameter: switch_pm_parameter }
+      nil
+    end
   end
 
 end
