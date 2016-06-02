@@ -162,13 +162,39 @@ describe ::MvamBot::Bot do
     end
 
     context "user without location" do
-      it "returns result for inferred location if there is a single close match" do
-        DB.cleanup
-        user = Factory::DB.user
-        location = MvamBot::Location::Mkt.find_by_name("Lindi", 48364).not_nil!
+      context "with gps position" do
+        it "returns result for inferred location if there is a single close match" do
+          DB.cleanup
+          user = Factory::DB.user
+          location = MvamBot::Location::Mkt.find_by_name("Lindi", 48364).not_nil!
 
-        reply = handle_query("rice", user, location: {location.lat.not_nil!, location.lng.not_nil!}).first
-        reply[:switch_pm_text].should match(/Location is Lindi.*/)
+          replies = handle_query("rice", user, location: {location.lat.not_nil!, location.lng.not_nil!}, search_radius_kilometers: 1)
+          reply = replies.first
+
+          (reply[:results].size > 0).should be_true
+          reply[:switch_pm_text].should match(/Location is Lindi.*/)
+        end
+
+        it "asks user to input location if there is more than one close match" do
+          DB.cleanup
+          user = Factory::DB.user
+          location = MvamBot::Location::Mkt.find_by_name("Lindi", 48364).not_nil!
+
+          reply = handle_query("rice", user, location: {location.lat.not_nil!, location.lng.not_nil!}, search_radius_kilometers: 200).first
+          reply[:results].size.should eq(0)
+          reply[:switch_pm_text].should match(/set your location to start/)
+        end
+
+        it "stores reported gps position even if there was no match" do
+          DB.cleanup
+          user = Factory::DB.user
+
+          reply = handle_query("rice", user, location: {-34.516065, -58.474936}, search_radius_kilometers: 1).first
+
+          updated_user = MvamBot::User.find(user.id).not_nil!
+          updated_user.location_lat.not_nil!.should be_close(-34.516065, 0.0001)
+          updated_user.location_lng.not_nil!.should be_close(-58.474936, 0.0001)
+        end
       end
     end
 

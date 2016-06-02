@@ -25,15 +25,15 @@ module MvamBot
     @location_adm0_id : Int32?
     @location_adm1_id : Int32?
     @location_mkt_id : Int32?
-    @location_lat : Float32?
-    @location_lng : Float32?
+    @location_lat : Float64?
+    @location_lng : Float64?
     @conversation_step : String?
     @conversation_at : Time?
     @conversation_session_id : String?
     @conversation_state_json : String?
     @conversation_state : ConversationState?
 
-    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float32|Nil, Float32|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
+    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float64|Nil, Float64|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
     FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng conversation_step conversation_at conversation_session_id conversation_state}
 
     def initialize(@id : Int32,
@@ -42,8 +42,8 @@ module MvamBot
                    @location_adm0_id : Int32? = nil,
                    @location_adm1_id : Int32? = nil,
                    @location_mkt_id : Int32? = nil,
-                   @location_lat : Float32? = nil,
-                   @location_lng : Float32? = nil,
+                   @location_lat : Float64? = nil,
+                   @location_lng : Float64? = nil,
                    @conversation_step : String? = nil,
                    @conversation_at : Time? = nil,
                    @conversation_session_id : String? = nil,
