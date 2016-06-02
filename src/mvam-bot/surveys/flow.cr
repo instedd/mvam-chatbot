@@ -8,6 +8,10 @@ module MvamBot
       YAML.mapping({
         states: { type: Hash(String, FlowState), converter: FlowStates }
       })
+
+      def start
+        states.values.find(&.initial).not_nil!
+      end
     end
 
     class FlowStates
@@ -29,6 +33,7 @@ module MvamBot
         converse: { type: Bool, default: false },
         say: { type: String, nilable: true },
         transitions: { type: Array(FlowTransition), default: Array(FlowTransition).new },
+        initial: { type: Bool, default: false },
         final: { type: Bool, default: false }
       })
 

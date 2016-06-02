@@ -1,25 +1,7 @@
 states:
 
-  initial:
-    transitions:
-      - message: /start
-        target: start
-
-  start:
-    converse: true
-    transitions:
-      - action: start-survey
-        target: ask_age
-      - action: reschedule-survey
-        target: end
-      - action: no-survey
-        target: end
-      - intent: WhySurvey
-        target: why
-      - intent: Whois
-        target: who
-
   ask_age:
+    initial: true
     say: How old are you?
     transitions:
       - entity: { age: wit/age_of_person }
@@ -43,9 +25,6 @@ states:
 
   thank_you:
     say: Thank you for your answers.
-    final: true
-
-  end:
     final: true
 
   why:
