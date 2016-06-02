@@ -63,8 +63,8 @@ describe ::MvamBot::Bot do
         DB.cleanup
         user = Factory::DB.user_with_location
         messages = handle_message_with_wit("How much is rice?", user) do |msg, sid, actions|
-          context = actions.merge(sid, user.conversation_state, entities({ "intent" => "QueryPrice", "commodity" => "rice" }), msg)
-          actions.custom("show-price", sid, context)
+          context = actions.merge(sid, user.conversation_state, entities({ "intent" => "QueryPrice", "commodity" => "rice" }), msg, 0.9)
+          actions.custom("show-price", sid, context, 0.9)
         end
 
         messages.size.should eq(1)
@@ -77,14 +77,14 @@ describe ::MvamBot::Bot do
         user = Factory::DB.user_with_location
 
         handle_message_with_wit("How much?", user: user, bot: bot) do |msg, sid, actions|
-          context = actions.merge(sid, user.conversation_state, entities({ "intent" => "QueryPrice"}), msg)
-          actions.say(sid, context, "What do you want to know the price of?")
+          context = actions.merge(sid, user.conversation_state, entities({ "intent" => "QueryPrice"}), msg, 0.9)
+          actions.say(sid, context, "What do you want to know the price of?", 0.9)
           context
         end
 
         handle_message_with_wit("Rice", user: user, bot: bot) do |msg, sid, actions|
-          context = actions.merge(sid, user.conversation_state, entities({ "commodity" => "rice" }), msg)
-          actions.custom("show-price", sid, context)
+          context = actions.merge(sid, user.conversation_state, entities({ "commodity" => "rice" }), msg, 0.9)
+          actions.custom("show-price", sid, context, 0.9)
         end
 
         bot.messages.size.should eq(2)
@@ -97,8 +97,8 @@ describe ::MvamBot::Bot do
         user = Factory::DB.user_with_location
 
         messages = handle_message_with_wit("Lorem ipsum dolor sit amet", user: user) do |msg, sid, actions|
-          context = actions.merge(sid, user.conversation_state, entities(Hash(String, String).new), msg)
-          actions.custom("not-understood", sid, context)
+          context = actions.merge(sid, user.conversation_state, entities(Hash(String, String).new), msg, 0.9)
+          actions.custom("not-understood", sid, context, 0.9)
         end
 
         messages.size.should eq(1)
@@ -121,8 +121,8 @@ describe ::MvamBot::Bot do
 
         3.times do
           handle_message_with_wit("Lorem ipsum dolor sit amet", user: user, bot: bot) do |msg, sid, actions|
-            context = actions.merge(sid, user.conversation_state, entities(Hash(String, String).new), msg)
-            actions.custom("not-understood", sid, context)
+            context = actions.merge(sid, user.conversation_state, entities(Hash(String, String).new), msg, 0.9)
+            actions.custom("not-understood", sid, context, 0.9)
           end
         end
 
