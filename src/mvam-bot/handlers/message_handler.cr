@@ -95,13 +95,17 @@ module MvamBot
     end
 
     def handle_init_location(extra_text = nil)
-      user.location_adm0_id = nil
-      user.location_adm1_id = nil
-      user.location_mkt_id = nil
-
-      if user.location_lat
-        set_location_from_gps(user.location_lat.not_nil!, user.location_lng.not_nil!)
+      if user.position_changed_recently?
+        if user.location_adm0_id
+          user.clear_location
+          user.clear_gps_data
+          init_step_location_adm0
+        else
+          set_location_from_gps(user.location_lat.not_nil!, user.location_lng.not_nil!)
+        end
       else
+        user.clear_location
+        user.clear_gps_data
         user.conversation_step = "location/gps"
 
         keyboard = TelegramBot::ReplyKeyboardMarkup.new([[

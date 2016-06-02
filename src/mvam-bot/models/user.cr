@@ -35,8 +35,8 @@ module MvamBot
     @conversation_state : ConversationState?
     @gps_timestamp : Time?
 
-    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float64|Nil, Float64|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
-    FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng conversation_step conversation_at conversation_session_id conversation_state}
+    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float64|Nil, Float64|Nil, String|Nil, Time|Nil, String|Nil, String|Nil, Time|Nil }
+    FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng conversation_step conversation_at conversation_session_id conversation_state gps_timestamp}
 
     def initialize(@id : Int32,
                    @username : String? = nil,
@@ -49,7 +49,8 @@ module MvamBot
                    @conversation_step : String? = nil,
                    @conversation_at : Time? = nil,
                    @conversation_session_id : String? = nil,
-                   @conversation_state_json : String? = nil)
+                   @conversation_state_json : String? = nil,
+                   @gps_timestamp : Time? = nil)
     end
 
     def self.all
@@ -73,10 +74,10 @@ module MvamBot
       DB.exec("UPDATE users SET username = $1, name = $2, location_adm0_id = $3,
                location_adm1_id = $4, location_mkt_id = $5, location_lat = $6,
                location_lng = $7, conversation_step = $8, conversation_at = $9,
-               conversation_session_id = $10, conversation_state = $11
-               WHERE id = $12",
+               conversation_session_id = $10, conversation_state = $11, gps_timestamp = $12
+               WHERE id = $13",
                [@username, @name, @location_adm0_id, @location_adm1_id, @location_mkt_id,
-                @location_lat, @location_lng, @conversation_step, @conversation_at, @conversation_session_id, @conversation_state_json, @id])
+                @location_lat, @location_lng, @conversation_step, @conversation_at, @conversation_session_id, @conversation_state_json, @gps_timestamp, @id])
     end
 
     def full_name
@@ -131,5 +132,20 @@ module MvamBot
       @gps_timestamp = timestamp
     end
 
+    def position_changed_recently?
+      return @gps_timestamp && (Time.now - @gps_timestamp.not_nil!) < 20.minutes
+    end
+
+    def clear_gps_data
+      @location_lat = nil
+      @location_lng = nil
+      @gps_timestamp = nil
+    end
+
+    def clear_location
+      @location_adm0_id = nil
+      @location_adm1_id = nil
+      @location_mkt_id = nil
+    end
   end
 end
