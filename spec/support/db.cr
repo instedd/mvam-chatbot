@@ -6,6 +6,7 @@ module MvamBot::Spec
       ["logs", "users"].each do |table|
         ::MvamBot::DB.exec("DELETE FROM #{table};")
       end
+      Location.delete_test_locations
     end
 
   end

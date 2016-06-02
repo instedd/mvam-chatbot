@@ -8,8 +8,15 @@ describe ::MvamBot::Location do
     it "returns latitude and longitude if present" do
       location = MvamBot::Location::Mkt.find_by_name("Lindi", 48364).not_nil!
 
-      location.lat.should eq(-10)
-      location.lng.should eq(39.7167)
+      location.lat.not_nil!.should be_close(-10.0, 0.001)
+      location.lng.not_nil!.should be_close(39.7167, 0.001)
+    end
+
+    it "provides mkt full path" do
+      location = MvamBot::Location::Mkt.find_by_name("Musoma", 48366).not_nil!
+      
+      path = MvamBot::Location::Mkt.full_path(location.id).map &.last
+      path.should eq(["Musoma", "Mara", "United Republic of Tanzania"])
     end
   end
 

@@ -6,13 +6,96 @@ include MvamBot::Spec::Wit
 describe ::MvamBot::Bot do
 
   describe "messaging" do
+    context "unknown administrative location" do
+      context "unkown GPS position" do
+        it "requests user GPS position" do
+          DB.cleanup
+          messages = handle_message("/start location")
+          messages.size.should eq(1)
 
-    it "should ask user location on first message" do
-      DB.cleanup
-      messages = handle_message("/start location")
-      messages.size.should eq(1)
-      messages[0][:text].should eq("What country do you live in?")
-      messages[0][:reply_markup].as(TelegramBot::ReplyKeyboardMarkup).keyboard.flatten.size.should eq(MvamBot::Location::Adm0.cache.size)
+          messages[0][:text].should eq("Would you mind sharing your current position with us?")
+          reply_buttons(messages[0]).should eq(["Sure", "Not really"])
+        end
+
+        context "user accepts to share position" do
+          it "starts step by step selection if there is no close match" do
+            DB.cleanup
+            user = user_at_step "location/gps"
+            
+            messages = handle_message("", user, location: {atlantic_ocean_position[0], atlantic_ocean_position[1]})
+            messages.size.should eq(1)
+            messages[0][:text].should eq("What country do you live in?")
+            reply_buttons(messages[0]).size.should eq(MvamBot::Location::Adm0.cache.size)
+          end
+
+          it "uses closest location if there is a single close match" do
+            DB.cleanup
+            Location.create_test_locations
+            user = user_at_step "location/gps"
+
+            lat = Location.esquel.lat.not_nil!
+            lng = Location.esquel.lng.not_nil!
+
+            messages = handle_message("", user, location: {lat, lng})
+            messages.size.should eq(1)
+            messages[0][:text].should match(/I will send you food prices from Esquel/)
+          end
+
+          it "asks user to choose if there are multiple close matches" do
+            DB.cleanup
+            Location.create_test_locations
+            user = user_at_step "location/gps"
+
+            lat = Location.vicente_lopez.lat.not_nil!
+            lng = Location.vicente_lopez.lng.not_nil!
+
+            messages = handle_message("", user, location: {lat, lng})
+            messages.size.should eq(1)
+            messages[0][:text].should eq("Where would you like prices from?")
+            reply_buttons(messages[0]).should eq(["Vicente Lopez", "Olivos"])
+          end
+        end
+
+        context "user refuses to share position" do
+          it "starts step by step selection if there is no close match" do
+            DB.cleanup
+            user = user_at_step "location/gps"
+            
+            messages = handle_message("", user, location: nil)
+            messages.size.should eq(1)
+            messages[0][:text].should eq("What country do you live in?")
+            reply_buttons(messages[0]).size.should eq(MvamBot::Location::Adm0.cache.size)
+          end
+        end
+      end
+
+      context "known GPS position" do
+        it "uses closest location if there is a single close match" do
+          DB.cleanup
+          Location.create_test_locations
+
+          user = Factory::DB.user
+          user.location_lat = Location.esquel.lat.not_nil!
+          user.location_lng = Location.esquel.lng.not_nil!
+
+          messages = handle_message("/start location", user, location: nil)
+          messages.size.should eq(1)
+          messages[0][:text].should match(/I will send you food prices from Esquel/)
+        end
+
+        it "asks user to choose if there are multiple close matches" do
+          DB.cleanup
+          Location.create_test_locations
+
+          user = Factory::DB.user
+          user.location_lat = Location.vicente_lopez.lat.not_nil!
+          user.location_lng = Location.vicente_lopez.lng.not_nil!
+
+          messages = handle_message("/start location", user, location: nil)
+          messages[0][:text].should eq("Where would you like prices from?")
+          reply_buttons(messages[0]).should eq(["Vicente Lopez", "Olivos"])
+        end
+      end
     end
 
     it "should return the requested price for the user location" do
@@ -200,4 +283,15 @@ describe ::MvamBot::Bot do
 
   end
 
+end
+
+def user_at_step(step)
+  Factory::DB.user.tap do |u|
+    u.conversation_step = "location/gps"
+    u.update
+  end
+end
+
+def atlantic_ocean_position
+ {-12.727552, -18.021674}
 end

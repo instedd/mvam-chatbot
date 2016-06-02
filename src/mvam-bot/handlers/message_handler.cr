@@ -12,7 +12,7 @@ module MvamBot
     end
 
     def handle
-      return if message.text.nil?
+      return if message.text.nil? && message.location.nil?
       MvamBot::Logs::Message.create(user.id, false, message.text, Time.utc_now)
 
       if message.text =~ /^\/price(.*)/
@@ -21,6 +21,8 @@ module MvamBot
         handle_help
       elsif message.text == "/start location" || message.text == "/location"
         handle_init_location
+      elsif user.conversation_step == "location/gps"
+        handle_step_gps
       elsif user.conversation_step == "location/adm0"
         handle_step_location_adm0
       elsif user.conversation_step == "location/adm1"
@@ -94,6 +96,54 @@ module MvamBot
       user.location_adm0_id = nil
       user.location_adm1_id = nil
       user.location_mkt_id = nil
+
+      if user.location_lat
+        init_location_from_gps(user.location_lat.not_nil!, user.location_lng.not_nil!)
+      else
+        user.conversation_step = "location/gps"
+
+        keyboard = TelegramBot::ReplyKeyboardMarkup.new([[
+          TelegramBot::KeyboardButton.new("Sure", request_location: true),
+          TelegramBot::KeyboardButton.new("Not really", request_location: false)
+        ]], one_time_keyboard: true)
+
+        answer("Would you mind sharing your current position with us?", keyboard)
+      end
+    end
+
+    def handle_step_gps(extra_text = nil)
+      if message.location
+        init_location_from_gps(message.location.not_nil!)
+      else
+        init_step_location_adm0(extra_text)
+      end
+    end
+
+    def init_location_from_gps(location : TelegramBot::Location)
+      init_location_from_gps(location.latitude, location.longitude)
+    end
+
+    def init_location_from_gps(latitude : Float64, longitude : Float64)
+      near_locations = MvamBot::Location::Mkt.around(latitude, longitude, count: 5, kilometers: 10)
+
+      if near_locations.empty?
+        init_step_location_adm0
+      elsif near_locations.size > 1
+        # TODO: add "none of the above" option
+        answer_with_keyboard "Where would you like prices from?", near_locations.map(&.first.name)
+      else
+        mkt = near_locations[0][0]
+        mkt_id, adm1_id, adm0_id = MvamBot::Location::Mkt.full_path(mkt.id).map(&.first)
+        user.location_adm0_id = adm0_id
+        user.location_adm1_id = adm1_id
+        user.location_mkt_id = mkt_id
+
+        user.conversation_step = nil
+        answer_location_complete(mkt)
+      end
+    end
+
+    def init_step_location_adm0(extra_text = nil)
       user.conversation_step = "location/adm0"
       answer_with_keyboard "#{extra_text}What country do you live in?", Location::Adm0.all.map(&.name).sort
     end

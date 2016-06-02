@@ -25,15 +25,15 @@ module MvamBot::Spec
     end
   end
 
-  def message_handler(msg, user = nil, bot = nil)
+  def message_handler(msg, user = nil, bot = nil, location = nil)
     bot ||= Bot.new
-    message = Telegram.message(msg)
+    message = Telegram.message(msg, location: location)
     user = user || Factory::DB.user
     MessageHandler.new(message, user, bot)
   end
 
-  def handle_message(msg, user = nil, bot = nil)
-    handler = message_handler(msg, user, bot)
+  def handle_message(msg, user = nil, bot = nil, location : {Float64, Float64}? = nil)
+    handler = message_handler(msg, user, bot, location)
     handler.handle
     handler.bot.as(Bot).messages
   end
@@ -43,6 +43,10 @@ module MvamBot::Spec
     handler.wit_client = WitClient.new(user, handler, &wit)
     handler.handle
     handler.bot.as(Bot).messages
+  end
+
+  def reply_buttons(msg)
+    msg[:reply_markup].as(TelegramBot::ReplyKeyboardMarkup).keyboard.flatten.map(&.text)
   end
 
 end

@@ -93,6 +93,11 @@ module MvamBot
         DB.exec("INSERT INTO locations_mkt (id, name, location_adm1_id) VALUES ($1, $2, $3)", [id, name, adm1_id])
       end
 
+      def self.create(id : Int, name : String, adm1_id : Int, position : {Float64, Float64})
+        lat, lng = position
+        DB.exec("INSERT INTO locations_mkt (id, name, location_adm1_id, position) VALUES ($1, $2, $3, ST_GeomFromText('SRID=4326;POINT(' || $4 || ' ' || $5 || ')'))", [id, name, adm1_id, lat, lng])
+      end
+
       def self.all
         self.select
       end
@@ -129,6 +134,20 @@ module MvamBot
 
       def self.set_position(id : String, lat : Float64, lng : Float64)
         DB.exec("UPDATE locations_mkt SET position = ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')') WHERE id = $3", [lng, lat, id])
+      end
+
+      def self.full_path(id : Int32)
+        query = "SELECT mkt.id, mkt.name, adm1.id, adm1.name, adm0.id, adm0.name"\
+                " FROM locations_mkt mkt"\
+                " INNER JOIN locations_adm1 adm1"\
+                " ON mkt.location_adm1_id = adm1.id"\
+                " INNER JOIN locations_adm0 adm0"\
+                " ON adm1.location_adm0_id = adm0.id"\
+                " WHERE mkt.id = $1;"
+
+        row = DB.exec({Int32, String, Int32, String, Int32, String}, query, [id]).rows.first
+        mkt_id, mkt_name, adm1_id, adm1_name, adm0_id, adm0_name =  row
+        [{mkt_id, mkt_name}, {adm1_id, adm1_name}, {adm0_id, adm0_name}]
       end
     end
 
