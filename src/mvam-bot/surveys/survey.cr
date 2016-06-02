@@ -37,12 +37,14 @@ module MvamBot
           run(flow.states[transition.target])
         elsif !state.final
           MvamBot.logger.warn("No transition matched #{message} with #{response.inspect} at state #{state_id} for user #{user.id}")
-        else
-          MvamBot.logger.info("Survey completed at state #{state.id} for user #{user.id}")
         end
       end
 
       def flow
+        @@flow
+      end
+
+      def self.flow
         @@flow
       end
 
@@ -58,8 +60,26 @@ module MvamBot
         if say = state.say
           requestor.answer(say, update_user: false)
         end
-        user.conversation_step = "survey/#{state.id}"
+
+        if state.final
+          user.conversation_step = nil
+          MvamBot.logger.info("Survey completed at state #{state.id} for user #{user.id}")
+        else
+          user.conversation_step = "survey/#{state.id}"
+        end
+
+        SurveyResponse.save_response(user_id: user.id, session_id: user.ensure_session_id, data: survey_data, completed: state.final)
         user.update
+      end
+
+      private def survey_data
+        SurveyResponse::SurveyData.new.tap do |data|
+          flow.data.each do |key|
+            if value = user.conversation_state[key]?
+              data[key] = value
+            end
+          end
+        end
       end
 
       private def transition_applies?(transition, entities)
@@ -79,6 +99,7 @@ module MvamBot
         elsif transition.action
           # TODO: Support transitioning upon an action
         else
+          # TODO: Add default transitions when not-understood
           MvamBot.logger.debug("Transition to #{transition.target} matched as default")
           true
         end

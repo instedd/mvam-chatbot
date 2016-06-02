@@ -41,6 +41,9 @@ states:
       - intent: WhySurvey
         target: why
 
+data:
+  - age
+  - gender
 
 # deprecated:
 #

@@ -6,7 +6,8 @@ module MvamBot
 
     class Flow
       YAML.mapping({
-        states: { type: Hash(String, FlowState), converter: FlowStates }
+        states: { type: Hash(String, FlowState), converter: FlowStates },
+        data: { type: Array(String) }
       })
 
       def start

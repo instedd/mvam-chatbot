@@ -1,4 +1,7 @@
 require "./mvam-bot/models/*"
+require "./mvam-bot/handlers/*"
+require "./mvam-bot/wit/*"
+require "./mvam-bot/surveys/*"
 require "./mvam-bot/web/*"
 require "./mvam-bot/*"
 
@@ -25,8 +28,11 @@ end
 get "/users/:id" do |env|
   user = MvamBot::User.find(env.params.url["id"].to_i)
   if user
-    messages = MvamBot::Logs.for_user(user.id)
+    messages = MvamBot::Logs.for_user(user.id, limit: 1000)
+    messages_by_day = messages.group_by{|m| m.timestamp.date}
     message_count = MvamBot::Logs.count(user_id: user.id)
+    surveys = MvamBot::SurveyResponse.for_user(user.id)
+    fields = MvamBot::Surveys::Survey.flow.data
     mvam_render "user"
   else
     env.response.status_code = 404

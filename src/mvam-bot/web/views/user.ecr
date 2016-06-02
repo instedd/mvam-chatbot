@@ -4,20 +4,61 @@
 
 <br/>
 
-<p>Showing <%= messages.size %> of <%= message_count %></p>
-<ul class="list-group">
-<% messages.reverse.each do |message| %>
-  <li class="list-group-item">
-    <span class="<%= log_icon(message.kind) %>" aria-hidden="true"></span>
-    <span><%= message.text %></span>
-    <% if message.kind == MvamBot::Logs::QUERY && message.query_offset && message.query_offset.not_nil! > 0 %>
-    <span>[offset <%= message.query_offset %>]</span>
+<h2>Surveys</h2>
+
+<% if surveys.size == 0 %>
+<p>No surveys were run for this user.</p>
+<% else %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Timestamp</th>
+      <th>Completed?</th>
+      <% fields.each do |field| %>
+        <th><%= field %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% surveys.each do |survey| %>
+      <tr>
+        <td><%= survey.timestamp %></td>
+        <td><% if survey.completed %><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><% end %></td>
+        <% fields.each do |field| %>
+          <td><%= survey.data[field]? %></td>
+        <% end %>
+      </tr>
     <% end %>
-    <% if message.answer %>
-    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-    <span><%= message.kind == MvamBot::Logs::QUERY ? "#{message.answer_size} results" : message.answer %></span>
-    <% end %>
-    <span class="pull-right text-muted"><%= message.timestamp %></span>
-  </li>
+  </tbody>
+</table>
 <% end %>
-</ul>
+<br/>
+
+<h2>Messages</h2>
+<% if messages.size == message_count %>
+<p>Showing all <%= messages.size %> messages</p>
+<% else %>
+<p>Showing <%= messages.size %> of <%= message_count %> messages</p>
+<% end %>
+
+<% messages_by_day.keys.sort.reverse.each do |date| %>
+  <div class="panel panel-default">
+    <div class="panel-heading"><%= date.to_s("%F") %></div>
+    <ul class="list-group">
+    <% messages_by_day[date].reverse.each do |message| %>
+      <li class="list-group-item">
+        <span class="<%= log_icon(message.kind) %>" aria-hidden="true"></span>
+        <span><%= message.text %></span>
+        <% if message.kind == MvamBot::Logs::QUERY && message.query_offset && message.query_offset.not_nil! > 0 %>
+        <span>[offset <%= message.query_offset %>]</span>
+        <% end %>
+        <% if message.answer %>
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span><%= message.kind == MvamBot::Logs::QUERY ? "#{message.answer_size} results" : message.answer %></span>
+        <% end %>
+        <span class="pull-right text-muted"><%= message.timestamp %></span>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
