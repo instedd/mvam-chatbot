@@ -5,7 +5,6 @@
 /.env
 /.docker-env
 prices.csv
-positions.csv
 src/foo.cr
 docker-cloud.yml
 /mvam-bot

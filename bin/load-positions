@@ -1,26 +1,11 @@
 #! /usr/bin/env crystal
-
 require "csv"
 
 require "../src/mvam-bot/models/*"
-require "../src/mvam-bot/wit/*"
 require "../src/mvam-bot/*"
 
-DATA_URL = "http://static.jedi.sh/positions.csv"
-FILE_PATH = "positions.csv"
-
-def download_positions_csv
-  HTTP::Client.get(DATA_URL) do |response|
-    File.open(FILE_PATH, "w") do |file|
-      IO.copy(response.body_io, file)
-    end
-  end
-end
-
 def main
-  download_positions_csv if !File.exists?(FILE_PATH)
-
-  File.open(FILE_PATH, "r") do |file|
+  File.open("data/positions.csv", "r") do |file|
     CSV.new(file, headers: true) do |row|
       _, _, _, _, _, _, _, _, id, name, lat, lng = row
       puts "Updating position for location #{id} (#{name})"
