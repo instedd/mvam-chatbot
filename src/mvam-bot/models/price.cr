@@ -88,7 +88,7 @@ module MvamBot
 
         last_price = (history[1].price + history[2].price) / 2.0
 
-        price_trend = ((start.price / last_price - 1) * 100).round
+        price_trend = ((start.price / last_price - 1) * 100).round.to_i
         price_trend_description = if price_trend.abs == 0
           "has not changed"
         elsif price_trend > 0

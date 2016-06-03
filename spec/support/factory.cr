@@ -10,13 +10,13 @@ module MvamBot::Spec
 
     module DB
 
-      def self.user(id = 100000000, username = "jdoe", name = "John Doe")
-        MvamBot::User.create(id, username, name)
+      def self.user(id = 100000000, username = "jdoe", name = "John Doe", conversation_step = nil)
+        MvamBot::User.create(id, username, name, conversation_step: conversation_step)
       end
 
       # Algeria, Alger, Algiers
-      def self.user_with_location(id = 100000000, username = "jdoe", name = "John Doe", location_adm0_id = 4, location_adm1_id = 344, location_mkt_id = 1794)
-        MvamBot::User.create(id, username, name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id)
+      def self.user_with_location(id = 100000000, username = "jdoe", name = "John Doe", location_adm0_id = 4, location_adm1_id = 344, location_mkt_id = 1794, conversation_step = nil)
+        MvamBot::User.create(id, username, name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id, conversation_step: conversation_step)
       end
 
     end
