@@ -1,6 +1,9 @@
 module MvamBot
   class Geolocation
 
+    GPS_MATCH_LIMIT = 5
+    GPS_MATCH_RADIUS = 10
+
     getter user
     getter requestor
     getter message
@@ -107,7 +110,7 @@ module MvamBot
         request_location_adm0
       elsif matches.size > 1
         user.conversation_step = "location/gps_multiple_matches"
-        @requestor.answer_with_keyboard "Where would you like prices from?", matches.map(&.first.name)
+        @requestor.answer_with_keyboard "Which city you like information from?", matches.map(&.first.name)
       else
         mkt = matches[0][0]
         set_location_from_gps_match(mkt)
@@ -115,7 +118,7 @@ module MvamBot
     end
 
     def nearby_mkts(latitude, longitude)
-      MvamBot::Location::Mkt.around(latitude, longitude, count: 5, kilometers: 10)
+      MvamBot::Location::Mkt.around(latitude, longitude, count: GPS_MATCH_LIMIT, kilometers: GPS_MATCH_RADIUS)
     end
 
     def set_location_from_gps_match(mkt)

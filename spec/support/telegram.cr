@@ -25,9 +25,7 @@ module MvamBot::Spec
       JSON
 
       msg.tap do |m|
-        if location
-          m.location = TelegramBot::Location.from_json("{ \"latitude\": #{location[0]}, \"longitude\": #{location[1]} }")
-        end
+        m.location = TelegramBot::Location.from_json("{ \"latitude\": #{location[0]}, \"longitude\": #{location[1]} }") if location
       end
     end
 
@@ -45,10 +43,9 @@ module MvamBot::Spec
         "offset": "0"
       }
       JSON
+
       TelegramBot::InlineQuery.from_json(json).tap do |q|
-        if location
-          q.location = TelegramBot::Location.from_json("{ \"latitude\": #{location[0]}, \"longitude\": #{location[1]} }")
-        end
+        q.location = TelegramBot::Location.from_json("{ \"latitude\": #{location[0]}, \"longitude\": #{location[1]} }") if location
       end
     end
 

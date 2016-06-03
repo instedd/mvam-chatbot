@@ -4,7 +4,6 @@
 /.shards/
 /.env
 /.docker-env
-prices.csv
 src/foo.cr
 docker-cloud.yml
 /mvam-bot
