@@ -15,11 +15,11 @@ module MvamBot
     property :location_mkt_id
     property :location_lat
     property :location_lng
+    property :gps_timestamp
     property :conversation_step
     property :conversation_at
     property :conversation_session_id
     property :conversation_state
-    property :gps_timestamp
 
     @id : Int32
     @username : String?
@@ -29,14 +29,14 @@ module MvamBot
     @location_mkt_id : Int32?
     @location_lat : Float64?
     @location_lng : Float64?
+    @gps_timestamp : Time?
     @conversation_step : String?
     @conversation_at : Time?
     @conversation_session_id : String?
     @conversation_state : ConversationState
-    @gps_timestamp : Time?
 
-    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float64|Nil, Float64|Nil, String|Nil, Time|Nil, String|Nil, String|Nil, Time|Nil }
-    FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng conversation_step conversation_at conversation_session_id conversation_state gps_timestamp}
+    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float64|Nil, Float64|Nil, Time|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
+    FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng gps_timestamp conversation_step conversation_at conversation_session_id conversation_state}
 
     def initialize(@id : Int32,
                    @username : String? = nil,
@@ -46,11 +46,11 @@ module MvamBot
                    @location_mkt_id : Int32? = nil,
                    @location_lat : Float64? = nil,
                    @location_lng : Float64? = nil,
+                   @gps_timestamp : Time? = nil,
                    @conversation_step : String? = nil,
                    @conversation_at : Time? = nil,
                    @conversation_session_id : String? = nil,
-                   conversation_state_json : String? = nil,
-                   @gps_timestamp : Time? = nil)
+                   conversation_state_json : String? = nil)
        @conversation_state = ConversationState.new.tap do |state|
          if json = conversation_state_json
            JSON.parse(json).as_h.each do |key, value|
@@ -85,11 +85,11 @@ module MvamBot
     def update
       DB.exec("UPDATE users SET username = $1, name = $2, location_adm0_id = $3,
                location_adm1_id = $4, location_mkt_id = $5, location_lat = $6,
-               location_lng = $7, conversation_step = $8, conversation_at = $9,
-               conversation_session_id = $10, conversation_state = $11, gps_timestamp = $12
+               location_lng = $7, gps_timestamp = $8, conversation_step = $9, conversation_at = $10,
+               conversation_session_id = $11, conversation_state = $12
                WHERE id = $13",
                [@username, @name, @location_adm0_id, @location_adm1_id, @location_mkt_id,
-                @location_lat, @location_lng, @conversation_step, @conversation_at, @conversation_session_id, conversation_state_json, @gps_timestamp, @id])
+                @location_lat, @location_lng, @gps_timestamp, @conversation_step, @conversation_at, @conversation_session_id, conversation_state_json, @id])
     end
 
     def full_name
