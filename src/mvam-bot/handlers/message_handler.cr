@@ -25,6 +25,8 @@ module MvamBot
         handle_step_gps
       elsif user.conversation_step == "location/gps_multiple_matches"
         handle_step_gps_multiple_matches
+      elsif message.text =~ /^\/reset(.*)/
+        handle_reset($~[1])
       elsif user.conversation_step == "location/adm0"
         handle_step_location_adm0
       elsif user.conversation_step == "location/adm1"
@@ -49,6 +51,29 @@ module MvamBot
       user.conversation_step = "misunderstood/#{strike}"
       extra = strike > 2 ? " Send `/help` if you want more information on how I can be of assistance." : ""
       answer("Sorry, I did not understand what you just said.#{extra}")
+    end
+
+    def handle_reset(what)
+      what = what.strip
+      options = "session"
+      case what
+      when ""
+        return answer("Choose what attribute you want to reset from your user: #{options}.")
+      when "session"
+        user.conversation_step = nil
+        user.conversation_session_id = nil
+        user.conversation_state = nil
+        return answer("Your session has been reset.")
+      when "location"
+        user.location_adm0_id = nil
+        user.location_adm1_id = nil
+        user.location_mkt_id = nil
+        user.location_lat = nil
+        user.location_lng = nil
+        return answer("Your location has been reset.")
+      else
+        return answer("I do not know how to reset #{what}. You can choose between: #{options}.")
+      end
     end
 
     def handle_price(query)

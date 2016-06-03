@@ -27,10 +27,10 @@ module MvamBot
 
       # On queryPrice, set commodity
       case context["intent"]?
-      when WHO_IS
-        context["commodity"] = nil
       when QUERY_PRICE
         extract_value_into(entities, "commodity", context)
+      else
+        context.delete("commodity")
       end
 
       context
