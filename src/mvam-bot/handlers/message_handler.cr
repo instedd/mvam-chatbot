@@ -12,8 +12,9 @@ module MvamBot
     end
 
     def handle
-      return if message.text.nil? && message.location.nil?
-      MvamBot::Logs::Message.create(user.id, false, message.text, Time.utc_now)
+      return if message.text.nil? && message.location.nil? && message.photo.nil?
+      log = message.text || (message.photo ? "[photo]" : nil) || (message.location ? "[location]" : nil) || "empty"
+      MvamBot::Logs::Message.create(user.id, false, log, Time.utc_now)
 
       if message.text =~ /^\/price(.*)/
         handle_price($~[1])
@@ -28,7 +29,7 @@ module MvamBot
       elsif user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
         handle_survey($~[1], $~[2]?)
       elsif wit = wit_client
-        wit.converse(message.text.not_nil!)
+        wit.converse(message.text.not_nil!) if message.text
       else
         handle_not_understood
       end
@@ -148,6 +149,17 @@ module MvamBot
       bot.send_message message.chat.id, text, reply_markup: keyboard, parse_mode: "Markdown"
       user.conversation_at = Time.utc_now
       user.update if update_user
+    end
+
+    def download_photo(file_id : String, user_id : Int32? = nil)
+      # TODO: Download photo in a separate fiber to avoid blocking; check for issues with accessing the DB connection from there
+      file = bot.get_file(file_id)
+      raw = bot.download(file)
+      MvamBot.logger.debug("Downloaded photo #{file_id} for user #{user_id || "NULL"}")
+
+      # Use the telegram unique identifier as our own id
+      MvamBot::DataFile.create(id: file_id, user_id: user_id, extension: "jpg", data: raw.to_slice, kind: "image")
+      return file_id
     end
 
   end

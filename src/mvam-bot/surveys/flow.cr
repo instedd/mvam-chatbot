@@ -59,6 +59,7 @@ module MvamBot
         message: { type: Array(String), nilable: true },
         default: { type: Bool, default: false },
         store: { type: String, nilable: true },
+        photo: { type: Bool, default: false },
       })
 
     end

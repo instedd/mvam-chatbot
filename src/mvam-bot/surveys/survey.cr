@@ -31,19 +31,30 @@ module MvamBot
       end
 
       def handle(message)
-        # Try to handle the message directly without falling back to wit
-        if transition = state.transitions.find { |t| transition_applies?(t, message: message.text.not_nil!) }
-          run transition.target
-          return
+        # If the message has a photo, check for transitions on photos
+        if photos = message.photo
+          if transition = state.transitions.find { |t| transition_applies?(t, photos: photos) }
+            run transition.target
+            return
+          end
+        end
+
+        # Try to handle the message directly without falling back to wit using match on message
+        if text = message.text
+          if transition = state.transitions.find { |t| transition_applies?(t, message: message.text.not_nil!) }
+            run transition.target
+            return
+          end
         end
 
         # If there is not a transition by exact message, then ask wit for entities
         response = wit_understand(message.text.not_nil!)
         if transition = state.transitions.find { |t| transition_applies?(t, entities: response.entities) }
           run transition.target
-        elsif !state.final
-          MvamBot.logger.warn("No transition matched #{message} with #{response.inspect} at state #{state_id} for user #{user.id}")
+          return
         end
+
+        MvamBot.logger.warn("No transition matched #{message} with #{response.inspect} at state #{state_id} for user #{user.id}") unless state.final
       end
 
       def flow
@@ -69,6 +80,8 @@ module MvamBot
           else
             MvamBot.logger.error("Cannot transition to unset previous state from #{state_id} for user #{user.id}")
           end
+        elsif state == "none"
+          # Do nothing, and stay on the current state
         else
           run flow.states[state]
         end
@@ -104,6 +117,16 @@ module MvamBot
               data[key] = value
             end
           end
+        end
+      end
+
+      private def transition_applies?(transition, *, photos)
+        return nil if photos.size == 0
+        if transition_photo = transition.photo
+          MvamBot.logger.debug("Transition to #{transition.target} matched on photo")
+          telegram_file_id = (photos.find {|p| p.width >= 800} || photos.last).file_id
+          file_id = requestor.download_photo(telegram_file_id, user_id: user.id)
+          user.conversation_state[transition.store.not_nil!] = "photo://#{file_id}" if transition.store
         end
       end
 
