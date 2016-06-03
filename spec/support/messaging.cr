@@ -1,14 +1,26 @@
 module MvamBot::Spec
 
   class WitClient < ::MvamBot::WitClient
-    def initialize(user, requestor, &runner : (String, String, Wit::Actions -> Wit::State))
+    @runner : Proc(String, String, Wit::Actions, Wit::State)?
+
+    def initialize(user, requestor, messages : Hash(String, Wit::MessageResponse)? = nil)
       super("", user, requestor)
+      @messages = messages || Hash(String, Wit::MessageResponse).new
+    end
+
+    def initialize(user, requestor, messages : Hash(String, Wit::MessageResponse)? = nil, &runner : (String, String, Wit::Actions -> Wit::State))
+      super("", user, requestor)
+      @messages = messages || Hash(String, Wit::MessageResponse).new
       @runner = runner
     end
 
     protected def run_actions(message : String, session : String)
       actions = @app.actions
-      @runner.call(message, session, actions)
+      @runner.not_nil!.call(message, session, actions)
+    end
+
+    protected def get_message(message : String, session : String)
+      @messages.not_nil![message]
     end
   end
 
@@ -32,15 +44,16 @@ module MvamBot::Spec
     MessageHandler.new(message, user, bot)
   end
 
-  def handle_message(msg, user = nil, bot = nil, location : {Float64, Float64}? = nil)
+  def handle_message(msg, user = nil, bot = nil, messages = nil, location : {Float64, Float64}? = nil)
     handler = message_handler(msg, user, bot, location)
+    handler.wit_client = WitClient.new(handler.user, handler, messages)
     handler.handle
     handler.bot.as(Bot).messages
   end
 
-  def handle_message_with_wit(msg, user = nil, bot = nil, &wit : (String, String, Wit::Actions -> Wit::State))
+  def handle_message(msg, user = nil, bot = nil, messages = nil, &wit : (String, String, Wit::Actions -> Wit::State))
     handler = message_handler(msg, user, bot)
-    handler.wit_client = WitClient.new(user, handler, &wit)
+    handler.wit_client = WitClient.new(handler.user, handler, messages, &wit)
     handler.handle
     handler.bot.as(Bot).messages
   end

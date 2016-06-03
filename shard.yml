@@ -11,7 +11,7 @@ dependencies:
     github: will/crystal-pg
   wit:
     github: spalladino/wit-crystal
-    commit: 3a85511ab3c0b64c34cdf755310fca23c72f78de
+    version: 1.1.0
   micrate:
     github: juanedi/micrate
     branch: master

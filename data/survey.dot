@@ -1,0 +1,34 @@
+digraph survey_flow {
+	rankdir=LR;
+	size="40";
+	ask_age [ label = "ask_age
+How old are y
+ou?", shape = circle ];
+	ask_gender [ label = "ask_gender
+Are you a man
+ or a woman?
+", shape = circle ];
+	thank_you [ label = "thank_you
+Thank you for
+ your answer
+s.", shape = doublecircle ];
+	why [ label = "why
+We are asking
+ you and oth
+er people...
+", shape = circle ];
+	who [ label = "who
+I am a WFP bo
+t assistant,
+ for trac...
+", shape = circle ];
+	ask_age -> ask_gender [ label = "entity:wit/age_of_person", dir = forward ];
+	ask_age -> ask_gender [ label = "entity:wit/number", dir = forward ];
+	ask_age -> why [ label = "intent:WhySurvey", dir = both ];
+	ask_age -> who [ label = "intent:Whois", dir = both ];
+	ask_gender -> thank_you [ label = "entity:gender", dir = forward ];
+	ask_gender -> why [ label = "intent:WhySurvey", dir = both ];
+	ask_gender -> who [ label = "intent:Whois", dir = both ];
+	why -> who [ label = "intent:Whois", dir = both ];
+	who -> why [ label = "intent:WhySurvey", dir = both ];
+}
