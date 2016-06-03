@@ -34,7 +34,7 @@ describe ::MvamBot::Bot do
       messages.size.should eq(1)
       messages[0][:text].should eq("Are you a man or a woman?")
 
-      user.conversation_step.should eq("survey/ask_gender")
+      user.conversation_step.not_nil!.should contain("survey/ask_gender")
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
       responses.size.should eq(1)
@@ -102,6 +102,44 @@ describe ::MvamBot::Bot do
       responses[0].session_id.should eq("TEST_SESSION_ID")
       responses[0].data.should eq({ "gender" => "male", "age" => 30, "enough_food" => "Yes" })
       responses[0].completed.should eq(true)
+    end
+
+    it "should support asking why and then going back to the survey" do
+      DB.cleanup
+      bot = Bot.new
+
+      user = Factory::DB.user_with_location(conversation_step: "survey/ask_gender")
+      user.conversation_session_id = "TEST_SESSION_ID"
+      user.conversation_at = Time.utc_now
+
+      handle_message("Why?", user: user, bot: bot, messages: { "Why?" => response({"intent" => "AskWhy"}) })
+      messages = handle_message("Ok", user: user, bot: bot, messages: { "Ok" => response({"intent" => "AnswerYes"}) })
+
+      messages.size.should eq(2)
+      messages[0][:text].should contain("because we are tracking food security")
+      messages[1][:text].should contain("Are you a man or a woman?")
+
+      user.conversation_step.not_nil!.should contain("survey/ask_gender")
+    end
+
+    it "should support asking why and who and then going back to the survey" do
+      DB.cleanup
+      bot = Bot.new
+
+      user = Factory::DB.user_with_location(conversation_step: "survey/ask_gender")
+      user.conversation_session_id = "TEST_SESSION_ID"
+      user.conversation_at = Time.utc_now
+
+      handle_message("Why?", user: user, bot: bot, messages: { "Why?" => response({"intent" => "AskWhy"}) })
+      handle_message("And who are you?", user: user, bot: bot, messages: { "And who are you?" => response({"intent" => "AskWho"}) })
+      messages = handle_message("Ok", user: user, bot: bot, messages: { "Ok" => response({"intent" => "AnswerYes"}) })
+
+      messages.size.should eq(3)
+      messages[0][:text].should contain("because we are tracking food security")
+      messages[1][:text].should contain("WFP bot assistant")
+      messages[2][:text].should contain("Are you a man or a woman?")
+
+      user.conversation_step.not_nil!.should contain("survey/ask_gender")
     end
 
 

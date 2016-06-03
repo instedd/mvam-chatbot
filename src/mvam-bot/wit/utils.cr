@@ -3,7 +3,8 @@ module MvamBot
 
     QUERY_PRICE = "QueryPrice"
     SCHEDULE = "Schedule"
-    WHO_IS = "Whois"
+    ASK_WHO = "AskWho"
+    ASK_WHY = "AskWhy"
     ANSWER_YES = "AnswerYes"
     ANSWER_NO = "AnswerNo"
 
