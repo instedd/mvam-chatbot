@@ -8,10 +8,9 @@ def main
   File.open("data/positions.csv", "r") do |file|
     CSV.new(file, headers: true) do |row|
       _, _, _, _, _, _, _, _, id, name, lat, lng = row
-      puts "Updating position for location #{id} (#{name})"
       MvamBot::Location::Mkt.set_position(id, lat.to_f, lng.to_f)
     end
-    puts "Done!"
+    puts "Locations lat/lng updated!"
   end
 end
 
