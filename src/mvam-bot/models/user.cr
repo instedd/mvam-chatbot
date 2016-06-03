@@ -137,10 +137,15 @@ module MvamBot
       @gps_timestamp = nil
     end
 
-    def clear_location
+    def clear_administrative_location
       @location_adm0_id = nil
       @location_adm1_id = nil
       @location_mkt_id = nil
+    end
+
+    def clear_all_location_data
+      self.clear_administrative_location
+      self.clear_gps_data
     end
   end
 end
