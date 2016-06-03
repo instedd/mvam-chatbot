@@ -7,11 +7,14 @@ describe ::MvamBot::Geolocation do
   context "unknown gps position" do
     it "requests user GPS position" do
       DB.cleanup
-      messages = handle_message("/start location")
+      user = Factory::DB.user
+      messages = handle_message("/start location", user)
       messages.size.should eq(1)
 
       messages[0][:text].should eq("Would you mind sharing your current position with us?")
       reply_buttons(messages[0]).should eq(["Sure", "Not really"])
+
+      user.conversation_step.should eq("location/gps_request")
     end
 
     context "user accepts to share position" do
@@ -22,6 +25,8 @@ describe ::MvamBot::Geolocation do
         messages.size.should eq(1)
         messages[0][:text].should eq("What country do you live in?")
         reply_buttons(messages[0]).size.should eq(MvamBot::Location::Adm0.cache.size)
+
+        user.conversation_step.should eq("location/adm0")
       end
 
       it "uses closest location if there is a single close match" do
@@ -35,6 +40,15 @@ describe ::MvamBot::Geolocation do
         messages = handle_message("", user, location: {lat, lng})
         messages.size.should eq(1)
         messages[0][:text].should match(/I will send you food prices from Esquel/)
+
+        user.conversation_step.should eq(nil)
+
+        location_path = [user.location_adm0_id, user.location_adm1_id, user.location_mkt_id]
+        location_path.should eq([
+          Location.argentina.id,
+          Location.chubut.id,
+          Location.esquel.id
+        ])
       end
 
       it "asks user to choose if there are multiple close matches" do
@@ -49,6 +63,8 @@ describe ::MvamBot::Geolocation do
         messages.size.should eq(1)
         messages[0][:text].should eq("Where would you like prices from?")
         reply_buttons(messages[0]).should eq(["Vicente Lopez", "Olivos"])
+
+        user.conversation_step.should eq("location/gps_multiple_matches")
       end
     end
 
@@ -60,6 +76,8 @@ describe ::MvamBot::Geolocation do
         messages.size.should eq(1)
         messages[0][:text].should eq("What country do you live in?")
         reply_buttons(messages[0]).size.should eq(MvamBot::Location::Adm0.cache.size)
+
+        user.conversation_step.should eq("location/adm0")
       end
     end
   end
@@ -80,11 +98,13 @@ describe ::MvamBot::Geolocation do
           messages.size.should eq(1)
           messages[0][:text].should eq("Where would you like prices from?")
           reply_buttons(messages[0]).should eq(["Vicente Lopez", "Olivos"])
+
+          user.conversation_step.should eq("location/gps_multiple_matches")
         end
       end
 
       context "previous administrative location was assigned" do
-        # we asume that receiving a /start location msg when a recent gps
+        # we asume that receiving a '/location' msg when a recent gps
         # record is present means that the user wants to override our match
         it "starts step by step selection" do
           DB.cleanup
@@ -100,11 +120,10 @@ describe ::MvamBot::Geolocation do
           messages[0][:text].should eq("What country do you live in?")
           reply_buttons(messages[0]).size.should eq(MvamBot::Location::Adm0.all.size)
 
-          updated_user = MvamBot::User.find(user.id).not_nil!
-          updated_user.conversation_step.should eq("location/adm0")
-          updated_user.location_lat.should eq(nil)
-          updated_user.location_lng.should eq(nil)
-          updated_user.gps_timestamp.should eq(nil)
+          user.conversation_step.should eq("location/adm0")
+          user.location_lat.should eq(nil)
+          user.location_lng.should eq(nil)
+          user.gps_timestamp.should eq(nil)
         end
       end
     end
@@ -125,11 +144,10 @@ describe ::MvamBot::Geolocation do
         messages[0][:text].should eq("Would you mind sharing your current position with us?")
         reply_buttons(messages[0]).should eq(["Sure", "Not really"])
 
-        updated_user = MvamBot::User.find(user.id).not_nil!
-        updated_user.conversation_step.should eq("location/gps_request")
-        updated_user.location_lat.should eq(nil)
-        updated_user.location_lng.should eq(nil)
-        updated_user.gps_timestamp.should eq(nil)
+        user.conversation_step.should eq("location/gps_request")
+        user.location_lat.should eq(nil)
+        user.location_lng.should eq(nil)
+        user.gps_timestamp.should eq(nil)
       end
     end
   end
