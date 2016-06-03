@@ -75,11 +75,7 @@ module MvamBot
         user.conversation_state.clear
         return answer("Your session has been reset.")
       when "location"
-        user.location_adm0_id = nil
-        user.location_adm1_id = nil
-        user.location_mkt_id = nil
-        user.location_lat = nil
-        user.location_lng = nil
+        user.clear_all_location_data
         return answer("Your location has been reset.")
       else
         return answer("I do not know how to reset #{what}. You can choose between: #{options}.")
