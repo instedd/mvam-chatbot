@@ -7,8 +7,16 @@ module MvamBot::Spec
     end
 
     getter messages
+    getter query_replies
 
     @messages = Array({chat_id: Int32 | String, text: String, parse_mode: String?, disable_web_page_preview: Bool?, disable_notification: Bool?, reply_to_message_id: Int32?, reply_markup: TelegramBot::Bot::ReplyMarkup}).new
+    @query_replies = Array({inline_query_id: String, results: Array(TelegramBot::InlineQueryResult), cache_time: Int32?, is_personal: Bool?, next_offset: String?, switch_pm_text: String?, switch_pm_parameter: String?}).new
+
+    @files = Hash(String, TelegramBot::File).new
+
+    def fake(photo : String)
+      @files[photo] = TelegramBot::File.from_json(%({"file_id": "#{photo}", "file_path": "#{photo}"}))
+    end
 
     def send_message(chat_id : Int32 | String,
                      text : String,
@@ -21,10 +29,6 @@ module MvamBot::Spec
       nil
     end
 
-    getter query_replies
-
-    @query_replies = Array({inline_query_id: String, results: Array(TelegramBot::InlineQueryResult), cache_time: Int32?, is_personal: Bool?, next_offset: String?, switch_pm_text: String?, switch_pm_parameter: String?}).new
-
     def answer_inline_query(inline_query_id : String,
                             results : Array(TelegramBot::InlineQueryResult),
                             cache_time : Int32? = nil,
@@ -35,6 +39,19 @@ module MvamBot::Spec
       @query_replies << { inline_query_id: inline_query_id, results: results.map &.as(TelegramBot::InlineQueryResult), cache_time: cache_time, is_personal: is_personal, next_offset: next_offset, switch_pm_text: switch_pm_text, switch_pm_parameter: switch_pm_parameter }
       nil
     end
+
+    def get_file(file_id : String) : TelegramBot::File
+      @files[file_id]
+    end
+
+    def download(file_path : String)
+      if @files.has_key?(file_path)
+        "#{file_path}/content"
+      else
+        raise "FileNotFound"
+      end
+    end
+
   end
 
 end

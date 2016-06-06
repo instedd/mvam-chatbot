@@ -60,6 +60,7 @@ module MvamBot
         default: { type: Bool, default: false },
         store: { type: String, nilable: true },
         photo: { type: Bool, default: false },
+        say: { type: String, nilable: true }
       })
 
     end

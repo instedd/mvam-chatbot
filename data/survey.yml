@@ -1,7 +1,7 @@
 states:
 
   ask_age:
-
+    initial: true
     say: How old are you?
     transitions:
       - entity: number
@@ -29,27 +29,27 @@ states:
       - Yes
       - No
     transitions:
-      - target: thank_you
+      - target: ask_roof_photo
         message: ["Yes", "No"]
         store: enough_food
-      - target: thank_you
+      - target: ask_roof_photo
         intent: AnswerNo
         store: enough_food
-      - target: thank_you
+      - target: ask_roof_photo
         intent: AnswerYes
         store: enough_food
 
   ask_roof_photo:
-    initial: true
-    say: Would you mind sending me a picture of your roof?
+    say: Would you please send me a picture of your roof?
     transitions:
       - target: thank_you
-        say: Got it
         photo: true
         store: roof_photo
       - target: thank_you
         say: No problem
         intent: AnswerNo
+      - target: none
+        intent: AnswerYes
 
   thank_you:
     say: That would be all, thank you for your answers!

@@ -34,7 +34,7 @@ module MvamBot
         # If the message has a photo, check for transitions on photos
         if photos = message.photo
           if transition = state.transitions.find { |t| transition_applies?(t, photos: photos) }
-            run transition.target
+            run transition: transition
             return
           end
         end
@@ -42,7 +42,7 @@ module MvamBot
         # Try to handle the message directly without falling back to wit using match on message
         if text = message.text
           if transition = state.transitions.find { |t| transition_applies?(t, message: message.text.not_nil!) }
-            run transition.target
+            run transition: transition
             return
           end
         end
@@ -50,7 +50,7 @@ module MvamBot
         # If there is not a transition by exact message, then ask wit for entities
         response = wit_understand(message.text.not_nil!)
         if transition = state.transitions.find { |t| transition_applies?(t, entities: response.entities) }
-          run transition.target
+          run transition: transition
           return
         end
 
@@ -71,6 +71,14 @@ module MvamBot
 
       protected def wit_understand(message)
         @requestor.wit_client.not_nil!.understand(message)
+      end
+
+      private def run(transition : FlowTransition)
+        # TODO: Support multiple requests when responding on telegram request
+        # if say = transition.say
+        #   @requestor.answer(say, update_user: false)
+        # end
+        run transition.target
       end
 
       private def run(state : String)

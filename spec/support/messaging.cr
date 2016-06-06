@@ -37,22 +37,31 @@ module MvamBot::Spec
     end
   end
 
-  def message_handler(msg, user = nil, bot = nil, location = nil)
+  def message_handler(msg, user = nil, bot = nil, photo = nil, location = nil)
     bot ||= Bot.new
-    message = Telegram.message(msg, location: location)
-    user = user || Factory::DB.user
+    bot.fake(photo: photo) if photo
+
+    message = if photo
+      Telegram.photo(photo, location: location)
+    elsif msg
+      Telegram.message(msg, location: location)
+    else
+      Telegram.message("", location: location)
+    end
+
+    user = user || Factory::DB.user()
     MessageHandler.new(message, user, bot)
   end
 
-  def handle_message(msg, user = nil, bot = nil, messages = nil, location : {Float64, Float64}? = nil)
-    handler = message_handler(msg, user, bot, location)
+  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, photo : String? = nil, location : {Float64, Float64}? = nil)
+    handler = message_handler(msg, user, bot, photo: photo, location: location)
     handler.wit_client = WitClient.new(handler.user, handler, messages)
     handler.handle
     handler.bot.as(Bot).messages
   end
 
-  def handle_message(msg, user = nil, bot = nil, messages = nil, &wit : (String, String, Wit::Actions -> Wit::State))
-    handler = message_handler(msg, user, bot)
+  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, photo = nil, location : {Float64, Float64}? = nil, &wit : (String, String, Wit::Actions -> Wit::State))
+    handler = message_handler(msg, user, bot, photo: photo, location: location)
     handler.wit_client = WitClient.new(handler.user, handler, messages, &wit)
     handler.handle
     handler.bot.as(Bot).messages
