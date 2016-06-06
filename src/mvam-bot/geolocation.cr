@@ -122,11 +122,9 @@ module MvamBot
     end
 
     def set_location_from_gps_match(mkt)
-      mkt_id, adm1_id, adm0_id = MvamBot::Location::Mkt.full_path(mkt.id).map(&.first)
-
-      user.location_adm0_id = adm0_id
-      user.location_adm1_id = adm1_id
-      user.location_mkt_id = mkt_id
+      user.location_adm0_id = mkt.adm0_id
+      user.location_adm1_id = mkt.adm1_id
+      user.location_mkt_id = mkt.id
 
       user.conversation_step = nil
       @requestor.answer_location_complete(mkt)

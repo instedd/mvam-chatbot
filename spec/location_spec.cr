@@ -11,13 +11,6 @@ describe ::MvamBot::Location do
       location.lat.not_nil!.should be_close(-10.0, 0.001)
       location.lng.not_nil!.should be_close(39.7167, 0.001)
     end
-
-    it "provides mkt full path" do
-      location = MvamBot::Location::Mkt.find_by_name("Musoma", 48366).not_nil!
-      
-      path = MvamBot::Location::Mkt.full_path(location.id).map &.last
-      path.should eq(["Musoma", "Mara", "United Republic of Tanzania"])
-    end
   end
 
   it "allows to query mkts around a point" do

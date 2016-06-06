@@ -48,8 +48,7 @@ module MvamBot
         mkt, distance = near_locations[0]
         user.location_mkt_id = mkt.id
         user.location_adm1_id = mkt.adm1_id
-        # TODO: save adm0_id in mkt?
-        user.location_adm0_id = Location::Adm1.find(mkt.adm1_id).adm0_id
+        user.location_adm0_id = mkt.adm0_id
       end
       user.update
     end

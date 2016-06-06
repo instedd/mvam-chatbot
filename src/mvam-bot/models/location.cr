@@ -82,20 +82,20 @@ module MvamBot
       end
     end
 
-    record Mkt, id : Int32, name : String, adm1_id : Int32, lat : Float64?, lng : Float64? do
+    record Mkt, id : Int32, name : String, adm1_id : Int32, adm0_id : Int32, lat : Float64?, lng : Float64? do
       @@cache : Hash(Int32, Mkt)?
 
       def self.cache
         @@cache ||= self.all.index_by(&.id)
       end
 
-      def self.create(id : Int, name : String, adm1_id : Int)
-        DB.exec("INSERT INTO locations_mkt (id, name, location_adm1_id) VALUES ($1, $2, $3)", [id, name, adm1_id])
+      def self.create(id : Int, name : String, adm1_id : Int, adm0_id : Int)
+        DB.exec("INSERT INTO locations_mkt (id, name, location_adm1_id, location_adm0_id) VALUES ($1, $2, $3, $4)", [id, name, adm1_id, adm0_id])
       end
 
-      def self.create(id : Int, name : String, adm1_id : Int, position : {Float64, Float64})
+      def self.create(id : Int, name : String, adm1_id : Int, adm0_id : Int, position : {Float64, Float64})
         lat, lng = position
-        DB.exec("INSERT INTO locations_mkt (id, name, location_adm1_id, position) VALUES ($1, $2, $3, ST_GeomFromText('SRID=4326;POINT(' || $4 || ' ' || $5 || ')'))", [id, name, adm1_id, lat, lng])
+        DB.exec("INSERT INTO locations_mkt (id, name, location_adm1_id, location_adm0_id, position) VALUES ($1, $2, $3, $4, ST_GeomFromText('SRID=4326;POINT(' || $5 || ' ' || $6 || ')'))", [id, name, adm1_id, adm0_id, lat, lng])
       end
 
       def self.all
@@ -117,18 +117,18 @@ module MvamBot
       end
 
       def self.select(condition = nil, params = Array(PG::PGValue).new(0))
-        DB.exec({Int32, String, Int32, Float64|Nil, Float64|Nil}, "SELECT id, name, location_adm1_id, ST_Y(position), ST_X(position) FROM locations_mkt #{condition}", params).rows.map{ |row| self.new(*row) }
+        DB.exec({Int32, String, Int32, Int32, Float64|Nil, Float64|Nil}, "SELECT id, name, location_adm1_id, location_adm0_id, ST_Y(position), ST_X(position) FROM locations_mkt #{condition}", params).rows.map{ |row| self.new(*row) }
       end
 
       def self.around(lat : Float64, lng : Float64, count = 5, kilometers = 200) : Array({Location::Mkt, Float64})
-        query = "SELECT id, name, location_adm1_id, ST_Y(position), ST_X(position), (ST_Distance(position::geography, ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')')) / 1000) AS distance"\
+        query = "SELECT id, name, location_adm1_id, location_adm0_id, ST_Y(position), ST_X(position), (ST_Distance(position::geography, ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')')) / 1000) AS distance"\
                 " FROM locations_mkt"\
                 " WHERE (ST_Distance(position::geography, ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')')) / 1000) < $3"\
                 " ORDER BY distance LIMIT $4;"
 
-        DB.exec({Int32, String, Int32, Float64, Float64, Float64}, query, [lng, lat, kilometers, count]).rows.map do |row|
-          id, name, location_adm1_id, lat, lng, distance = row
-          {self.new(id, name, location_adm1_id, lat, lng), distance}
+        DB.exec({Int32, String, Int32, Int32, Float64, Float64, Float64}, query, [lng, lat, kilometers, count]).rows.map do |row|
+          id, name, location_adm1_id, location_adm0_id, lat, lng, distance = row
+          {self.new(id, name, location_adm1_id, location_adm0_id, lat, lng), distance}
         end
       end
 
@@ -136,19 +136,6 @@ module MvamBot
         DB.exec("UPDATE locations_mkt SET position = ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')') WHERE id = $3", [lng, lat, id])
       end
 
-      def self.full_path(id : Int32)
-        query = "SELECT mkt.id, mkt.name, adm1.id, adm1.name, adm0.id, adm0.name"\
-                " FROM locations_mkt mkt"\
-                " INNER JOIN locations_adm1 adm1"\
-                " ON mkt.location_adm1_id = adm1.id"\
-                " INNER JOIN locations_adm0 adm0"\
-                " ON adm1.location_adm0_id = adm0.id"\
-                " WHERE mkt.id = $1;"
-
-        row = DB.exec({Int32, String, Int32, String, Int32, String}, query, [id]).rows.first
-        mkt_id, mkt_name, adm1_id, adm1_name, adm0_id, adm0_name =  row
-        [{mkt_id, mkt_name}, {adm1_id, adm1_name}, {adm0_id, adm0_name}]
-      end
     end
 
   end

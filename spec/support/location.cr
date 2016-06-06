@@ -9,9 +9,9 @@ module MvamBot::Spec
       ::MvamBot::Location::Adm1.create(10000000, "Buenos Aires", argentina.id)
       ::MvamBot::Location::Adm1.create(10000001, "Chubut", argentina.id)
 
-      ::MvamBot::Location::Mkt.create(10000000, "Vicente Lopez", buenos_aires.id, {-34.528304, -58.473009})
-      ::MvamBot::Location::Mkt.create(10000001, "Olivos", buenos_aires.id, {-34.510636, -58.496459})
-      ::MvamBot::Location::Mkt.create(10000002, "Esquel", chubut.id, {-42.909863, -71.314188})
+      ::MvamBot::Location::Mkt.create(10000000, "Vicente Lopez", buenos_aires.id, argentina.id, {-34.528304, -58.473009})
+      ::MvamBot::Location::Mkt.create(10000001, "Olivos", buenos_aires.id, argentina.id, {-34.510636, -58.496459})
+      ::MvamBot::Location::Mkt.create(10000002, "Esquel", chubut.id, argentina.id, {-42.909863, -71.314188})
     end
 
     def self.delete_test_locations
