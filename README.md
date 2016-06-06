@@ -48,13 +48,7 @@ openssl req -newkey rsa:2048 -sha256 -nodes -keyout cert.key -x509 -days 365 -ou
 
 ### Wit.ai application
 
-An application that should be able to identify the following intents:
-* Whois: questions on the nature of the bot, such as "who are you?"
-* QueryPrice: a request for the price of a commodity; should provide a `commodity` entity, and invoke a `show-price` action
-
-The following custom actions should be handled:
-* `show-price`: send the user a message with the price of the `commodity` entity
-* `not-understood`: default action executed when no intent can be determined
+An application that should be able to identify the required entities and intents.
 
 The `commodity` entity can be seeded with all the WFP DB prices by running `bin/upload-entities`.
 

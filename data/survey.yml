@@ -7,9 +7,9 @@ states:
       - entity: number
         target: ask_gender
         store: age
-      - intent: WhySurvey
+      - intent: AskWhy
         target: why
-      - intent: Whois
+      - intent: AskWho
         target: who
 
   ask_gender:
@@ -18,9 +18,9 @@ states:
       - entity: gender
         target: ask_enough_food
         store: gender
-      - intent: WhySurvey
+      - intent: AskWhy
         target: why
-      - intent: Whois
+      - intent: AskWho
         target: who
 
   ask_enough_food:
@@ -45,19 +45,25 @@ states:
 
   why:
     say: We are asking you and other people in your community this information because we are tracking food security in your region.
+    transient: true
     transitions:
       - target: back
         after: 5
-      - intent: Whois
+      - target: back
+        intent: AnswerYes
+      - intent: AskWho
         target: who
 
   who:
     say: I am a WFP bot assistant, for tracking food security in your region.
+    transient: true
     transitions:
       - target: back
         after: 5
-      - intent: WhySurvey
+      - intent: AskWhy
         target: why
+      - target: back
+        intent: AnswerYes
 
 data:
   - age

@@ -25,8 +25,8 @@ module MvamBot
         handle_reset($~[1])
       elsif message.text == "/start"
         handle_start
-      elsif user.conversation_step =~ /^survey\/(.*)/
-        handle_survey($~[1])
+      elsif user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
+        handle_survey($~[1], $~[2]?)
       elsif wit = wit_client
         wit.converse(message.text.not_nil!)
       else
@@ -47,8 +47,8 @@ module MvamBot
       answer("Sorry, I did not understand what you just said.#{extra}")
     end
 
-    def handle_survey(step)
-      MvamBot::Surveys::Survey.new(user, self, state_id: step).handle(message)
+    def handle_survey(step, previous)
+      MvamBot::Surveys::Survey.new(user, self, state_id: step, previous_state_id: previous).handle(message)
     end
 
     def geolocation

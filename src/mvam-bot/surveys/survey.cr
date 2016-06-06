@@ -14,7 +14,7 @@ module MvamBot
       getter requestor
       getter state_id
 
-      def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler, @state_id : String? = nil)
+      def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler, @state_id : String? = nil, @previous_state_id : String? = nil)
       end
 
       def start
@@ -33,14 +33,14 @@ module MvamBot
       def handle(message)
         # Try to handle the message directly without falling back to wit
         if transition = state.transitions.find { |t| transition_applies?(t, message: message.text.not_nil!) }
-          run(flow.states[transition.target])
+          run transition.target
           return
         end
 
         # If there is not a transition by exact message, then ask wit for entities
         response = wit_understand(message.text.not_nil!)
         if transition = state.transitions.find { |t| transition_applies?(t, entities: response.entities) }
-          run(flow.states[transition.target])
+          run transition.target
         elsif !state.final
           MvamBot.logger.warn("No transition matched #{message} with #{response.inspect} at state #{state_id} for user #{user.id}")
         end
@@ -62,23 +62,38 @@ module MvamBot
         @requestor.wit_client.not_nil!.understand(message)
       end
 
-      private def run(state)
-        if say = state.say
-          if options = state.options
+      private def run(state : String)
+        if state == "back"
+          if @previous_state_id
+            run flow.states[@previous_state_id]
+          else
+            MvamBot.logger.error("Cannot transition to unset previous state from #{state_id} for user #{user.id}")
+          end
+        else
+          run flow.states[state]
+        end
+      end
+
+      private def run(to_state : FlowState)
+        if say = to_state.say
+          if options = to_state.options
             requestor.answer_with_keyboard(say, options, update_user: false)
           else
             requestor.answer(say, update_user: false)
           end
         end
 
-        if state.final
+        if to_state.final
           user.conversation_step = nil
-          MvamBot.logger.info("Survey completed at state #{state.id} for user #{user.id}")
+          MvamBot.logger.info("Survey completed at state #{to_state.id} for user #{user.id}")
         else
-          user.conversation_step = "survey/#{state.id}"
+          # Store current state and previous not-transient state
+          previous_id = (state_id && state.transient) ? @previous_state_id : state_id
+          query = previous_id ? "?from=#{previous_id}" : ""
+          user.conversation_step = "survey/#{to_state.id}#{query}"
         end
 
-        SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: state.final)
+        SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final)
         user.update
       end
 
