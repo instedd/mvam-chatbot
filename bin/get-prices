@@ -1,6 +1,6 @@
 #! /bin/bash
 
-WFP_LOCAL_FILE=`basename $WFP_DATA_URL`
+WFP_LOCAL_FILE=${WFP_LOCAL_FILE:-`basename $WFP_DATA_URL`}
 
 if [ ! -f "$WFP_LOCAL_FILE" ]
 then
