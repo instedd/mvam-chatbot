@@ -18,6 +18,8 @@ module MvamBot
 
       if message.text =~ /^\/price(.*)/
         handle_price($~[1])
+      elsif message.text =~ /^\/echo(.*)/
+          handle_echo($~[1])
       elsif message.text == "/help"
         handle_help
       elsif MvamBot::Geolocation.handles? user, message
@@ -54,6 +56,12 @@ module MvamBot
 
     def geolocation
       MvamBot::Geolocation.new(user, self)
+    end
+
+    def handle_echo(echo)
+      echo = echo.strip
+      msg = echo.empty? ? Time.utc_now.to_s : "#{echo} on #{Time.utc_now}"
+      answer msg
     end
 
     def handle_start
