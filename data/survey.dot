@@ -8,6 +8,11 @@ ou?", shape = circle ];
 Are you a man
  or a woman?
 ", shape = circle ];
+	ask_enough_food [ label = "ask_enough_food
+In the past s
+even days, w
+ere there...
+", shape = circle ];
 	thank_you [ label = "thank_you
 Thank you for
  your answer
@@ -22,13 +27,15 @@ I am a WFP bo
 t assistant,
  for trac...
 ", shape = circle ];
-	ask_age -> ask_gender [ label = "entity:wit/age_of_person", dir = forward ];
-	ask_age -> ask_gender [ label = "entity:wit/number", dir = forward ];
-	ask_age -> why [ label = "intent:WhySurvey", dir = both ];
-	ask_age -> who [ label = "intent:Whois", dir = both ];
-	ask_gender -> thank_you [ label = "entity:gender", dir = forward ];
-	ask_gender -> why [ label = "intent:WhySurvey", dir = both ];
-	ask_gender -> who [ label = "intent:Whois", dir = both ];
-	why -> who [ label = "intent:Whois", dir = both ];
-	who -> why [ label = "intent:WhySurvey", dir = both ];
+	ask_age -> ask_gender [ label = "entity:number", dir = forward ];
+	ask_age -> why [ label = "intent:AskWhy", dir = both ];
+	ask_age -> who [ label = "intent:AskWho", dir = both ];
+	ask_gender -> ask_enough_food [ label = "entity:gender", dir = forward ];
+	ask_gender -> why [ label = "intent:AskWhy", dir = both ];
+	ask_gender -> who [ label = "intent:AskWho", dir = both ];
+	ask_enough_food -> thank_you [ label = "", dir = forward ];
+	ask_enough_food -> thank_you [ label = "intent:AnswerNo", dir = forward ];
+	ask_enough_food -> thank_you [ label = "intent:AnswerYes", dir = forward ];
+	why -> who [ label = "intent:AskWho", dir = both ];
+	who -> why [ label = "intent:AskWhy", dir = both ];
 }
