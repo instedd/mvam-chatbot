@@ -65,9 +65,10 @@ module MvamBot
     end
 
     def handle_reset(what)
-      what = what.strip
-      options = "session"
-      case what
+      what = what.strip.split(" ")
+      command, params = what[0], what[1..-1]
+      options = "session, location, step"
+      case command
       when ""
         return answer("Choose what attribute you want to reset from your user: #{options}.")
       when "session"
@@ -78,8 +79,12 @@ module MvamBot
       when "location"
         user.clear_all_location_data
         return answer("Your location has been reset.")
+      when "step"
+        user.ensure_session_id
+        user.conversation_step = "survey/#{params[0]}"
+        return answer("Your survey has been set to `#{params[0]}`.")
       else
-        return answer("I do not know how to reset #{what}. You can choose between: #{options}.")
+        return answer("I do not know how to reset #{command}. You can choose between: #{options}.")
       end
     end
 
