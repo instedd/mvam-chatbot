@@ -85,15 +85,15 @@ describe ::MvamBot::Bot do
       DB.cleanup
       bot = Bot.new
 
-      user = Factory::DB.user_with_location(conversation_step: "survey/ask_enough_food")
+      user = Factory::DB.user_with_location(conversation_step: "survey/ask_roof_photo")
       user.conversation_state["age"] = 30i64
       user.conversation_state["gender"] = "male"
+      user.conversation_state["enough_food"] = "Yes"
       user.conversation_session_id = "TEST_SESSION_ID"
       user.conversation_at = Time.utc_now
 
-      messages = handle_message("Yes", user: user, bot: bot)
-      messages.size.should eq(1)
-      messages[0][:text].should contain("Thank you for your answers")
+      messages = handle_message("No", user: user, bot: bot, messages: { "No" => response({"intent" => "AnswerNo"}) })
+      messages.last[:text].downcase.should contain("thank you for your answers")
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
       responses.size.should eq(1)
@@ -140,6 +140,69 @@ describe ::MvamBot::Bot do
       messages[2][:text].should contain("Are you a man or a woman?")
 
       user.conversation_step.not_nil!.should contain("survey/ask_gender")
+    end
+
+    it "should support a picture upload" do
+      DB.cleanup
+      bot = Bot.new
+
+      user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+      messages = handle_message(photo: "myphoto", user: user, bot: bot)
+
+      messages.size.should eq(1)
+      messages[0][:text].downcase.should contain("thank you for your answers")
+
+      responses = MvamBot::SurveyResponse.for_user(user.id)
+      responses.size.should eq(1)
+      responses[0].user_id.should eq(user.id)
+      responses[0].data.should eq({ "roof_photo" => "photo://myphoto" })
+
+      file = MvamBot::DataFile.find("myphoto").not_nil!
+      file.id.should eq("myphoto")
+      file.user_id.should eq(user.id)
+      file.kind.should eq("image")
+      file.extension.should eq("jpg")
+      file.data.should_not eq(nil)
+    end
+
+    it "should support refusing uploading a picture" do
+      DB.cleanup
+      bot = Bot.new
+
+      user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+      messages = handle_message("no", user: user, bot: bot, messages: { "no" => response({"intent" => "AnswerNo"}) })
+
+      messages.size.should eq(2)
+      messages[0][:text].should contain("No problem")
+      messages[1][:text].downcase.should contain("thank you for your answers")
+
+      responses = MvamBot::SurveyResponse.for_user(user.id)
+      responses.size.should eq(1)
+      responses[0].data.should eq({} of String => String)
+    end
+
+    it "should support a picture upload after a confirmation" do
+      DB.cleanup
+      bot = Bot.new
+
+      user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+      handle_message("sure", user: user, bot: bot, messages: { "sure" => response({"intent" => "AnswerYes"}) })
+      messages = handle_message(photo: "myphoto", user: user, bot: bot)
+
+      messages.size.should eq(1)
+      messages[0][:text].downcase.should contain("thank you for your answers")
+
+      responses = MvamBot::SurveyResponse.for_user(user.id)
+      responses.size.should eq(1)
+      responses[0].user_id.should eq(user.id)
+      responses[0].data.should eq({ "roof_photo" => "photo://myphoto" })
+
+      file = MvamBot::DataFile.find("myphoto").not_nil!
+      file.id.should eq("myphoto")
+      file.user_id.should eq(user.id)
+      file.kind.should eq("image")
+      file.extension.should eq("jpg")
+      file.data.should_not eq(nil)
     end
 
 

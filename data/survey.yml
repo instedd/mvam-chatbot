@@ -29,18 +29,30 @@ states:
       - Yes
       - No
     transitions:
-      - target: thank_you
+      - target: ask_roof_photo
         message: ["Yes", "No"]
         store: enough_food
-      - target: thank_you
+      - target: ask_roof_photo
         intent: AnswerNo
         store: enough_food
-      - target: thank_you
+      - target: ask_roof_photo
         intent: AnswerYes
         store: enough_food
 
+  ask_roof_photo:
+    say: Would you please send me a picture of your roof?
+    transitions:
+      - target: thank_you
+        photo: true
+        store: roof_photo
+      - target: thank_you
+        say: No problem
+        intent: AnswerNo
+      - target: none
+        intent: AnswerYes
+
   thank_you:
-    say: Thank you for your answers.
+    say: That would be all, thank you for your answers!
     final: true
 
   why:
@@ -69,6 +81,7 @@ data:
   - age
   - gender
   - enough_food
+  - roof_photo
 
 # deprecated:
 #

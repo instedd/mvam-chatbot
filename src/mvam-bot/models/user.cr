@@ -7,33 +7,19 @@ module MvamBot
 
     alias ConversationState = Hash(String, Bool | Float64 | Int64 | String | Nil)
 
-    property :id
-    property :username
-    property :name
-    property :location_adm0_id
-    property :location_adm1_id
-    property :location_mkt_id
-    property :location_lat
-    property :location_lng
-    property :gps_timestamp
-    property :conversation_step
-    property :conversation_at
-    property :conversation_session_id
-    property :conversation_state
-
-    @id : Int32
-    @username : String?
-    @name : String?
-    @location_adm0_id : Int32?
-    @location_adm1_id : Int32?
-    @location_mkt_id : Int32?
-    @location_lat : Float64?
-    @location_lng : Float64?
-    @gps_timestamp : Time?
-    @conversation_step : String?
-    @conversation_at : Time?
-    @conversation_session_id : String?
-    @conversation_state : ConversationState
+    property id : Int32
+    property username : String?
+    property name : String?
+    property location_adm0_id : Int32?
+    property location_adm1_id : Int32?
+    property location_mkt_id : Int32?
+    property location_lat : Float64?
+    property location_lng : Float64?
+    property gps_timestamp : Time?
+    property conversation_step : String?
+    property conversation_at : Time?
+    property conversation_session_id : String?
+    property conversation_state : ConversationState
 
     FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float64|Nil, Float64|Nil, Time|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
     FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng gps_timestamp conversation_step conversation_at conversation_session_id conversation_state}
@@ -77,9 +63,12 @@ module MvamBot
       User.new(*(result.rows[0]))
     end
 
-    def self.create(id : Int32, username : String?, name : String?, location_adm0_id : Int32? = nil, location_adm1_id : Int32? = nil, location_mkt_id : Int32? = nil, conversation_step : String? = nil)
-      DB.exec("INSERT INTO users (id, username, name, location_adm0_id, location_adm1_id, location_mkt_id, conversation_step) VALUES ($1, $2, $3, $4, $5, $6, $7)", [id, username, name, location_adm0_id, location_adm1_id, location_mkt_id, conversation_step])
-      User.new(id, username, name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id, conversation_step: conversation_step)
+    def self.create(id : Int32, username : String? = nil, name : String? = nil, location_adm0_id : Int32? = nil, location_adm1_id : Int32? = nil, location_mkt_id : Int32? = nil, location_lat : Float64? = nil, location_lng : Float64? = nil, gps_timestamp : Time? = nil, conversation_step : String? = nil, conversation_at : Time? = nil, conversation_session_id : String? = nil, conversation_state : ConversationState = ConversationState.new)
+      DB.exec(
+        "INSERT INTO users (#{FIELD_NAMES.join(", ")})
+        VALUES (#{FIELD_NAMES.size.times.map {|i| "$#{i+1}"}.join(", ")})",
+        [id, username, name, location_adm0_id, location_adm1_id, location_mkt_id, location_lat, location_lng, gps_timestamp, conversation_step, conversation_at, conversation_session_id, conversation_state.to_json])
+      User.new(id: id, username: username, name: name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id, location_lat: location_lat, location_lng: location_lng, gps_timestamp: gps_timestamp, conversation_step: conversation_step, conversation_at: conversation_at, conversation_session_id: conversation_session_id, conversation_state_json: conversation_state.to_json)
     end
 
     def update

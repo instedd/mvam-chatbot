@@ -25,7 +25,15 @@
         <td><%= survey.timestamp %></td>
         <td><% if survey.completed %><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><% end %></td>
         <% fields.each do |field| %>
-          <td><%= survey.data[field]? %></td>
+          <td>
+            <% if value = survey.data[field]? %>
+              <% if value =~ /photo:\/\/(.+)/ %>
+                <a class="glyphicon glyphicon-download-alt" href="/files/<%= $~[1] %>"></a>
+              <% else %>
+                <%= value %>
+              <% end %>
+            <% end %>
+          </td>
         <% end %>
       </tr>
     <% end %>

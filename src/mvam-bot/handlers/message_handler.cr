@@ -12,11 +12,14 @@ module MvamBot
     end
 
     def handle
-      return if message.text.nil? && message.location.nil?
-      MvamBot::Logs::Message.create(user.id, false, message.text, Time.utc_now)
+      return if message.text.nil? && message.location.nil? && message.photo.nil?
+      log = message.text || (message.photo ? "[photo]" : nil) || (message.location ? "[location]" : nil) || "empty"
+      MvamBot::Logs::Message.create(user.id, false, log, Time.utc_now)
 
       if message.text =~ /^\/price(.*)/
         handle_price($~[1])
+      elsif message.text =~ /^\/echo(.*)/
+          handle_echo($~[1])
       elsif message.text == "/help"
         handle_help
       elsif MvamBot::Geolocation.handles? user, message
@@ -28,7 +31,7 @@ module MvamBot
       elsif user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
         handle_survey($~[1], $~[2]?)
       elsif wit = wit_client
-        wit.converse(message.text.not_nil!)
+        wit.converse(message.text.not_nil!) if message.text
       else
         handle_not_understood
       end
@@ -55,6 +58,12 @@ module MvamBot
       MvamBot::Geolocation.new(user, self)
     end
 
+    def handle_echo(echo)
+      echo = echo.strip
+      msg = echo.empty? ? Time.utc_now.to_s : "#{echo} on #{Time.utc_now}"
+      answer msg
+    end
+
     def handle_start
       if wit = wit_client
         wit.converse("/start")
@@ -64,9 +73,10 @@ module MvamBot
     end
 
     def handle_reset(what)
-      what = what.strip
-      options = "session"
-      case what
+      what = what.strip.split(" ")
+      command, params = what[0], what[1..-1]
+      options = "session, location, step"
+      case command
       when ""
         return answer("Choose what attribute you want to reset from your user: #{options}.")
       when "session"
@@ -77,8 +87,12 @@ module MvamBot
       when "location"
         user.clear_all_location_data
         return answer("Your location has been reset.")
+      when "step"
+        user.ensure_session_id
+        user.conversation_step = "survey/#{params[0]}"
+        return answer("Your survey has been set to `#{params[0]}`.")
       else
-        return answer("I do not know how to reset #{what}. You can choose between: #{options}.")
+        return answer("I do not know how to reset #{command}. You can choose between: #{options}.")
       end
     end
 
@@ -148,6 +162,17 @@ module MvamBot
       bot.send_message message.chat.id, text, reply_markup: keyboard, parse_mode: "Markdown"
       user.conversation_at = Time.utc_now
       user.update if update_user
+    end
+
+    def download_photo(file_id : String, user_id : Int32? = nil)
+      # TODO: Download photo in a separate fiber to avoid blocking; check for issues with accessing the DB connection from there
+      file = bot.get_file(file_id)
+      raw = bot.download(file)
+      MvamBot.logger.debug("Downloaded photo #{file_id} for user #{user_id || "NULL"}")
+
+      # Use the telegram unique identifier as our own id
+      MvamBot::DataFile.create(id: file_id, user_id: user_id, extension: "jpg", data: raw.to_slice, kind: "image")
+      return file_id
     end
 
   end
