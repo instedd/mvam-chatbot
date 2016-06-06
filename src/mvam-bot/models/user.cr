@@ -15,6 +15,7 @@ module MvamBot
     property :location_mkt_id
     property :location_lat
     property :location_lng
+    property :gps_timestamp
     property :conversation_step
     property :conversation_at
     property :conversation_session_id
@@ -26,15 +27,16 @@ module MvamBot
     @location_adm0_id : Int32?
     @location_adm1_id : Int32?
     @location_mkt_id : Int32?
-    @location_lat : Float32?
-    @location_lng : Float32?
+    @location_lat : Float64?
+    @location_lng : Float64?
+    @gps_timestamp : Time?
     @conversation_step : String?
     @conversation_at : Time?
     @conversation_session_id : String?
     @conversation_state : ConversationState
 
-    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float32|Nil, Float32|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
-    FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng conversation_step conversation_at conversation_session_id conversation_state}
+    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float64|Nil, Float64|Nil, Time|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
+    FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng gps_timestamp conversation_step conversation_at conversation_session_id conversation_state}
 
     def initialize(@id : Int32,
                    @username : String? = nil,
@@ -42,8 +44,9 @@ module MvamBot
                    @location_adm0_id : Int32? = nil,
                    @location_adm1_id : Int32? = nil,
                    @location_mkt_id : Int32? = nil,
-                   @location_lat : Float32? = nil,
-                   @location_lng : Float32? = nil,
+                   @location_lat : Float64? = nil,
+                   @location_lng : Float64? = nil,
+                   @gps_timestamp : Time? = nil,
                    @conversation_step : String? = nil,
                    @conversation_at : Time? = nil,
                    @conversation_session_id : String? = nil,
@@ -82,11 +85,11 @@ module MvamBot
     def update
       DB.exec("UPDATE users SET username = $1, name = $2, location_adm0_id = $3,
                location_adm1_id = $4, location_mkt_id = $5, location_lat = $6,
-               location_lng = $7, conversation_step = $8, conversation_at = $9,
-               conversation_session_id = $10, conversation_state = $11
-               WHERE id = $12",
+               location_lng = $7, gps_timestamp = $8, conversation_step = $9, conversation_at = $10,
+               conversation_session_id = $11, conversation_state = $12
+               WHERE id = $13",
                [@username, @name, @location_adm0_id, @location_adm1_id, @location_mkt_id,
-                @location_lat, @location_lng, @conversation_step, @conversation_at, @conversation_session_id, conversation_state_json, @id])
+                @location_lat, @location_lng, @gps_timestamp, @conversation_step, @conversation_at, @conversation_session_id, conversation_state_json, @id])
     end
 
     def full_name
@@ -118,5 +121,31 @@ module MvamBot
       @conversation_state.to_json
     end
 
+    def set_gps_position(lat : Float64, lng : Float64, timestamp = Time.now)
+      @location_lat = lat
+      @location_lng = lng
+      @gps_timestamp = timestamp
+    end
+
+    def position_changed_recently?
+      return @gps_timestamp && (Time.now - @gps_timestamp.not_nil!) < 20.minutes
+    end
+
+    def clear_gps_data
+      @location_lat = nil
+      @location_lng = nil
+      @gps_timestamp = nil
+    end
+
+    def clear_administrative_location
+      @location_adm0_id = nil
+      @location_adm1_id = nil
+      @location_mkt_id = nil
+    end
+
+    def clear_all_location_data
+      self.clear_administrative_location
+      self.clear_gps_data
+    end
   end
 end

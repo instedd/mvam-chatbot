@@ -1,8 +1,8 @@
 version: 1.0
 shards:
   TelegramBot:
-    github: spalladino/TelegramBot
-    commit: 8f958d4cb6b172ea30aef8c7cca46f4a0c607da0
+    github: juanedi/TelegramBot
+    commit: 66dc9fdbb33be1f63e997f4a7fb0c14c4b259836
 
   kemal:
     github: sdogruyol/kemal

@@ -12,25 +12,19 @@ module MvamBot
     end
 
     def handle
-      return if message.text.nil?
+      return if message.text.nil? && message.location.nil?
       MvamBot::Logs::Message.create(user.id, false, message.text, Time.utc_now)
 
       if message.text =~ /^\/price(.*)/
         handle_price($~[1])
       elsif message.text == "/help"
         handle_help
-      elsif message.text == "/start location" || message.text == "/location"
-        handle_init_location
+      elsif MvamBot::Geolocation.handles? user, message
+        geolocation.handle
       elsif message.text =~ /^\/reset(.*)/
         handle_reset($~[1])
       elsif message.text == "/start"
         handle_start
-      elsif user.conversation_step == "location/adm0"
-        handle_step_location_adm0
-      elsif user.conversation_step == "location/adm1"
-        handle_step_location_adm1
-      elsif user.conversation_step == "location/mkt"
-        handle_step_location_mkt
       elsif user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
         handle_survey($~[1], $~[2]?)
       elsif wit = wit_client
@@ -57,6 +51,10 @@ module MvamBot
       MvamBot::Surveys::Survey.new(user, self, state_id: step, previous_state_id: previous).handle(message)
     end
 
+    def geolocation
+      MvamBot::Geolocation.new(user, self)
+    end
+
     def handle_start
       if wit = wit_client
         wit.converse("/start")
@@ -77,11 +75,7 @@ module MvamBot
         user.conversation_state.clear
         return answer("Your session has been reset.")
       when "location"
-        user.location_adm0_id = nil
-        user.location_adm1_id = nil
-        user.location_mkt_id = nil
-        user.location_lat = nil
-        user.location_lng = nil
+        user.clear_all_location_data
         return answer("Your location has been reset.")
       else
         return answer("I do not know how to reset #{what}. You can choose between: #{options}.")
@@ -90,7 +84,7 @@ module MvamBot
 
     def handle_price(query)
       user.conversation_step = nil
-      return handle_init_location("Before we start, I need to know where you are. ") if user.location_adm0_id.nil?
+      return geolocation.start("Before we start, I need to know where you are. ") if user.location_adm0_id.nil?
 
       # If the user sent no query, show usage with an example
       if query.strip.empty?
@@ -129,73 +123,6 @@ module MvamBot
     private def sample_price_query
       sample_prices = Price.search_by_commodity_id(nil, limit: 1, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
       sample_prices.empty? ? "" : " For example, try sending `/price #{sample_prices[0].short_commodity_name.downcase}`."
-    end
-
-    def handle_init_location(extra_text = nil)
-      user.location_adm0_id = nil
-      user.location_adm1_id = nil
-      user.location_mkt_id = nil
-      user.conversation_step = "location/adm0"
-      answer_with_keyboard "#{extra_text}What country do you live in?", Location::Adm0.all.map(&.name).sort
-    end
-
-    def handle_step_location_adm0
-      if location = Location::Adm0.find_by_name(message.text)
-        user.location_adm0_id = location.id
-        request_location_adm1(location)
-      else
-        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a country from the list.", Location::Adm0.all.map(&.name).sort
-      end
-    end
-
-    def request_location_adm1(location_adm0)
-      locations = Location::Adm1.where_adm0_id(location_adm0.id)
-      if locations.size == 0
-        user.conversation_step = nil
-        answer_location_complete(location_adm0)
-      elsif locations.size == 1
-        location_adm1 = locations.first
-        user.location_adm1_id = location_adm1.id
-        request_location_mkt(location_adm1)
-      else
-        user.conversation_step = "location/adm1"
-        answer_with_keyboard "And where in #{location_adm0.name} are you?", locations.map(&.name).sort
-      end
-    end
-
-    def handle_step_location_adm1
-      if location = Location::Adm1.find_by_name(message.text, user.location_adm0_id.not_nil!)
-        user.location_adm1_id = location.id
-        request_location_mkt(location)
-      else
-        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a region from the list.", Location::Adm1.where_adm0_id(user.location_adm0_id.not_nil!).map(&.name).sort
-      end
-    end
-
-    def request_location_mkt(location_adm1)
-      locations = Location::Mkt.where_adm1_id(location_adm1.id)
-      if locations.size == 0
-        user.conversation_step = nil
-        answer_location_complete(location_adm1)
-      elsif locations.size == 1
-        location_mkt = locations.first
-        user.location_mkt_id = location_mkt.id
-        user.conversation_step = nil
-        answer_location_complete(location_mkt)
-      else
-        user.conversation_step = "location/mkt"
-        answer_with_keyboard "And which city in #{location_adm1.name} would you like information from?", locations.map(&.name).sort
-      end
-    end
-
-    def handle_step_location_mkt
-      if location = Location::Mkt.find_by_name(message.text, user.location_adm1_id.not_nil!)
-        user.location_mkt_id = location.id
-        user.conversation_step = nil
-        answer_location_complete(location)
-      else
-        answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a city from the list.", Location::Mkt.where_adm1_id(user.location_adm1_id.not_nil!).map(&.name).sort
-      end
     end
 
     def answer_location_complete(location)

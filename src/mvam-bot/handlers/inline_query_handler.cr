@@ -12,6 +12,8 @@ module MvamBot
     end
 
     def handle
+      try_match_position if !user.location_adm1_id && @query.location
+
       if !user.location_adm0_id
         answer(pm_text: "Press here to set your location to start")
       else
@@ -38,6 +40,22 @@ module MvamBot
       content
     end
 
+    protected def try_match_position
+      user.set_gps_position(@query.location.not_nil!.latitude, @query.location.not_nil!.longitude)
+
+      near_locations = MvamBot::Location::Mkt.around(user.location_lat.not_nil!, user.location_lng.not_nil!, kilometers: search_radius_kilometers)
+      if near_locations.size == 1
+        mkt, distance = near_locations[0]
+        user.location_mkt_id = mkt.id
+        user.location_adm1_id = mkt.adm1_id
+        user.location_adm0_id = mkt.adm0_id
+      end
+      user.update
+    end
+
+    protected def search_radius_kilometers
+      MvamBot::Geolocation::GPS_MATCH_RADIUS
+    end
   end
 
 end

@@ -51,8 +51,8 @@ AND location_adm0_name IS NOT NULL AND location_adm1_name IS NOT NULL AND locati
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, location_adm0_id = EXCLUDED.location_adm0_id;
 
 \echo Upsert locations mkt
-INSERT INTO locations_mkt (id, name, location_adm1_id)
-SELECT DISTINCT location_mkt_id, location_mkt_name, location_adm1_id
+INSERT INTO locations_mkt (id, name, location_adm1_id, location_adm0_id)
+SELECT DISTINCT location_mkt_id, location_mkt_name, location_adm1_id, location_adm0_id
 FROM prices_import
 WHERE location_adm0_id != 0 AND location_adm1_id != 0 AND location_mkt_id != 0
 AND location_adm0_name IS NOT NULL AND location_adm1_name IS NOT NULL AND location_mkt_name IS NOT NULL

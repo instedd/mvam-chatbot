@@ -2,8 +2,8 @@ module MvamBot::Spec
 
   module Telegram
 
-    def self.message(text : String, id = 100, chat_id = 100000000, date = 1464284913, username = "jdoe", first_name = "John", last_name = "Doe")
-      TelegramBot::Message.from_json <<-JSON
+    def self.message(text : String, id = 100, chat_id = 100000000, date = 1464284913, username = "jdoe", first_name = "John", last_name = "Doe", location = nil)
+      msg = TelegramBot::Message.from_json <<-JSON
       {
         "message_id": 100,
         "from": {
@@ -23,6 +23,30 @@ module MvamBot::Spec
         "text": "#{text}"
       }
       JSON
+
+      msg.tap do |m|
+        m.location = TelegramBot::Location.from_json("{ \"latitude\": #{location[0]}, \"longitude\": #{location[1]} }") if location
+      end
+    end
+
+    def self.query(text : String, id = "FOOBAR", username = "jdoe", first_name = "John", last_name = "Doe", location : {Float64, Float64}? = nil)
+      json = <<-JSON
+      {
+        "id": "#{id}",
+        "from": {
+          "id": 100000000,
+          "first_name": "#{first_name}",
+          "last_name": "#{last_name}",
+          "username": "#{username}"
+        },
+        "query": "#{text}",
+        "offset": "0"
+      }
+      JSON
+
+      TelegramBot::InlineQuery.from_json(json).tap do |q|
+        q.location = TelegramBot::Location.from_json("{ \"latitude\": #{location[0]}, \"longitude\": #{location[1]} }") if location
+      end
     end
 
   end

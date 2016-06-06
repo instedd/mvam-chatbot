@@ -1,0 +1,1478 @@
+WFP_ISO3,region_name,adm0_id,adm0_name,adm1_id,adm1_name,adm2_id,adm2_name,mkt_id,mkt_name,mkt_lat,mkt_lng
+AFG,RBB,1,Afghanistan,99878,$Daykundi,99916,$Nili,275,Nili,33.71,66.11
+AFG,RBB,1,Afghanistan,272,Badakhshan,3447,Fayzabad,266,Fayzabad,37.116638,70.580022
+AFG,RBB,1,Afghanistan,272,Badakhshan,3445,Baharak,267,Mazar,36.989675,70.881186
+AFG,RBB,1,Afghanistan,276,Bamyan,3491,Bamyan,268,Bamyan,34.824167,67.821667
+AFG,RBB,1,Afghanistan,278,Faryab,3512,Khwajasabzposh,269,Maymana,35.921389,64.783611
+AFG,RBB,1,Afghanistan,280,Ghor,3539,Shahrak,276,Ghor,34.522778,65.253028
+AFG,RBB,1,Afghanistan,282,Hirat,3561,Herat,270,Hirat,34.346944,62.198333
+AFG,RBB,1,Afghanistan,284,Kabul,3585,Kabul,271,Kabul,34.516667,69.183333
+AFG,RBB,1,Afghanistan,285,Kandahar,3598,Kandahar,272,Kandahar,31.6125,65.709444
+AFG,RBB,1,Afghanistan,292,Nangarhar,3662,Jalalabad,273,Jalalabad,34.426111,70.451389
+AFG,RBB,1,Afghanistan,296,Paktya,3703,Gardez,274,Gardez,33.599444,69.225278
+BGD,RBB,23,Bangladesh,575,Barisal,5762,Barisal,112,Barisal Division,22.701944,90.371111
+BGD,RBB,23,Bangladesh,576,Chittagong,5770,Chittagong,114,Chittagong Division,22.333056,91.836389
+BGD,RBB,23,Bangladesh,577,Dhaka,5778,Dhaka,116,Dhaka Division,23.723056,90.408611
+BGD,RBB,23,Bangladesh,578,Khulna,5799,Khulna,118,Khulna Division,22.815,89.562222
+BGD,RBB,23,Bangladesh,579,Rajshahi,5817,Rajshahi,120,Rajshahi Division,24.366667,88.6
+BGD,RBB,23,Bangladesh,580,Sylhet,5824,Sylhet,122,Sylhet Division,24.896667,91.871667
+KHM,RBB,44,Cambodia,791,Banteay Meanchey,12275,Krong Serei Saophoan,640,Banteay Meanchey,13.581748,102.96349
+KHM,RBB,44,Cambodia,791,Banteay Meanchey,12275,Krong Serei Saophoan,1524,Serei Saophoan,13.587073,102.972587
+KHM,RBB,44,Cambodia,791,Banteay Meanchey,12277,Thma Puok,1525,Thma Puok,13.95,103.066667
+KHM,RBB,44,Cambodia,792,Battambang,12290,Krong Battambang,639,Battambang,13.102713,103.198215
+KHM,RBB,44,Cambodia,793,Kampong Cham,12296,Krong Kampong Cham,1527,Boeung Kok,11.990529,105.464541
+KHM,RBB,44,Cambodia,793,Kampong Cham,12296,Krong Kampong Cham,633,Kampong Cham,11.993387,105.463502
+KHM,RBB,44,Cambodia,793,Kampong Cham,12292,Batheay,1526,Pha'av,12.033333,104.966667
+KHM,RBB,44,Cambodia,794,Kampong Chhnang,12310,Krong Kampong Chhnang,632,Kampong Chhnang,12.25,104.6666667
+KHM,RBB,44,Cambodia,794,Kampong Chhnang,12312,Kampong Tralach,1528,Sala Lekh Pram,11.938242,104.714662
+KHM,RBB,44,Cambodia,795,Kampong Speu,12321,Odongk,1530,Bat Doeng,11.68352,104.700897
+KHM,RBB,44,Cambodia,795,Kampong Speu,12319,Krong Chbar Mon,1529,Central Market (KSP),11.461142,104.521093
+KHM,RBB,44,Cambodia,795,Kampong Speu,12319,Krong Chbar Mon,1672,Kampong Speu,11.465156,104.509154
+KHM,RBB,44,Cambodia,796,Kampong Thom,12328,Prasat Sambour,1532,Kampong Chheuteal,12.865882,105.070133
+KHM,RBB,44,Cambodia,796,Kampong Thom,12332,Krong Stueng Saen,1531,Kampong Thum,12.7,104.9
+KHM,RBB,44,Cambodia,797,Kampot,12339,Krong Kampot,638,Kampot,10.6166667,104.1833333
+KHM,RBB,44,Cambodia,798,Kandal,12351,S'ang,1533,S'ang,11.367266,105.003751
+KHM,RBB,44,Cambodia,798,Kandal,12352,Krong Ta Khmau,1534,Ta Khmau,11.4833333,104.945047
+KHM,RBB,44,Cambodia,801,Kratie,12366,Krong Kracheh,1673,Kratie,12.488113,106.018786
+KHM,RBB,44,Cambodia,803,Mondul Kiri,12374,Kaoh Nheaek,1676,Mondul Kiri,13.07944,107.040752
+KHM,RBB,44,Cambodia,804,Otdar Meanchey,12378,Anlong Veaeng,1540,Anlong Veng,14.233333,104.083333
+KHM,RBB,44,Cambodia,804,Otdar Meanchey,12382,Trapeang Prasat,1677,Oddar Meanchey,14.193685,104.355421
+KHM,RBB,44,Cambodia,804,Otdar Meanchey,12381,Krong Samraong,1541,Samroang,14.175151,103.506702
+KHM,RBB,44,Cambodia,805,Pailin,12384,Sala Krau,1778,Pailin,12.9092962,102.6675575
+KHM,RBB,44,Cambodia,806,Phnom Penh,12388,Doun Penh,637,Phnom Penh,11.575955,104.9166667
+KHM,RBB,44,Cambodia,802,Preah Sihanouk,12370,Krong Preah Sihanouk,1675,Preah Sihanouk,10.622963,103.529595
+KHM,RBB,44,Cambodia,807,Preah Vihear,12398,Tbaeng Mean Chey,1678,Preah Vihear,13.610607,105.033086
+KHM,RBB,44,Cambodia,808,Prey Veng,12399,Ba Phnum,1535,Chheu Kach Thmei,11.25,105.4
+KHM,RBB,44,Cambodia,808,Prey Veng,12401,Kampong Leav,636,Prey Veng,11.486819,105.325334
+KHM,RBB,44,Cambodia,809,Pursat,12416,Krong Pursat,1564,Central Market (PST),12.538674,103.919341
+KHM,RBB,44,Cambodia,809,Pursat,12413,Krakor,1536,Chheu Tom,12.333333,104.183333
+KHM,RBB,44,Cambodia,809,Pursat,12416,Krong Pursat,1671,Pursat,12.538778,103.919204
+KHM,RBB,44,Cambodia,811,Siem Reap,12431,Kralanh,1538,Kralanh,13.583333,103.416667
+KHM,RBB,44,Cambodia,811,Siem Reap,12434,Krong Siem Reab,1539,Psa Leu,13.359791,103.874656
+KHM,RBB,44,Cambodia,811,Siem Reap,12434,Krong Siem Reab,635,Siem Reap,13.353486,103.854371
+KHM,RBB,44,Cambodia,812,Stung Treng,12443,Krong Stueng Traeng,1674,Stung Treng,13.525648,105.970371
+KHM,RBB,44,Cambodia,813,Svay Rieng,12450,Krong Svay Rieng,1680,Svay Rieng,11.08037,105.800697
+KHM,RBB,44,Cambodia,814,Takeo,12455,Krong Doun Kaev,634,Takeo,10.99081,104.784984
+IND,RBB,115,India,40429,,17674,,945,Jammu,32.7333333,74.8666667
+IND,RBB,115,India,40424,,0,,965,Srinagar,34.0833333,74.8166667
+IND,RBB,115,India,70074,$Chandigarh,17823,,930,Chandigarh,30.7343,76.7933
+IND,RBB,115,India,70074,$Chandigarh,17730,,1785,Jabalpur,23.181467,79.9864071
+IND,RBB,115,India,70078,$Jharkhand,17622,,960,Ranchi,23.35,85.333333
+IND,RBB,115,India,70080,$Puducherry,70228,$Puducherry,1394,Puducherry,11.92,79.73
+IND,RBB,115,India,70082,$Uttarakhand,17903,,933,Dehradun,30.321434,78.031928
+IND,RBB,115,India,1484,Andaman and Nicobar,17545,Andaman Islands,1392,Port Blair,11.6666667,92.75
+IND,RBB,115,India,1485,Andhra Pradesh,17553,Hyderabad,941,Hyderabad,17.375278,78.474444
+IND,RBB,115,India,1485,Andhra Pradesh,17556,Krishna,971,Vijaywada,16.51,80.64
+IND,RBB,115,India,1486,Arunachal Pradesh,0,,943,Itanagar,27.1,93.6166667
+IND,RBB,115,India,1487,Assam,17583,Kamrup,939,Guwahati,26.183333,91.733333
+IND,RBB,115,India,1488,Bihar,70095,$Banka,927,Bhagalpur,24.883333,86.916667
+IND,RBB,115,India,1488,Bihar,17619,Patna,957,Patna,25.6,85.116667
+IND,RBB,115,India,1489,Delhi,17633,Delhi,934,Delhi,28.666667,77.216667
+IND,RBB,115,India,1490,Goa,70122,$North Goa,1393,Panaji,15.4833333,73.8333333
+IND,RBB,115,India,1491,Gujarat,17635,Ahmadabad,923,Ahmedabad,23.033333,72.616667
+IND,RBB,115,India,1491,Gujarat,17647,Rajkot,959,Rajkot,22.3,70.783333
+IND,RBB,115,India,1492,Haryana,17657,Gurgaon,1779,Gurgaon,28.4594965,77.0266383
+IND,RBB,115,India,1492,Haryana,17658,Hisar,940,Hisar,29.166667,75.716667
+IND,RBB,115,India,1492,Haryana,17660,Karnal,948,Karnal,29.683333,76.983333
+IND,RBB,115,India,1492,Haryana,70135,$Panchkula,1782,Panchkula,30.6942091,76.860565
+IND,RBB,115,India,1493,Himachal Pradesh,17673,Mandi,954,Mandi,31.716667,76.916667
+IND,RBB,115,India,1493,Himachal Pradesh,17674,Shimla,963,Shimla,31.103333,77.172222
+IND,RBB,115,India,1494,Karnataka,70159,$Bangalore Urban,926,Bengaluru,12.962299,77.576943
+IND,RBB,115,India,1494,Karnataka,17686,Dharwad,935,Dharwad,15.466667,75.016667
+IND,RBB,115,India,1495,Kerala,17699,Ernakulam,938,Ernakulam,9.983333,76.283333
+IND,RBB,115,India,1495,Kerala,17703,Kozhikode,1781,Kozhidoke,11.2587531,75.78041
+IND,RBB,115,India,1495,Kerala,17709,Thiruvananthapuram,966,T.Puram,8.506944,76.956944
+IND,RBB,115,India,1495,Kerala,17709,Thiruvananthapuram,968,Tiruvanantapuram,8.506944,76.956944
+IND,RBB,115,India,1497,Madhya Pradesh,17716,Bhopal,928,Bhopal,23.266667,77.4
+IND,RBB,115,India,1497,Madhya Pradesh,17727,Gwalior,1780,Gwalior,26.2182871,78.1828308
+IND,RBB,115,India,1497,Madhya Pradesh,17729,Indore,942,Indore,22.716667,75.833333
+IND,RBB,115,India,1498,Maharashtra,70184,$Mumbai city,955,Mumbai,18.975,72.825833
+IND,RBB,115,India,1498,Maharashtra,17771,Nagpur,956,Nagpur,18.866667,76.433333
+IND,RBB,115,India,1498,Maharashtra,17759,Amravati,958,Raipur,21.5825,77.266944
+IND,RBB,115,India,1501,Meghalaya,17794,East Khasi Hills,962,Shillong,25.575556,91.873056
+IND,RBB,115,India,1502,Mizoram,17798,Aizawl,924,Aizwal,23.72,92.71
+IND,RBB,115,India,1503,Nagaland,70205,$Dimapur,936,Dimapur,25.9,93.733333
+IND,RBB,115,India,1503,Nagaland,17801,Kohima,949,Kohima,25.666667,94.116667
+IND,RBB,115,India,1504,Orissa,70219,$Khordha,929,Bhubaneshwar,20.233333,85.833333
+IND,RBB,115,India,1504,Orissa,17809,Cuttack,932,Cuttack,20.5,85.833333
+IND,RBB,115,India,1504,Orissa,17820,Sundargarh,1783,Rourkela,22.260423,84.8535844
+IND,RBB,115,India,1504,Orissa,17819,Sambalpur,961,Sambalpur,21.45,83.966667
+IND,RBB,115,India,1505,Punjab,17821,Amritsar,925,Amritsar,31.633056,74.865556
+IND,RBB,115,India,1505,Punjab,17822,Bathinda,973,Bathinda,30.2,74.95
+IND,RBB,115,India,1505,Punjab,17830,Ludhiana,953,Ludhiana,30.9,75.85
+IND,RBB,115,India,1506,Rajasthan,17840,Bikaner,944,Jaipur,28.883333,74.066667
+IND,RBB,115,India,1506,Rajasthan,17852,Jodhpur,946,Jodhpur,26.286667,73.03
+IND,RBB,115,India,1506,Rajasthan,17853,Kota,951,Kota,25.183333,75.833333
+IND,RBB,115,India,1508,Tamil Nadu,17871,Chennai,931,Chennai,13.083333,80.283333
+IND,RBB,115,India,1508,Tamil Nadu,17877,Dindigul,937,Dindigul,10.35,77.95
+IND,RBB,115,India,1508,Tamil Nadu,17883,Tiruchchirappalli,967,Thiruchirapalli,10.805,78.685556
+IND,RBB,115,India,1509,Tripura,17887,West Tripura,921,Agartala,23.836389,91.275
+IND,RBB,115,India,1510,Uttar Pradesh,17888,Agra,922,Agra,27.183333,78.016667
+IND,RBB,115,India,1510,Uttar Pradesh,17920,Kanpur,947,Kanpur,26.466667,80.35
+IND,RBB,115,India,1510,Uttar Pradesh,17923,Lucknow,952,Lucknow,26.85,80.916667
+IND,RBB,115,India,1510,Uttar Pradesh,17943,Varanasi,970,Varanasi,25.333333,83
+IND,RBB,115,India,1511,West Bengal,70292,$Kolkata,950,Kolkata,22.569722,88.369722
+IND,RBB,115,India,1511,West Bengal,17948,Darjiling,964,Siliguri,26.716111,88.423611
+LAO,RBB,139,Lao People's Democratic Republic,1753,Attapu,18633,Samakkhixay,1646,Attapeu,14.8193696,106.8207875
+LAO,RBB,139,Lao People's Democratic Republic,1754,Bokeo,18640,Pha Oudom,1642,Bokeo,20.2872662,100.7097867
+LAO,RBB,139,Lao People's Democratic Republic,1755,Bolikhamxai,18647,Viengthong,1568,Borikhamxay,18.4362924,104.4723301
+LAO,RBB,139,Lao People's Democratic Republic,1756,Champasak,18654,Pathoomphone,669,Champassack,14.6578664,105.9699878
+LAO,RBB,139,Lao People's Democratic Republic,1757,Houaphan,18659,Xamneua,1643,Huaphanh,20.3254175,104.1001326
+LAO,RBB,139,Lao People's Democratic Republic,1758,Khammouan,18672,Nhommalath,667,Khammouane,17.6384066,105.2194808
+LAO,RBB,139,Lao People's Democratic Republic,1760,Louang-Namtha,18688,Viengphoukha,1566,Luangnamtha,20.9170187,101.1617356
+LAO,RBB,139,Lao People's Democratic Republic,1759,Louangphabang,18674,Louangphrabang,670,Luang Prabang,19.8833959,102.1346874
+LAO,RBB,139,Lao People's Democratic Republic,1761,Oudomxai,18689,Beng,1641,Oudomxay,20.4921929,101.8891721
+LAO,RBB,139,Lao People's Democratic Republic,1762,Phongsali,18700,Phongsaly,1640,Phongsaly,21.6818943,102.1089679
+LAO,RBB,139,Lao People's Democratic Republic,1763,Salavan,18707,Saravane,1569,Saravane,15.7165658,106.4140868
+LAO,RBB,139,Lao People's Democratic Republic,1764,Savannakhet,74326,$Kaysone Phomvihane,668,Savannakhet,16.5722464,104.7705509
+LAO,RBB,139,Lao People's Democratic Republic,1767,Vientiane,18752,Keo Oudom,1647,Vientiane Province,18.5705063,102.6216211
+LAO,RBB,139,Lao People's Democratic Republic,1768,Vientiane capital,18744,Sisattanak,666,Vientiane Municipality,17.9757058,102.6331035
+LAO,RBB,139,Lao People's Democratic Republic,1765,Xaignabouli,18731,Xayabury,1644,Xayabury,19.327829,101.756699
+LAO,RBB,139,Lao People's Democratic Republic,1766,Xekong,18735,Lamarm,1645,Sekong,15.3443856,106.7175669
+LAO,RBB,139,Lao People's Democratic Republic,1770,Xiangkhouang,18758,Kham,1567,Xiengkhuang,19.6093003,103.7289167
+MMR,RBB,171,Myanmar,41772,Bago (E),41782,Bago,1021,Wai Maw,25.34222,97.44001
+MMR,RBB,171,Myanmar,2125,Chin,41786,Falam,980,Falam,22.9166667,93.6833333
+MMR,RBB,171,Myanmar,2125,Chin,41786,Falam,983,Hakha,22.64109,93.610627
+MMR,RBB,171,Myanmar,2125,Chin,41786,Falam,984,Hnaring,22.19405,93.43422
+MMR,RBB,171,Myanmar,2125,Chin,41787,Mindat,996,Lungngo,21.94578,93.591766
+MMR,RBB,171,Myanmar,2125,Chin,41787,Mindat,1001,Matupi,21.59521,93.45125
+MMR,RBB,171,Myanmar,2125,Chin,41787,Mindat,1399,Ramci,21.986799,93.910782
+MMR,RBB,171,Myanmar,2125,Chin,41787,Mindat,1353,Razua,22.055,93.41
+MMR,RBB,171,Myanmar,2125,Chin,41786,Falam,1370,Tedim,23.593,93.70414
+MMR,RBB,171,Myanmar,2125,Chin,41786,Falam,1482,Thantlang,22.679184,93.430886
+MMR,RBB,171,Myanmar,2125,Chin,41786,Falam,1020,Tonzang,23.888,93.53625
+MMR,RBB,171,Myanmar,2127,Kachin,41788,Bhamo,1655,Bhamo,24.2666667,97.2333333
+MMR,RBB,171,Myanmar,2127,Kachin,41789,Myitkyina,982,Garayang,25.701,97.931
+MMR,RBB,171,Myanmar,2127,Kachin,41788,Bhamo,1656,Mansi,24.114696,97.293156
+MMR,RBB,171,Myanmar,2127,Kachin,41789,Myitkyina,1008,Nam San Yang,24.869,97.52
+MMR,RBB,171,Myanmar,2127,Kachin,41789,Myitkyina,1015,Sadung,25.39215,97.90421
+MMR,RBB,171,Myanmar,2127,Kachin,41789,Myitkyina,1016,Sai Law,25.478319,97.768761
+MMR,RBB,171,Myanmar,2127,Kachin,41788,Bhamo,1657,Shwegu,24.20993,96.791267
+MMR,RBB,171,Myanmar,2130,Magway,41796,Gangaw,981,Gangaw,22.163931,94.124077
+MMR,RBB,171,Myanmar,2130,Magway,41797,Magway,997,Magway,20.15,94.9166667
+MMR,RBB,171,Myanmar,2130,Magway,41799,Pakokku,1003,Min Kan,20.420349,92.811279
+MMR,RBB,171,Myanmar,2130,Magway,41799,Pakokku,1371,Myit Chae,21.24305,94.85701
+MMR,RBB,171,Myanmar,2130,Magway,41799,Pakokku,1011,Pakhangyi,21.53711,95.20402
+MMR,RBB,171,Myanmar,2130,Magway,41799,Pakokku,1664,Pakokku,21.3333333,95.1
+MMR,RBB,171,Myanmar,2130,Magway,41799,Pakokku,1663,Yaesagyo,21.62601,95.237124
+MMR,RBB,171,Myanmar,2130,Magway,41797,Magway,1023,Yenanchaung,20.45942,94.871
+MMR,RBB,171,Myanmar,2123,Rakhine,41812,Maungdaw,977,Alel Than Kyaw,20.68022,92.443343
+MMR,RBB,171,Myanmar,2123,Rakhine,41810,Buthidaung,978,Buthidaung,20.870001,92.527451
+MMR,RBB,171,Myanmar,2123,Rakhine,41812,Maungdaw,990,Kha Mauck Siek,20.674,93.26
+MMR,RBB,171,Myanmar,2123,Rakhine,41814,Thandwe,993,Kyein Chung,21.087561,92.339241
+MMR,RBB,171,Myanmar,2123,Rakhine,41812,Maungdaw,1002,Maungdaw,20.82112,92.37133
+MMR,RBB,171,Myanmar,2123,Rakhine,41812,Maungdaw,1007,Myin Hlut,20.614149,92.515717
+MMR,RBB,171,Myanmar,2123,Rakhine,41812,Maungdaw,1009,Nga Khu Ra,21.025551,92.295288
+MMR,RBB,171,Myanmar,2123,Rakhine,41812,Maungdaw,1010,Nyaung Chung,20.809099,92.398293
+MMR,RBB,171,Myanmar,2123,Rakhine,41810,Buthidaung,1014,Rathedaung,20.478809,92.75621
+MMR,RBB,171,Myanmar,2123,Rakhine,41812,Maungdaw,1017,Taung Bazzar,21.00514,92.507
+MMR,RBB,171,Myanmar,2123,Rakhine,41811,Kyaukpyu,1018,Taung Pyo Let Wai,21.2,92.2
+MMR,RBB,171,Myanmar,2123,Rakhine,41814,Thandwe,1024,Zedi Pyin,20.575781,92.670403
+MMR,RBB,171,Myanmar,2133,Sagaing,41815,Kale,988,Kalay,23.186,94.605
+MMR,RBB,171,Myanmar,41774,Shan (E),41823,Kengtung,979,Chying Thung,21.287,99.613
+MMR,RBB,171,Myanmar,41775,Shan (N),0,,1668,Ai Cheng,22.765,99.22302
+MMR,RBB,171,Myanmar,41775,Shan (N),0,,1670,Ban Wai,23.085,99.244
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,985,Honai,24.08201,98.86121
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,989,Kaung Ming Sang,22.967,98.967
+MMR,RBB,171,Myanmar,41775,Shan (N),41830,Laukkaing,992,KonKyan,23.804,98.549
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,991,Kong Chang,,
+MMR,RBB,171,Myanmar,41775,Shan (N),41831,Muse,1661,Kutkai,23.459209,97.943413
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,1658,Lashio,22.9333333,97.75
+MMR,RBB,171,Myanmar,41775,Shan (N),41830,Laukkaing,1382,Laukai,23.678,98.771
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,995,Long Tan,22.906,99.368
+MMR,RBB,171,Myanmar,41775,Shan (N),41828,Kyaukme,998,Man Pan,22.290461,97.776077
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,999,Man Ton Pa,23.6001,98.71204
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,1000,Man Tone,23.25201,97.12402
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,1005,Moe Mauk,24.244,97.353
+MMR,RBB,171,Myanmar,41775,Shan (N),41831,Muse,1374,Mone Baw,23.977369,98.128731
+MMR,RBB,171,Myanmar,41775,Shan (N),41831,Muse,1376,Mone Yar,23.024,98.10654
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,1006,Morhtai,24.096,98.8
+MMR,RBB,171,Myanmar,41775,Shan (N),41831,Muse,1660,Muse,23.989886,97.901652
+MMR,RBB,171,Myanmar,41775,Shan (N),0,,1662,Nam Kam,23.837,97.6818
+MMR,RBB,171,Myanmar,41775,Shan (N),41831,Muse,1375,Nampatkhar,23.691429,97.822052
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,1012,Pang Kham,22.20932,99.15204
+MMR,RBB,171,Myanmar,41775,Shan (N),41831,Muse,1013,Pang Yang,22.12814,98.79602
+MMR,RBB,171,Myanmar,41775,Shan (N),41830,Laukkaing,1377,Par Sin Kyaw,23.575,98.778
+MMR,RBB,171,Myanmar,41775,Shan (N),41830,Laukkaing,1379,Shaokai,23.81807,98.60411
+MMR,RBB,171,Myanmar,41775,Shan (N),0,,1380,Shin Pin Kai,23.978,23.978
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,1659,Tangyan,22.4981,98.3968
+MMR,RBB,171,Myanmar,41775,Shan (N),41830,Laukkaing,1381,Tuan Jie Cun,23.661,98.813
+MMR,RBB,171,Myanmar,41775,Shan (N),0,,1669,Wang Leng,22.959,99.311
+MMR,RBB,171,Myanmar,41775,Shan (N),41829,Lashio,1022,Wein Kao,22.30273,98.93896
+MMR,RBB,171,Myanmar,41776,Shan (S),41833,Tuanggyi,1666,Hopone,20.797433,97.170238
+MMR,RBB,171,Myanmar,41776,Shan (S),41833,Tuanggyi,986,Hsihseng,20.15702,97.2511
+MMR,RBB,171,Myanmar,41776,Shan (S),41833,Tuanggyi,1665,Phekhon,19.859578,97.0209
+MMR,RBB,171,Myanmar,41776,Shan (S),41833,Tuanggyi,1372,Site Kuang,21.43273,97.442993
+MMR,RBB,171,Myanmar,41776,Shan (S),41833,Tuanggyi,1019,Taunggyi,20.7833333,97.0333333
+MMR,RBB,171,Myanmar,41776,Shan (S),41832,Loilem,1667,Ying Phan,22.62819,99.28307
+MMR,RBB,171,Myanmar,2135,Taninthayi,41834,Dawei,1004,Mindat,13.67296,98.362488
+MMR,RBB,171,Myanmar,2136,Yangon,41837,Yangon(E),1654,Htilin,21.720181,94.085129
+MMR,RBB,171,Myanmar,2136,Yangon,41840,Yangon(W),987,Inn Din,20.505329,92.586929
+MMR,RBB,171,Myanmar,2136,Yangon,41840,Yangon(W),1373,Mone Koe,24.13521,98.56601
+MMR,RBB,171,Myanmar,2136,Yangon,41840,Yangon(W),1378,Tar Shwe Tang,23.721,98.707
+NPL,RBB,175,Nepal,2152,Central,22353,Narayani,659,Chitwan,27.6849,84.448
+NPL,RBB,175,Nepal,2152,Central,22352,Janakpur,660,Dhanusha,26.7362,85.9292
+NPL,RBB,175,Nepal,2152,Central,22351,Bagmati,652,Kathmandu,27.7166667,85.3166667
+NPL,RBB,175,Nepal,2152,Central,22353,Narayani,664,Parsa,27.0396,84.8928
+NPL,RBB,175,Nepal,2152,Central,22352,Janakpur,656,Ramechap,27.3375,86.0843
+NPL,RBB,175,Nepal,2153,Eastern,22354,Koshi,646,Bhojpur,27.166667,87.05
+NPL,RBB,175,Nepal,2153,Eastern,22354,Koshi,647,Dhankuta,26.9833333,87.3333333
+NPL,RBB,175,Nepal,2153,Eastern,22355,Mechi,649,Illam,26.9103,87.9375
+NPL,RBB,175,Nepal,2153,Eastern,22355,Mechi,661,Jhapa,26.483333,87.85
+NPL,RBB,175,Nepal,2153,Eastern,22354,Koshi,663,Morang,26.4578,87.282
+NPL,RBB,175,Nepal,2154,Far Western,22358,Seti,645,Achham,29.05,81.3
+NPL,RBB,175,Nepal,2154,Far Western,22358,Seti,648,Doti,29.266667,80.983333
+NPL,RBB,175,Nepal,2154,Far Western,22358,Seti,662,Kailali,28.566667,80.783333
+NPL,RBB,175,Nepal,2155,Mid Western,22361,Bheri,658,Banke,28.033333,81.616667
+NPL,RBB,175,Nepal,2155,Mid Western,22359,Karnali,650,Jumla,29.2833333,82.1666667
+NPL,RBB,175,Nepal,2155,Mid Western,22360,Rapti,655,Rolpa,28.315,82.6316
+NPL,RBB,175,Nepal,2155,Mid Western,22361,Bheri,657,Surkhet,28.601789,81.600906
+NPL,RBB,175,Nepal,2156,Western,22363,Gandaki,651,Kaski,28.266667,83.883333
+NPL,RBB,175,Nepal,2156,Western,22363,Gandaki,653,Nuwakot,28.133333,83.883333
+NPL,RBB,175,Nepal,2156,Western,22364,Lumbini,654,Palpa,27.866667,83.483333
+NPL,RBB,175,Nepal,2156,Western,22364,Lumbini,665,Rupandehi,27.483333,83.283333
+PAK,RBB,188,Pakistan,2272,Balochistan,23627,Quetta District,295,Quetta,30.187222,67.0125
+PAK,RBB,188,Pakistan,2275,North-West Frontier,40347,Peshawar District,294,Peshawar,34.008366,71.580182
+PAK,RBB,188,Pakistan,2276,Punjab,23666,Lahore District,291,Lahore,31.549722,74.343611
+PAK,RBB,188,Pakistan,2276,Punjab,40373,Multan District,292,Multan,30.195556,71.475278
+PAK,RBB,188,Pakistan,2277,Sindh,40393,Karachi East District,293,Karachi,24.9056,67.0822
+PHL,RBB,196,Philippines,67156,Autonomous region in Muslim Mindanao (ARMM),67174,Maguindanao,183,Shariff Aguak,6.864722,124.441667
+PHL,RBB,196,Philippines,2354,Cordillera Administrative region (CAR),24206,Benguet,168,La Trinidad,16.455,120.5875
+PHL,RBB,196,Philippines,2355,National Capital region (NCR),24210,Metropolitan Manila,167,Manila,14.604167,120.982222
+PHL,RBB,196,Philippines,2356,Region I (Ilocos region),24214,Pangasinan,169,Lingayen,16.016667,120.233333
+PHL,RBB,196,Philippines,2357,Region II (Cagayan Valley),24216,Cagayan,170,Tuguegarao,17.6125,121.7281
+PHL,RBB,196,Philippines,67165,Region III (Central Luzon),24222,Nueva Ecija,171,Palayan,15.5415,121.0848
+PHL,RBB,196,Philippines,67166,Region IV-A (Calabarzon),24235,Rizal,172,Santa Cruz,14.6089,121.1712
+PHL,RBB,196,Philippines,67167,Region IV-B (Mimaropa),24233,Palawan,173,Puerto Princesa,9.739167,118.735278
+PHL,RBB,196,Philippines,67159,Region IX (Zamboanga Peninsula),67164,Zamboanga Del Sur,178,Zamboanga City,6.910255,122.071715
+PHL,RBB,196,Philippines,2361,Region V (Bicol region),24240,Albay,174,Legazpi,13.137222,123.734444
+PHL,RBB,196,Philippines,2362,Region VI (Western Visayas),24250,Iloilo,175,Iloilo City,10.696944,122.564444
+PHL,RBB,196,Philippines,2363,Region VII (Central Visayas),24253,Cebu,176,Cebu City,10.311111,123.891667
+PHL,RBB,196,Philippines,2364,Region VIII (Eastern Visayas),24260,Southern Leyte,177,Catarman,10.136111,125.008889
+PHL,RBB,196,Philippines,67160,Region X (Northern Mindanao),24272,Lanao Del Norte,179,Tubod,8.219167,124.248889
+PHL,RBB,196,Philippines,67161,Region XI (Davao Region),24268,Davao Del Sur,180,Davao City,7.18,125.44
+PHL,RBB,196,Philippines,67162,Region XII (Soccsksargen),24271,South Cotabato,181,Koronadal,6.503056,124.846944
+PHL,RBB,196,Philippines,2368,Region XIII (Caraga),24278,Surigao Del Sur,182,Tandag,9.078333,126.198611
+LKA,RBB,231,Sri Lanka,2736,Central,0,,1912,Kandy,7.29460001,80.59069824
+LKA,RBB,231,Sri Lanka,2736,Central,0,,1915,Matale,7.480700016,80.3227005
+LKA,RBB,231,Sri Lanka,2736,Central,0,,1917,Nuwara Eliya,6.951399803,80.74590302
+LKA,RBB,231,Sri Lanka,2737,Eastern,25832,Ampara,360,Ampara,7.283333,81.666667
+LKA,RBB,231,Sri Lanka,2737,Eastern,25833,Batticaloa,361,Batticaloa,7.716667,81.7
+LKA,RBB,231,Sri Lanka,2737,Eastern,25834,Trincomalee,366,Trincomalee,8.566667,81.233333
+LKA,RBB,231,Sri Lanka,2738,North Central,0,,1906,Anuradhapura,8.335300446,80.332901
+LKA,RBB,231,Sri Lanka,2738,North Central,25836,Polonnaruwa,1888,Polonnaruwa,7.93411,81.00589
+LKA,RBB,231,Sri Lanka,2739,North Western,0,,1914,Kurunegala,7.480700016,80.3227005
+LKA,RBB,231,Sri Lanka,2739,North Western,0,,1918,Puttalm,7.934100151,80.97080231
+LKA,RBB,231,Sri Lanka,2740,Northern,25839,Jaffna,362,Jaffna,9.6567,80.0137
+LKA,RBB,231,Sri Lanka,2740,Northern,25840,Kilinochchi,363,Kilinochchi,9.3961,80.3982
+LKA,RBB,231,Sri Lanka,2740,Northern,25841,Mannar,364,Mannar,8.983333,79.9
+LKA,RBB,231,Sri Lanka,2740,Northern,25842,Mullattivu,365,Mulaitivu,9.268,80.815
+LKA,RBB,231,Sri Lanka,2740,Northern,25843,Vavuniya,367,Vavuniya,8.75,80.5
+LKA,RBB,231,Sri Lanka,2741,Sabaragamuwa,0,,1919,Rathnapura,6.716800213,80.33509827
+LKA,RBB,231,Sri Lanka,2742,Southern,0,,1910,Galle,6.037199974,80.22450256
+LKA,RBB,231,Sri Lanka,2742,Southern,0,,1908,Hambantota,6.141300201,81.08159637
+LKA,RBB,231,Sri Lanka,2742,Southern,0,,1916,Matara,5.952000141,80.51570129
+LKA,RBB,231,Sri Lanka,2743,Uva,0,,1907,Badulla,6.988800049,81.04149628
+LKA,RBB,231,Sri Lanka,2743,Uva,25850,Moneragala,1889,Monaragala,6.87469,81.23173
+LKA,RBB,231,Sri Lanka,2744,Western,25851,Colombo,368,Colombo City,6.931944,79.847778
+LKA,RBB,231,Sri Lanka,2744,Western,0,,1909,Gampaha,7.081500053,79.97720337
+LKA,RBB,231,Sri Lanka,2744,Western,0,,1911,Kalutara,6.58739996,79.959198
+TLS,RBB,242,Timor-Leste,2959,Baucau,27328,Baucau,1360,Baucau,-8.471111,126.458333
+TLS,RBB,242,Timor-Leste,2959,Baucau,27330,Laga,1365,Laga,-8.472222,126.596944
+TLS,RBB,242,Timor-Leste,2959,Baucau,27333,Venilale,1369,Venilale,-8.643056,126.378333
+TLS,RBB,242,Timor-Leste,2960,Bobonaro,27335,Balibo,1358,Balibo,-8.968889,125.040556
+TLS,RBB,242,Timor-Leste,2960,Bobonaro,27337,Cailaco,1362,Cailaco,-8.9,125.283333
+TLS,RBB,242,Timor-Leste,2960,Bobonaro,27339,Maliana,1366,Maliana,-8.991667,125.219722
+TLS,RBB,242,Timor-Leste,2962,Dili,27351,Vera Cruz,1361,Becora,-8.558611,125.573611
+TLS,RBB,242,Timor-Leste,2962,Dili,27351,Vera Cruz,1363,Comoro,-8.558611,125.573611
+TLS,RBB,242,Timor-Leste,2962,Dili,27351,Vera Cruz,1364,Hali-Laren,-8.558611,125.573611
+TLS,RBB,242,Timor-Leste,2968,Oecussi,27378,#Pante Makasar B,1359,Baqui,-9.283333,124.351111
+TLS,RBB,242,Timor-Leste,2968,Oecussi,27377,Pante Macasar,1367,Numbey,-9.208611,124.352222
+TLS,RBB,242,Timor-Leste,2968,Oecussi,27376,Oesilo,1368,Pune,-9.369444,124.317222
+RUS,RBC,4,Algeria,2553,,39001,,1796,Samara,27.49230957,-7.828404903
+DZA,RBC,4,Algeria,344,Alger,37759,Hydra,1794,Algiers,36.752887,3.042048
+DZA,RBC,4,Algeria,383,Tindouf,0,,1902,Auserd,27.63100052,-7.875999928
+DZA,RBC,4,Algeria,383,Tindouf,0,,1903,Layoun,27.73999977,-8.013999939
+DZA,RBC,4,Algeria,383,Tindouf,39001,Tindouf,1795,Tindouf,27.6761012,-8.1276526
+DZA,RBC,4,Algeria,388,Tlemcen,39140,Djebala,1797,Dakhla,26.82744789,-6.86994791
+ARM,RBC,13,Armenia,454,Ararat,4895,Artashat,1886,Artashat,39.961399,44.544498
+ARM,RBC,13,Armenia,458,Lori,4911,Spitak,1787,Armavir,40.91458,44.1536016
+ARM,RBC,13,Armenia,458,Lori,4914,Vakhkadzor,643,Vanadzor,40.8127778,44.4883333
+ARM,RBC,13,Armenia,461,Syunik,4928,Kafan,1595,Kapan,39.2011111,46.415
+ARM,RBC,13,Armenia,462,Tavush,4934,Shamshadinskiy (Berd),644,Berd,40.880833,45.391667
+ARM,RBC,13,Armenia,462,Tavush,0,,642,Gavar,40.35889053,45.12666702
+ARM,RBC,13,Armenia,463,Vayots Dzor,4935,Azizbekov (Vayk),1594,Yeghegnadzor,39.76,45.33
+ARM,RBC,13,Armenia,464,Yerevan,4936,Yerevan,641,Yerevan,40.181111,44.513611
+GEO,RBC,92,Georgia,1307,Tbilisi,16525,Tbilissi,301,Tbilisi,41.7151377,44.827096
+IRN,RBC,117,Iran  (Islamic Republic of),1560,Tehran,41130,Tehran,1652,Tehran Market,35.72,51.4
+IRQ,RBC,118,Iraq,1564,Anbar,36759,Ramadi,1464,Alanbar,33.416312,43.302097
+IRQ,RBC,118,Iraq,1571,Babil,36778,Al-Musayab,1495,Babylon,32.483182,44.43738
+IRQ,RBC,118,Iraq,1572,Baghdad,36785,Al Resafa,1493,Baghdad,33.3386111,44.3938889
+IRQ,RBC,118,Iraq,1565,Basrah,36791,Basrah,1496,Basra,30.534884,47.788846
+IRQ,RBC,118,Iraq,1574,Dahuk,36795,Dahuk,1492,Dohuk,36.869498,42.993982
+IRQ,RBC,118,Iraq,1575,Diyala,36803,Al-Muqdadiya,1465,Dyala,33.747668,44.639447
+IRQ,RBC,118,Iraq,1569,Erbil,0,,1474,Erbil,36.192573,44.01062
+IRQ,RBC,118,Iraq,1576,Kerbala,36806,Kerbala,1469,Karbala,32.61144,44.008472
+IRQ,RBC,118,Iraq,1570,Kirkuk,0,,1513,Kerkuk,35.468056,44.392222
+IRQ,RBC,118,Iraq,1577,Missan,36810,Amara,1468,Missan,31.83222,47.156131
+IRQ,RBC,118,Iraq,1566,Muthanna,36816,Al-Samawa,1471,Al-Muthana,31.313856,45.287104
+IRQ,RBC,118,Iraq,1568,Najaf,36819,Najaf,1470,Najaf,32.00048,44.330839
+IRQ,RBC,118,Iraq,1578,Ninewa,36823,Mosul,1475,Mosul,36.335,43.1188889
+IRQ,RBC,118,Iraq,1567,Qadissiya,36829,Diwaniya,1472,Qadisyia,31.987723,44.930177
+IRQ,RBC,118,Iraq,1567,Qadissiya,36829,Diwaniya,1467,Wasit,32.383333,45.225
+IRQ,RBC,118,Iraq,1579,Salah al-Din,36838,Tikrit,1466,Salhdin,34.597186,43.685675
+IRQ,RBC,118,Iraq,1580,Sulaymaniyah,36765,Sulaymaniya,1494,Sulaimania,35.561127,45.437487
+IRQ,RBC,118,Iraq,1573,Thi-Qar,36844,Nassriya,1473,Thi Qar,31.048263,46.271753
+KGZ,RBC,138,Kyrgyzstan,1746,Batken,18592,Batken,680,Batken,40.05,70.833333
+KGZ,RBC,138,Kyrgyzstan,1746,Batken,0,,681,Karabak,,
+KGZ,RBC,138,Kyrgyzstan,1746,Batken,18592,Batken,1481,Samarkandek,,
+KGZ,RBC,138,Kyrgyzstan,1747,Chuy,18595,Alamudun,671,Bishkek,42.873056,74.600278
+KGZ,RBC,138,Kyrgyzstan,1747,Chuy,18598,Kemin,1477,Bystrovka,42.785278,75.691111
+KGZ,RBC,138,Kyrgyzstan,1747,Chuy,18597,Jayyl,1890,Kara-Balta,42.8212455,73.8536683
+KGZ,RBC,138,Kyrgyzstan,1747,Chuy,18598,Kemin,1425,Kemin,42.7852778,75.6911111
+KGZ,RBC,138,Kyrgyzstan,1747,Chuy,18596,Chuy,1891,Tokmok,42.822377,75.3178952
+KGZ,RBC,138,Kyrgyzstan,1748,Jalal-Abad,18605,Bazar-Korgon,1422,Arslanbob,41.305988,72.965729
+KGZ,RBC,138,Kyrgyzstan,1748,Jalal-Abad,18605,Bazar-Korgon,1423,Bazar-Korgon,41.0285386,72.7392711
+KGZ,RBC,138,Kyrgyzstan,1748,Jalal-Abad,18608,Suzak,1424,Jalal-Abad,40.933333,73
+KGZ,RBC,138,Kyrgyzstan,1748,Jalal-Abad,18610,Toktogul,677,Kyzyl-Tuu,41.616667,73.333333
+KGZ,RBC,138,Kyrgyzstan,1748,Jalal-Abad,18608,Suzak,676,Suzak,40.9,72.9
+KGZ,RBC,138,Kyrgyzstan,1749,Naryn,18612,At-Bashy,1476,At-Bashi,41.168098,75.805061
+KGZ,RBC,138,Kyrgyzstan,1749,Naryn,0,,674,Dobolu,,
+KGZ,RBC,138,Kyrgyzstan,1749,Naryn,18615,Naryn,673,Naryn,41.43,76
+KGZ,RBC,138,Kyrgyzstan,1749,Naryn,18615,Naryn,1479,Orto-Nura,41.453611,76.216111
+KGZ,RBC,138,Kyrgyzstan,1750,Osh,18620,Kara-Suu,682,Karasuu,40.7,72.866667
+KGZ,RBC,138,Kyrgyzstan,1750,Osh,18621,Nookat,1427,Nookat,40.2671632,72.6269437
+KGZ,RBC,138,Kyrgyzstan,1750,Osh,18620,Kara-Suu,672,Osh,40.529444,72.79
+KGZ,RBC,138,Kyrgyzstan,1750,Osh,18619,Kara-Kulja,683,Sary-Kamysh,40.6110382,73.5402716
+KGZ,RBC,138,Kyrgyzstan,1751,Talas,18624,Kara-Buura,1426,Kok-Say,42.5,71.116667
+KGZ,RBC,138,Kyrgyzstan,1751,Talas,18624,Kara-Buura,678,Kyzyl-Adyr,42.629444,71.590556
+KGZ,RBC,138,Kyrgyzstan,1751,Talas,18625,Manas,679,Pokrovka,42.75,71.6
+KGZ,RBC,138,Kyrgyzstan,1751,Talas,18626,Talas,1480,Talas,42.5222222,72.2419444
+KGZ,RBC,138,Kyrgyzstan,1752,Ysyk-Kol,18627,Ak-Suu,1478,Kaiyrma-Aryk,42.5256445,78.6611488
+KGZ,RBC,138,Kyrgyzstan,1752,Ysyk-Kol,0,,1900,Karakol,42.48022461,78.39595032
+KGZ,RBC,138,Kyrgyzstan,1752,Ysyk-Kol,18627,Ak-Suu,675,Teplokluchenka,42.5,78.5
+LBN,RBC,141,Lebanon,1798,Beirut,18796,Beirut,1689,Beirut,33.8886289,35.4954794
+LBN,RBC,141,Lebanon,1798,Beirut,18796,Beirut,1698,Keserwan,33.8919306,35.5330714
+LBN,RBC,141,Lebanon,1797,Bekaa,18791,Baalbek,1687,Baalbeck,34.0046889,36.21104
+LBN,RBC,141,Lebanon,1797,Bekaa,18793,Hermel,1695,Hermel,34.3970517,36.3871708
+LBN,RBC,141,Lebanon,1797,Bekaa,18794,Rachiaya,1703,Rashaya,33.5346522,35.8716137
+LBN,RBC,141,Lebanon,1797,Bekaa,18792,West Bekaa,1707,West Beqaa,33.6294745,35.7625241
+LBN,RBC,141,Lebanon,1797,Bekaa,18795,Zahle,1708,Zahle,33.8462558,35.9019519
+LBN,RBC,141,Lebanon,1801,Mount Lebanon,18807,Aley,1685,Aley,33.810054,35.5973754
+LBN,RBC,141,Lebanon,1801,Mount Lebanon,18808,Baabda,1686,Baabda,33.8337971,35.544145
+LBN,RBC,141,Lebanon,1801,Mount Lebanon,18809,Chouf,1692,Chouf,33.6483159,35.5876697
+LBN,RBC,141,Lebanon,1801,Mount Lebanon,18812,El Metn,1693,El Metn,33.9168612,35.7188463
+LBN,RBC,141,Lebanon,1801,Mount Lebanon,18810,Jubail,1696,Jbeil,34.1230022,35.6519282
+LBN,RBC,141,Lebanon,1802,Nabatiye,18814,Bint Jubail,1690,Bint Jbeil,33.1172473,35.4288797
+LBN,RBC,141,Lebanon,1802,Nabatiye,18813,Hasbaiya,1694,Hasbaya,33.3979078,35.68515
+LBN,RBC,141,Lebanon,1802,Nabatiye,18815,Marjaayoun,1700,Marjayoun,33.3579247,35.5931397
+LBN,RBC,141,Lebanon,1802,Nabatiye,18816,Nabatiye,1702,Nabatiyeh,33.3771694,35.4838294
+LBN,RBC,141,Lebanon,1799,North,18797,Akkar,1684,Akkar,34.5328763,36.1328132
+LBN,RBC,141,Lebanon,1799,North,18798,Batroun,1688,Batroun,34.2498321,35.6642904
+LBN,RBC,141,Lebanon,1799,North,18802,Tripoli,1691,Bechare,34.4270714,35.8332042
+LBN,RBC,141,Lebanon,1799,North,18800,Koura,1699,Koura,34.3148851,35.8061779
+LBN,RBC,141,Lebanon,1799,North,18801,Minieh-Danieh,1701,Minieh-Dannieh,34.3813801,36.0675952
+LBN,RBC,141,Lebanon,1799,North,18802,Tripoli,1705,Tripoli,34.4380941,35.8308371
+LBN,RBC,141,Lebanon,1799,North,18803,Zgharta,1709,Zgharta,34.3963159,35.8958445
+LBN,RBC,141,Lebanon,1800,South,18804,Jezzine,1697,Jezzine,33.5408371,35.5862413
+LBN,RBC,141,Lebanon,1800,South,18805,Saida,1704,Saida,33.5626094,35.3687268
+LBN,RBC,141,Lebanon,1800,South,18806,Sour,1706,Sour,33.2721571,35.203278
+PSE,RBC,999,State of Palestine,91,Gaza Strip,0,,976,Gaza Strip,31.952162,35.233154
+PSE,RBC,999,State of Palestine,267,West Bank,0,,975,West Bank,31.9465703,35.3027226
+SDN,RBC,40764,Sudan,2767,#West Kordofan,37146,#As Salam,1823,El Fula,11.7315405,28.3578828
+SDN,RBC,40764,Sudan,2749,Blue Nile,37037,Ad Damazin,1026,Damazin,11.7891,34.3592
+SDN,RBC,40764,Sudan,2752,Kassala,37060,Kassala,1031,Kassala,15.457,36.4001
+SDN,RBC,40764,Sudan,2757,Northern Darfur,37080,Al Fasher,1025,Al Fashir,13.633333,25.35
+SDN,RBC,40764,Sudan,2756,Northern Kordofan,37087,Sheikan,1029,El Obeid,13.18831,30.21858
+SDN,RBC,40764,Sudan,40772,Red Sea,37095,Port Sudan,1034,Port Sudan,19.615833,37.216389
+SDN,RBC,40764,Sudan,2764,Southern Darfur,37102,Al Deain,1027,Eddein,11.433333,26.15
+SDN,RBC,40764,Sudan,2764,Southern Darfur,37106,Nyala,1033,Nyala,12.05,24.883333
+SDN,RBC,40764,Sudan,2763,Southern Kordofan,37112,Kadugli,1030,Kadugli,11.016667,29.716667
+SDN,RBC,40764,Sudan,2769,Western Darfur,37134,Al Geneina,1028,El Geneina,13.45,22.45
+SDN,RBC,40764,Sudan,2769,Western Darfur,37140,Zallingi,1824,Zalingi,12.89999962,23.47999954
+SDN,RBC,40764,Sudan,2770,White Nile,37153,Kosti,1032,Kosti,13.166667,32.666667
+SYR,RBC,238,Syrian Arab Republic,2833,Al_Qunaytirah,26312,Al_Qunaytirah,1554,Khan Arnabeh,33.184245,35.890639
+SYR,RBC,238,Syrian Arab Republic,2833,Al_Qunaytirah,26312,Al_Qunaytirah,1557,Rafeed,32.9558879,35.901947
+SYR,RBC,238,Syrian Arab Republic,2834,Aleppo,26316,Al_Bab,1144,Al-Bab,36.3725,37.517778
+SYR,RBC,238,Syrian Arab Republic,2834,Aleppo,0,,1546,Al-Cha'ar,36.2069889,37.1814778
+SYR,RBC,238,Syrian Arab Republic,2834,Aleppo,26319,Jebel_Saman,1142,Aleppo,36.202778,37.158611
+SYR,RBC,238,Syrian Arab Republic,2834,Aleppo,0,,1926,A�zaz,36.58589935,37.04565048
+SYR,RBC,238,Syrian Arab Republic,2834,Aleppo,26320,Menbij,1143,Manbej,36.526667,37.956389
+SYR,RBC,238,Syrian Arab Republic,2834,Aleppo,0,,1545,Moghambo,36.2195222,37.1253
+SYR,RBC,238,Syrian Arab Republic,2834,Aleppo,0,,1925,Zahraa,36.36174011,37.00904083
+SYR,RBC,238,Syrian Arab Republic,2835,As_Suweida,26323,Shahba,1556,Shahba,32.852329,36.64077
+SYR,RBC,238,Syrian Arab Republic,2835,As_Suweida,26321,As_Suwayda,1559,Sweida,32.7,36.566667
+SYR,RBC,238,Syrian Arab Republic,2836,City-Damascus,26324,City_Damascus,1563,Damascus,33.5,36.3
+SYR,RBC,238,Syrian Arab Republic,2836,City-Damascus,26324,City_Damascus,1112,Sheikh Sa'ad,33.5,36.3
+SYR,RBC,238,Syrian Arab Republic,2836,City-Damascus,26324,City_Damascus,1558,Shrebishat,33.50694,36.29672
+SYR,RBC,238,Syrian Arab Republic,2836,City-Damascus,26324,City_Damascus,1113,Zablatani,33.5,36.3
+SYR,RBC,238,Syrian Arab Republic,2837,Damascus,26328,At_Tall,1549,Al-Tall,33.597669,36.300343
+SYR,RBC,238,Syrian Arab Republic,2837,Damascus,26331,Darayya,1116,Hajar Aswad,33.463539,36.304439
+SYR,RBC,238,Syrian Arab Republic,2837,Damascus,26325,Al_Ghutta,1354,Jaramana,33.483333,36.35
+SYR,RBC,238,Syrian Arab Republic,2837,Damascus,26332,Darayya/Center,1115,Qudsayya,33.55,36.216667
+SYR,RBC,238,Syrian Arab Republic,2838,Daraa,26337,Dara,1118,Daraa,32.621694,36.108648
+SYR,RBC,238,Syrian Arab Republic,2838,Daraa,26337,Dara,1555,Mzereb,32.708787,36.025951
+SYR,RBC,238,Syrian Arab Republic,2839,Deir Ezzor,26340,Al_Mayadin,1548,Almayadin,35.016667,40.45
+SYR,RBC,238,Syrian Arab Republic,2839,Deir Ezzor,26341,Dayr_Az_Zor,1121,Deir Ezzor,35.33567,40.153831
+SYR,RBC,238,Syrian Arab Republic,2843,Edlib,26365,Idleb,1550,Benech,35.9581556,36.7118972
+SYR,RBC,238,Syrian Arab Republic,2843,Edlib,26365,Idleb,1547,Edlib,35.930956,36.633146
+SYR,RBC,238,Syrian Arab Republic,2840,Hama,26345,Hama,1136,Hama,35.133333,36.75
+SYR,RBC,238,Syrian Arab Republic,2840,Hama,26346,Masyaf,1137,Mesiaf,35.05916,36.342086
+SYR,RBC,238,Syrian Arab Republic,2841,Hassakeh,26351,Hassakeh,1124,Hassakeh,36.481685,40.75619
+SYR,RBC,238,Syrian Arab Republic,2841,Hassakeh,26353,Quamishli,1552,Kamishly,37.05,41.216667
+SYR,RBC,238,Syrian Arab Republic,2841,Hassakeh,26353,Quamishli,1125,Qamishly,37.052361,41.241371
+SYR,RBC,238,Syrian Arab Republic,2842,Homs,0,,1931,Al-Houla,,
+SYR,RBC,238,Syrian Arab Republic,2842,Homs,0,,1927,Al-Rastan,34.91684341,36.73332214
+SYR,RBC,238,Syrian Arab Republic,2842,Homs,0,,1930,Al-Waer,,
+SYR,RBC,238,Syrian Arab Republic,2842,Homs,26358,Homs,1551,Ekrema,34.705772,36.716534
+SYR,RBC,238,Syrian Arab Republic,2842,Homs,26358,Homs,1139,Homs,34.733333,36.716667
+SYR,RBC,238,Syrian Arab Republic,2842,Homs,0,,1929,Inshaat,,
+SYR,RBC,238,Syrian Arab Republic,2842,Homs,0,,1924,Jandar,34.49211884,36.77795029
+SYR,RBC,238,Syrian Arab Republic,2842,Homs,26358,Homs,1897,Rur_Qaretien,34.230368,37.238983
+SYR,RBC,238,Syrian Arab Republic,2842,Homs,0,,1928,Talbiseh,34.84375,36.73012161
+SYR,RBC,238,Syrian Arab Republic,2844,Lattakia,26366,Al_Hafa,1135,Hiffeh,35.5833333,36.0333333
+SYR,RBC,238,Syrian Arab Republic,2844,Lattakia,26368,Jablah,1134,Jableh,35.35,35.916667
+SYR,RBC,238,Syrian Arab Republic,2844,Lattakia,26369,Lattakia,1133,Lattakia,35.516667,35.783333
+SYR,RBC,238,Syrian Arab Republic,2845,Raqqa,26371,Raqqa,1127,Raqqa,35.95,39.016667
+SYR,RBC,238,Syrian Arab Republic,2845,Raqqa,26373,Tell_Abiad,1129,Tal Abyad,36.696897,38.956447
+SYR,RBC,238,Syrian Arab Republic,2846,Tartous,26374,Banyas,1131,Banias,35.183333,35.95
+SYR,RBC,238,Syrian Arab Republic,2846,Tartous,26376,Safita,1553,Mashta Al Helou,34.87588,36.257265
+SYR,RBC,238,Syrian Arab Republic,2846,Tartous,26376,Safita,1132,Safita,34.816667,36.116667
+SYR,RBC,238,Syrian Arab Republic,2846,Tartous,26378,Tartous,1130,Tartous,34.883333,35.883333
+TJK,RBC,239,Tajikistan,2847,Badakhshoni Kuhi,37580,Shugnanskiy,304,Khorog,37.491667,71.555833
+TJK,RBC,239,Tajikistan,2850,Districts of Republican Subordination (DRS),37630,Varzob,302,Dushanbe,38.646111,68.769167
+TJK,RBC,239,Tajikistan,2850,Districts of Republican Subordination (DRS),37619,Garmskiy,303,Gharm,39.024167,70.379444
+TJK,RBC,239,Tajikistan,2848,Khatlon,37583,Bokhtar,306,Kurgan-Tyube,37.836389,68.780278
+TJK,RBC,239,Tajikistan,2849,Sughd,37606,Hojenskiy,305,Khujand,40.28,69.631667
+UKR,RBC,254,Ukraine,3148,Cherkas'ka,0,,1858,Cherkasy,49.444433,32.059767
+UKR,RBC,254,Ukraine,3149,Chernihivs'ka,0,,1859,Chernihiv,51.4982,31.28935
+UKR,RBC,254,Ukraine,3150,Chernivets'ka,0,,1860,Chernivtsi,48.2920787,25.9358367
+UKR,RBC,254,Ukraine,3151,Dnipropetrovs'ka,0,,1861,Dnipropetrovsk,48.464717,35.046183
+UKR,RBC,254,Ukraine,3152,Donets'ka,0,,1862,Donetska,48.015883,37.80285
+UKR,RBC,254,Ukraine,3153,Ivano-frankivs'ka,0,,1863,Ivano-Frankivsk,48.922633,24.711117
+UKR,RBC,254,Ukraine,3154,Kharkivs'ka,0,,1864,Kharkivka,49.9935,36.230383
+UKR,RBC,254,Ukraine,3155,Khersons'ka,0,,1865,Herson,46.635417,32.616867
+UKR,RBC,254,Ukraine,3156,Khmel'nyts'ka,0,,1866,Khmelnytsky,49.422983,26.987133
+UKR,RBC,254,Ukraine,3157,Kirovohrads'ka,0,,1867,Kirovograd,48.507933,32.262317
+UKR,RBC,254,Ukraine,3158,Krym,0,,1883,Crimea,44.952117,34.102417
+UKR,RBC,254,Ukraine,3158,Krym,0,,1868,m. Sevastopol,44.61665,33.525367
+UKR,RBC,254,Ukraine,3159,Kyyivs'ka,0,,1884,Kiev,50.4501,30.5234
+UKR,RBC,254,Ukraine,3159,Kyyivs'ka,0,,1869,m. Kyiv,50.4501,30.5234
+UKR,RBC,254,Ukraine,3160,L'vivs'ka,0,,1871,Lviv,49.839683,24.029717
+UKR,RBC,254,Ukraine,3161,Luhans'ka,0,,1870,Luhanska,48.574041,39.307815
+UKR,RBC,254,Ukraine,3162,Mykolayivs'ka,0,,1872,Mykolaiv,46.975033,31.994583
+UKR,RBC,254,Ukraine,3163,Odes'ka,0,,1873,Odessa,46.482526,30.7233095
+UKR,RBC,254,Ukraine,3164,Poltavs'ka,0,,1874,Poltava,49.588267,34.551417
+UKR,RBC,254,Ukraine,3165,Rivnens'ka,0,,1875,Rivne,50.6199,26.251617
+UKR,RBC,254,Ukraine,3166,Sums'ka,0,,1876,Sums,50.9077,34.7981
+UKR,RBC,254,Ukraine,3167,Ternopil's'ka,0,,1877,Ternopil,49.553517,25.594767
+UKR,RBC,254,Ukraine,3168,Vinnyts'ka,0,,1878,Vinnitsa,49.233083,28.468217
+UKR,RBC,254,Ukraine,3169,Volyns'ka,0,,1879,Volyn,50.747233,25.325383
+UKR,RBC,254,Ukraine,3170,Zakarpats'ka,0,,1880,Zakarpattya,48.6208,22.287883
+UKR,RBC,254,Ukraine,3171,Zaporiz'ka,0,,1881,Zaporizhia,47.8388,35.139567
+UKR,RBC,254,Ukraine,3172,Zhytomyrs'ka,0,,1882,Zhytomyr,50.25465,28.658667
+YEM,RBC,269,Yemen,144969,$Amanat Al Asimah,144985,$Old City,197,Sana'a City,15.354722,44.206667
+YEM,RBC,269,Yemen,3409,Aden,145022,$Al Mualla,192,Aden City,12.7854969,45.0186548
+YEM,RBC,269,Yemen,3409,Aden,145016,,198,Soqatra (Hudaibo),12.65,54.033333
+YEM,RBC,269,Yemen,3411,Al Hudaydah,145007,$Al Hali,195,Al Hudaydah City (Hodieda),14.797812,42.954516
+YEM,RBC,269,Yemen,3415,Amran,32790,Amran,193,Amran City,15.659398,43.943852
+YEM,RBC,269,Yemen,3418,Hajjah,32863,Haradh,194,Haradh Town,16.406211,43.055868
+YEM,RBC,269,Yemen,3422,Sa'ada,145018,$Sa'adah,196,Sa'ada City,16.943724,43.765864
+YEM,RBC,269,Yemen,3425,Taizz,144993,$Al Qahirah,199,Taizz City,13.58,44.02
+BEN,RBD,29,Benin,609,Alibori,5861,Banikoara,1749,Banikoara,11.2934532,2.435696
+BEN,RBD,29,Benin,609,Alibori,5865,Malanville,1044,Malanville (CBM),11.86,3.38
+BEN,RBD,29,Benin,610,Atakora,5868,Kerou,1755,Kerou,10.8323229,2.1106617
+BEN,RBD,29,Benin,610,Atakora,5872,Natitingou,1757,Natitingou,10.2963526,1.3806902
+BEN,RBD,29,Benin,610,Atakora,5874,Tanguieta,1756,Tanguieta,10.6227552,1.2650349
+BEN,RBD,29,Benin,612,Borgou,5885,Kalale,1751,Kalale,10.2901302,3.3817264
+BEN,RBD,29,Benin,612,Borgou,5886,Ndali,1753,N'Dali,9.8630387,2.7133005
+BEN,RBD,29,Benin,612,Borgou,5887,Nikki,1752,Nikki,9.936763,3.2131232
+BEN,RBD,29,Benin,612,Borgou,5888,Parakou,1754,Parakou,9.3466822,2.6090043
+BEN,RBD,29,Benin,612,Borgou,5890,Sinende,1750,Sinende,10.3438309,2.3838304
+BEN,RBD,29,Benin,613,Collines,5894,Glazoue,1760,Glazoue,7.9736782,2.2445791
+BEN,RBD,29,Benin,613,Collines,5896,Savalou,1759,Savalou,7.9301365,1.9710284
+BEN,RBD,29,Benin,614,Couffo,5898,Aplahoue,1766,Azove,6.9473986,1.7028015
+BEN,RBD,29,Benin,615,Donga,5905,Djougou,1758,Djougou,9.7080916,1.6663523
+BEN,RBD,29,Benin,616,Littoral,5908,Cotonou,124,Dantokpa,6.35,2.433333
+BEN,RBD,29,Benin,617,Mono,5911,Come,1765,Come,6.4254214,1.9294681
+BEN,RBD,29,Benin,618,Oueme,5922,Porto-novo,1764,Ouando,6.4980548,2.5900946
+BEN,RBD,29,Benin,619,Plateau,5926,Ketou,1762,Ketou,7.3603376,2.6040436
+BEN,RBD,29,Benin,619,Plateau,5927,Pobe,1763,Pobe,6.9832415,2.6636066
+BEN,RBD,29,Benin,620,Zou,5931,Bohicon,1761,Bohicon,7.1797684,2.0714223
+BFA,RBD,42,Burkina Faso,40276,Boucle Du Mouhoun,0,,1892,Dedougou,12.4503003,-3.4700327
+BFA,RBD,42,Burkina Faso,40276,Boucle Du Mouhoun,12148,Sourou,141,Tougan,13.0725,-3.0694
+BFA,RBD,42,Burkina Faso,40277,Cascades,12117,Comoe,129,Banfora,10.633333,-4.766667
+BFA,RBD,42,Burkina Faso,40278,Centre,12123,Kadiogo,139,Sakaryare,12.3356,-15.111
+BFA,RBD,42,Burkina Faso,40279,Centre-est,0,,1802,Pouytenga,12.2172,-0.4461
+BFA,RBD,42,Burkina Faso,40279,Centre-est,12115,Boulgou,140,Tenkodogo,11.78,-0.369722
+BFA,RBD,42,Burkina Faso,40280,Centre-nord,0,,1803,Kaya,13.091667,-1.084444
+BFA,RBD,42,Burkina Faso,40280,Centre-nord,12111,Bam,137,Kongoussi,13.325833,-1.534722
+BFA,RBD,42,Burkina Faso,40281,Centre-ouest,12116,Boulkiemde,138,Koudougou,12.25,-2.366667
+BFA,RBD,42,Burkina Faso,40281,Centre-ouest,0,,1804,Leo,11.1,-2.1
+BFA,RBD,42,Burkina Faso,40282,Centre-sud,0,,1805,Guelwongo,11.009444,-0.870833
+BFA,RBD,42,Burkina Faso,40283,Est,12120,Gourma,134,Fada N'Gourma,12.062222,0.357778
+BFA,RBD,42,Burkina Faso,40283,Est,12149,Tapoa,1042,Kantchari (CBM),12.47,1.51
+BFA,RBD,42,Burkina Faso,40283,Est,12149,Tapoa,1043,Namouno (CBM),11.86,1.69
+BFA,RBD,42,Burkina Faso,40284,Hauts-bassins,0,,1806,Nieneta,11.198001,-4.2887941
+BFA,RBD,42,Burkina Faso,40285,Nord,12154,Zondoma,136,Gourcy,13.207756,-2.358932
+BFA,RBD,42,Burkina Faso,40285,Nord,0,,1893,Ouahigouya,13.5668258,-2.4109908
+BFA,RBD,42,Burkina Faso,40286,Plateau Central,12130,Kourweogo,130,Bousse,12.660556,-1.892222
+BFA,RBD,42,Burkina Faso,40287,Sahel,12147,Soum,132,Djibo,14.101163,-1.627926
+BFA,RBD,42,Burkina Faso,40287,Sahel,12145,Seno,133,Dori,13.361864,0.397528
+BFA,RBD,42,Burkina Faso,40287,Sahel,12140,Oudalan,135,Gorom Gorom,14.442309,-0.235449
+BFA,RBD,42,Burkina Faso,40288,Sud-ouest,12114,Bougouriba,131,Diebougou,10.966667,-3.25
+CMR,RBD,45,Cameroon,818,ExtrOme - Nord,12482,Logone - Et - Chari,1590,Kousseri,12.0783333,15.0308333
+CMR,RBD,45,Cameroon,818,ExtrOme - Nord,12482,Logone - Et - Chari,1591,Logone-Birni,11.7781,15.1037
+CMR,RBD,45,Cameroon,818,ExtrOme - Nord,12486,Mayo-Tsanaga,1592,Mada,10.795839,13.941933
+CMR,RBD,45,Cameroon,820,Nord,12498,BTnoue,1580,Adoumri,9.25,13.8
+CMR,RBD,45,Cameroon,820,Nord,12500,Mayo-Louti,1585,Figuil,9.75,13.966667
+CMR,RBD,45,Cameroon,820,Nord,12498,BTnoue,1593,Garoua,9.3,13.4
+CMR,RBD,45,Cameroon,820,Nord,12499,Faro,1582,Gode,8.5333333,13.0833333
+CMR,RBD,45,Cameroon,820,Nord,12500,Mayo-Louti,1584,Guider,9.9341667,13.9486111
+CMR,RBD,45,Cameroon,820,Nord,12501,Mayo - Rey,1589,Madingring,8.455859,15.007081
+CMR,RBD,45,Cameroon,820,Nord,12500,Mayo-Louti,1586,Mayo Oulo,9.9594,13.6222
+CMR,RBD,45,Cameroon,820,Nord,12501,Mayo - Rey,1587,Mbaiboum,7.5439583,15.447175
+CMR,RBD,45,Cameroon,820,Nord,12499,Faro,1581,Pintchoumba,8.483333,13.45
+CMR,RBD,45,Cameroon,820,Nord,12498,BTnoue,1579,Pitoa,9.3833333,13.5333333
+CMR,RBD,45,Cameroon,820,Nord,12499,Faro,1583,Poli,8.4691,13.2446
+CMR,RBD,45,Cameroon,820,Nord,12501,Mayo - Rey,1588,Rey Bouba,8.6666667,14.1833333
+CMR,RBD,45,Cameroon,821,Nord - Ouest,12491,Boyo,1578,Ngong,6.583333,10.433333
+CPV,RBD,47,Cape Verde,848,Santiago,12826,Sao Domingos,535,Santiago,14.992,-23.52
+CPV,RBD,47,Cape Verde,849,Santo Antao,12830,Concelho de Porto Novo,533,Santo Antao,17.02,-25.06
+CPV,RBD,47,Cape Verde,851,Sao Vicente,12833,Sao Vicente,534,Sao Vicente,16.88,-24.98
+CAF,RBD,49,Central African Republic,67154,Bangui,67155,Bangui,685,Bangui,4.366667,18.583333
+CAF,RBD,49,Central African Republic,856,Haute-Kotto,12846,Bria,1857,Bria,6.533333,21.983333
+CAF,RBD,49,Central African Republic,860,Mbomou,12866,Bangassou,1856,Bangassou,4.733329773,22.81666756
+CAF,RBD,49,Central African Republic,861,Nana-Gribizi,0,,1790,Kaga bandoro,7,19.18333244
+CAF,RBD,49,Central African Republic,862,Nana-MambTrT,0,,1791,Bouar,5.949999809,15.60000038
+CAF,RBD,49,Central African Republic,864,Ouaka,12883,Bambari,686,Bambari,5.761944,20.667222
+CAF,RBD,49,Central African Republic,865,Ouham,0,,1792,Bossangoa,6.497726917,17.44993973
+CAF,RBD,49,Central African Republic,866,Ouham PendT,0,,1793,Paoua,7.25,16.43333244
+TCD,RBD,50,Chad,12923,Barh Koh,65663,Sarh,235,Sarh,9.1429,18.3923
+TCD,RBD,50,Chad,12914,Barl El Gazal,65623,Moussoro,233,Moussoro,13.640841,16.490069
+TCD,RBD,50,Chad,873,Guera,65428,Dadjo-i,231,Mongo,12.184412,18.693031
+TCD,RBD,50,Chad,12912,Hadjer Lamis,65629,Ndjamena,234,Ndjamena,12.11,15.04
+TCD,RBD,50,Chad,12915,Kanem,65670,Sultanat,230,Mao,14.121159,15.310305
+TCD,RBD,50,Chad,875,Lac,65415,Bol,229,Bol,13.5,14.683333
+TCD,RBD,50,Chad,12918,Logone Oriental,65479,Gore,236,Gore,7.92,16.63
+TCD,RBD,50,Chad,12918,Logone Oriental,65585,Mbaikoro,232,Moundou,8.5666667,16.0833333
+TCD,RBD,50,Chad,12927,Ouaddai,65501,Kachimel-abeche,228,Abeche,13.8166667,20.8166667
+CIV,RBD,66,Cote d'Ivoire,40694,#Haut-sassandra,16857,,835,Daloa,6.8747222,-6.4519444
+CIV,RBD,66,Cote d'Ivoire,1046,#Moyen Comoe,16859,,839,Abengourou,6.7297222,-3.4963889
+CIV,RBD,66,Cote d'Ivoire,40693,#Moyen-Cavally,16855,,837,Duekoue,6.7380556,-7.3430556
+CIV,RBD,66,Cote d'Ivoire,40693,#Moyen-Cavally,16848,,838,Guiglo,6.5402778,-7.4858333
+CIV,RBD,66,Cote d'Ivoire,16838,$District Autonome de Yamoussoukro,14911,,834,Adjame,5.36,-4.02
+CIV,RBD,66,Cote d'Ivoire,1041,Denguele,16860,$Kabadougou,128,Odienne,9.51,-7.5691667
+CIV,RBD,66,Cote d'Ivoire,40692,Montagnes,16867,$Tonkpi,836,Danane,7.2627778,-8.1597222
+CIV,RBD,66,Cote d'Ivoire,40692,Montagnes,16867,$Tonkpi,127,Man,7.4052778,-7.5475
+CIV,RBD,66,Cote d'Ivoire,1051,Vallee Du Bandama,16850,$GbOke,125,Bouake,7.6833333,-5.0330556
+CIV,RBD,66,Cote d'Ivoire,1051,Vallee Du Bandama,16856,$Hambol,126,Katiola,8.1333333,-5.1
+GMB,RBD,90,Gambia,112869,$Kanifing Municipal Council,16416,,277,Bakau,13.478056,-16.681944
+GMB,RBD,90,Gambia,112869,$Kanifing Municipal Council,16405,,278,Banjul,13.453056,-16.5775
+GMB,RBD,90,Gambia,112869,$Kanifing Municipal Council,16416,,290,Latri kunda,13.448611,-16.685278
+GMB,RBD,90,Gambia,112869,$Kanifing Municipal Council,16416,,912,Serrekunda,13.438333,-16.678056
+GMB,RBD,90,Gambia,1285,Central River,16414,Sami,279,Bansang,13.433333,-14.65
+GMB,RBD,90,Gambia,1285,Central River,16406,Fulladu West,916,BrikamaBa,13.533333,-14.933333
+GMB,RBD,90,Gambia,1285,Central River,16410,Niamina East,1356,Jarreng,13.616667,-15.183333
+GMB,RBD,90,Gambia,1285,Central River,16408,Lower Saloum,284,Kaur Wharf Town,13.7,-15.316667
+GMB,RBD,90,Gambia,1285,Central River,16412,Niani,287,Kuntaur,13.65,-14.866667
+GMB,RBD,90,Gambia,1285,Central River,16412,Niani,920,Wassu,13.683333,-14.883333
+GMB,RBD,90,Gambia,1285,Central River,16410,Niamina East,915,Wellingara,13.633333,-15.033333
+GMB,RBD,90,Gambia,1287,Lower River,16420,Kiang Central,288,Kwinella Nya Kunda,13.4,-15.8
+GMB,RBD,90,Gambia,1287,Lower River,16419,Jarra West,914,Soma,13.433333,-15.533333
+GMB,RBD,90,Gambia,1288,North Bank,16426,Lower Niumi,282,Essau / Barra,13.482778,-16.545556
+GMB,RBD,90,Gambia,1288,North Bank,16427,Upper Baddibu,283,Farafenni,13.566667,-15.6
+GMB,RBD,90,Gambia,1288,North Bank,16423,Central Baddibu,286,Ker Pate Kore,13.58551979,-15.97072124
+GMB,RBD,90,Gambia,1288,North Bank,16425,Lower Baddibu,285,Kerewan,13.489444,-16.091111
+GMB,RBD,90,Gambia,1288,North Bank,16428,Upper Niumi,289,Lamin,13.352222,-16.433889
+GMB,RBD,90,Gambia,1288,North Bank,16426,Lower Niumi,919,Ndugu Kebbeh,13.540278,-16.321944
+GMB,RBD,90,Gambia,1289,Upper River,16432,Wuli,280,Basse Santa su,13.316667,-14.216667
+GMB,RBD,90,Gambia,1289,Upper River,16429,Fulladu East,918,Sare Bojo,13.316667,-14.533333
+GMB,RBD,90,Gambia,1289,Upper River,16431,Sandu,917,Sare Ngai,13.5,-14.433333
+GMB,RBD,90,Gambia,1290,West Coast,16438,Kombo Central,281,Brikama,13.2675,-16.646111
+GMB,RBD,90,Gambia,1290,West Coast,16441,Kombo South,1355,Gunjur,13.181667,-16.758333
+GMB,RBD,90,Gambia,1290,West Coast,16436,Foni Jarrol,1514,Kalagi,13.24,-15.83
+GMB,RBD,90,Gambia,1290,West Coast,16433,Foni Bintang-karenai,913,Sibanor,13.208056,-16.196389
+GHA,RBD,94,Ghana,1324,Ashanti,16575,Ejura-Sekyedumasi,223,Ejura,7.383333,-1.366667
+GHA,RBD,94,Ghana,1324,Ashanti,16577,Kumasi,215,Kumasi,6.683333,-1.616667
+GHA,RBD,94,Ghana,1324,Ashanti,16565,Adansi West,216,Obuasi,6.2,-1.666667
+GHA,RBD,94,Ghana,1325,Brong Ahafo,0,,1711,Badu,7.692,-2.23
+GHA,RBD,94,Ghana,1325,Brong Ahafo,16590,Sene,1724,Kajeji,7.784,-0.229
+GHA,RBD,94,Ghana,1325,Brong Ahafo,16588,Kintampo,1726,Kintampo,8.0592612,-1.7295503
+GHA,RBD,94,Ghana,1325,Brong Ahafo,16591,Sunyani,217,Sunyani,7.333333,-2.333333
+GHA,RBD,94,Ghana,1325,Brong Ahafo,16593,Techiman,218,Techiman,7.583333,-1.933333
+GHA,RBD,94,Ghana,1325,Brong Ahafo,0,,1738,Yeji,8.21667,-0.65
+GHA,RBD,94,Ghana,1326,Central,16601,Cape Coast,213,Cape Coast,5.1,-1.25
+GHA,RBD,94,Ghana,1326,Central,16603,Mfantsiman,214,Mankessim,5.266667,-1.016667
+GHA,RBD,94,Ghana,1327,Eastern,16617,New Juaben,212,Koforidua,6.083333,-0.25
+GHA,RBD,94,Ghana,1328,Greater Accra,16621,Accra,209,Accra,5.55,-0.216667
+GHA,RBD,94,Ghana,1328,Greater Accra,16625,Tema,210,Tema,5.616667,-0.016667
+GHA,RBD,94,Ghana,1329,Northern,0,,1712,Banda,8.3153241,-0.1316569
+GHA,RBD,94,Ghana,1329,Northern,0,,1714,Bimbilla,8.8497,0.06303
+GHA,RBD,94,Ghana,1329,Northern,0,,1717,Bunkprugu,10.5127231,0.098043
+GHA,RBD,94,Ghana,1329,Northern,16629,Gushiegu/Karaga,1721,Gushegu,9.9212941,-0.2174318
+GHA,RBD,94,Ghana,1329,Northern,0,,1727,Kpandai,8.4705282,-0.0116586
+GHA,RBD,94,Ghana,1329,Northern,16628,East Mamprusi,1731,Nalerigu,10.523772,-0.3701276
+GHA,RBD,94,Ghana,1329,Northern,16631,Saboba/Chereponi,1734,Saboba,9.7064051,0.3136781
+GHA,RBD,94,Ghana,1329,Northern,16633,Tamale,220,Tamale,9.4,-0.833333
+GHA,RBD,94,Ghana,1329,Northern,16637,Yendi,1739,Yendi,9.4450438,-0.0093266
+GHA,RBD,94,Ghana,1329,Northern,16638,Zabzugu/Tatale,1740,Zabzugu,9.295001,0.3701276
+GHA,RBD,94,Ghana,1330,Upper East,16639,Bawku East,1713,Bawku,11.0541118,-0.2385387
+GHA,RBD,94,Ghana,1330,Upper East,16641,Bolgatanga,221,Bolga,10.785556,-0.851389
+GHA,RBD,94,Ghana,1330,Upper East,16642,Bongo,1715,Bongo,10.9090167,-0.8079772
+GHA,RBD,94,Ghana,1330,Upper East,16643,Builsa,1719,Fumbisi,10.4510501,-1.3059599
+GHA,RBD,94,Ghana,1330,Upper East,0,,1720,Garu,10.8535609,-0.1799368
+GHA,RBD,94,Ghana,1330,Upper East,0,,1732,Navrongo,10.8940247,-1.0921473
+GHA,RBD,94,Ghana,1331,Upper West,16645,Jirapa/Lambussie,1722,Jirapa,10.5237742,-2.7033575
+GHA,RBD,94,Ghana,1331,Upper West,16646,Lawra,1729,Lawra,10.6458978,-2.8826534
+GHA,RBD,94,Ghana,1331,Upper West,16647,Nadowli,1730,Nadowli,10.3668941,-2.6636066
+GHA,RBD,94,Ghana,1331,Upper West,0,,1736,Tumu,10.8782988,-1.9832594
+GHA,RBD,94,Ghana,1331,Upper West,16649,Wa,222,Wa,10.05,-2.483333
+GHA,RBD,94,Ghana,1331,Upper West,0,,1737,Wichau,9.82602,-2.68043
+GHA,RBD,94,Ghana,1332,Volta,0,,1718,Dambai,8.0601167,0.1846217
+GHA,RBD,94,Ghana,1332,Volta,16651,Ho,219,Ho,6.6,0.466667
+GHA,RBD,94,Ghana,1332,Volta,16654,Kadjebi,1723,Kadjebi,7.5298852,0.4738293
+GHA,RBD,94,Ghana,1332,Volta,16655,Kete-Krachi,1725,Kete Krachi,7.8014452,-0.0513246
+GHA,RBD,94,Ghana,1332,Volta,0,,1728,Kpassa,8.4654248,0.3592132
+GHA,RBD,94,Ghana,1332,Volta,16658,Nkwanta,1733,Nkwanta,8.2603111,0.5221093
+GHA,RBD,94,Ghana,1333,Western,16670,Shama Ahanta East,211,Sekondi/Takoradi,4.933333,-1.7
+GIN,RBD,106,Guinea,40700,Boke,40709,Boke,1639,Boke,10.9333333,-14.3
+GIN,RBD,106,Guinea,40700,Boke,40711,Koundara,1574,Koundara,12.4833333,-13.3
+GIN,RBD,106,Guinea,40700,Boke,40709,Boke,1771,Tanene,11.0128076,-14.2410476
+GIN,RBD,106,Guinea,40701,Conakry,40716,Ratoma,356,Concasseur,9.583333,-13.65
+GIN,RBD,106,Guinea,40701,Conakry,40714,Matam,1571,Madina,9.54,-13.66
+GIN,RBD,106,Guinea,40701,Conakry,40714,Matam,354,Yeguema,9.566666603,-13.63333321
+GIN,RBD,106,Guinea,40701,Conakry,40715,Matoto,355,Yimbaya marche,9.586111069,-13.59555626
+GIN,RBD,106,Guinea,40702,Faranah,40719,Faranah,1769,Faranah,10.0451022,-10.7492466
+GIN,RBD,106,Guinea,40702,Faranah,40720,Kissidougou,1770,Kissidougou,9.1914538,-10.1143176
+GIN,RBD,106,Guinea,40703,Kankan,40721,Kankan,357,Dibida,10.383333,-9.3
+GIN,RBD,106,Guinea,40703,Kankan,40721,Kankan,358,Grand marche,10.373957,-9.2961446
+GIN,RBD,106,Guinea,40704,Kindia,40730,Kindia,1767,Kindia,10.0406725,-12.8629885
+GIN,RBD,106,Guinea,40705,Labe,40733,Labe,1573,Marche central,7.747221947,-8.823888779
+GIN,RBD,106,Guinea,40706,Mamou,40738,Mamou,1768,Mamou,10.5736024,-11.8891721
+GNB,RBD,105,Guinea-Bissau,1392,Sector Autonomo De Bissau,17101,Sector Autonomo De Bissau,227,Bandim,11.85,-15.6
+LBR,RBD,144,Liberia,1814,Bomi,147256,$Senjeh,237,Tubmanburg,6.870833,-10.817222
+LBR,RBD,144,Liberia,1815,Bong,39175,Jorquelleh,240,Gbarnga,6.995556,-9.472222
+LBR,RBD,144,Liberia,1816,Gbarpolu,0,,1809,Bopolu,7.0667,-10.4875
+LBR,RBD,144,Liberia,1816,Gbarpolu,0,,1811,Gbarma,6.99472,-10.78833
+LBR,RBD,144,Liberia,1817,Grand Bassa,147175,$Commonwealth B,241,Buchanan,5.911111,-10.0625
+LBR,RBD,144,Liberia,1818,Grand Cape Mount,39195,Tewor,242,Bo Waterside,7.010556,-11.3725
+LBR,RBD,144,Liberia,1819,Grand Gedeh,147156,$B'hai,631,Toe Town,6.4,-8.55
+LBR,RBD,144,Liberia,1819,Grand Gedeh,39198,Tchien,239,Zwedru,6.066667,-8.128056
+LBR,RBD,144,Liberia,1820,Grand Kru,147157,$Barclayville,1808,Barclayville,4.67651,-8.23353
+LBR,RBD,144,Liberia,1821,Lofa,39203,Foya,243,Foya,8.273056,-10.31
+LBR,RBD,144,Liberia,1821,Lofa,39207,Voinjama,238,Voinjama,8.421944,-9.747778
+LBR,RBD,144,Liberia,1822,Margibi,39211,Kakata,1743,Kakata,6.5302704,-10.3573425
+LBR,RBD,144,Liberia,1823,Maryland,147285,$Harper,1747,Harper,4.37575,-7.71729
+LBR,RBD,144,Liberia,1823,Maryland,39214,Pleebo/Sodoken,244,Pleebo,4.589167,-7.6725
+LBR,RBD,144,Liberia,1824,Montserrado,39216,Greater Monrovia,1742,Duala,6.3774,-10.78437
+LBR,RBD,144,Liberia,1824,Montserrado,39216,Greater Monrovia,245,Red Light,6.275556,-10.717778
+LBR,RBD,144,Liberia,1825,Nimba,147193,$Garr-Bain,1744,Ganta,7.235,-8.98444
+LBR,RBD,144,Liberia,1825,Nimba,147229,$Leewehpea-Mahn,246,Saclepea,7.109444,-8.840556
+LBR,RBD,144,Liberia,1827,River Gee,147284,$Potupo,1745,Fish Town,5.19684,-7.87466
+LBR,RBD,144,Liberia,1827,River Gee,39226,#Webbo,1746,Tuobo-Gbaweeleken,5.023461667,-7.65829333
+LBR,RBD,144,Liberia,1826,Rivercess,147289,$Zarflahn,1810,Cestos City,5.46,-9.58278
+LBR,RBD,144,Liberia,1828,Sinoe,39231,Greenville,1748,Greenville,5.01111,-9.03889
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,858,Badalabougou,12.623519,-7.983829
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,247,Bamako,12.65,-8
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,872,Djikoroni,12.599692,-8.013874
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,875,Fadjiguila,12.65,-8
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,887,Lafiabougou,12.637,-8.0441
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,890,Magnambougou,12.618449,-7.948848
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,891,Medine,12.65,-8
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,896,Niamakoro,12.581146,-7.959581
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,253,Niarela,12.65,-8
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,899,Ouolofobougou,12.65,-8.016667
+MLI,RBD,155,Mali,1926,Bamako,81878,$Bamako,906,Sogoniko,12.606359,-7.964486
+MLI,RBD,155,Mali,1927,Gao,19372,Ansongo,857,Ansongo,15.6597,0.5022
+MLI,RBD,155,Mali,1927,Gao,19374,Gao,248,Gao,16.271667,-0.044722
+MLI,RBD,155,Mali,1928,Kayes,19380,Kita,859,Badinko,12.966667,-9.216667
+MLI,RBD,155,Mali,1928,Kayes,19377,Diema,867,Diema,14.5390184,-9.1926741
+MLI,RBD,155,Mali,1928,Kayes,19378,Kayes,249,Kayes Centre,14.4417,-11.4341
+MLI,RBD,155,Mali,1928,Kayes,19378,Kayes,879,Kayes N'Dy,14.4417,-11.4341
+MLI,RBD,155,Mali,1928,Kayes,19378,Kayes,880,Kayes Plateau,14.4417,-11.4341
+MLI,RBD,155,Mali,1928,Kayes,19380,Kita,881,Kita,13.0349,-9.4895
+MLI,RBD,155,Mali,1928,Kayes,19381,Nioro,898,Nioro,15.229317,-9.592771
+MLI,RBD,155,Mali,1929,Kidal,19384,Kidal,250,Kidal,18.441111,1.407778
+MLI,RBD,155,Mali,1930,Koulikoro,19388,Dioila,868,Dioila,12.48219967,-6.791100025
+MLI,RBD,155,Mali,1930,Koulikoro,19390,Kati,876,Faladie,13.1353935,-8.3348543
+MLI,RBD,155,Mali,1930,Koulikoro,19392,Koulikoro,877,Fana,13.1906,-7.6663
+MLI,RBD,155,Mali,1930,Koulikoro,19390,Kati,1682,Kati,12.7453724,-8.0738001
+MLI,RBD,155,Mali,1930,Koulikoro,19391,Kolokani,1814,Kolokani,13.57556667,-8.031683333
+MLI,RBD,155,Mali,1930,Koulikoro,19392,Koulikoro,251,Koulikoro Ba,12.887646,-7.544188
+MLI,RBD,155,Mali,1930,Koulikoro,19392,Koulikoro,882,Koulikoro Gare,12.887646,-7.544188
+MLI,RBD,155,Mali,1930,Koulikoro,19389,Kangaba,1812,Kouremale,11.9527363,-8.7825418
+MLI,RBD,155,Mali,1930,Koulikoro,19393,Nara,895,Nara,15.168751,-7.28466
+MLI,RBD,155,Mali,1930,Koulikoro,19390,Kati,1813,Ouelessebougou,11.98908333,-7.911933333
+MLI,RBD,155,Mali,1930,Koulikoro,19392,Koulikoro,905,Sirakorola,13.2862,-7.5681
+MLI,RBD,155,Mali,1931,Mopti,19394,Bandiagara,860,Bandiagara,14.347998,-3.608787
+MLI,RBD,155,Mali,1931,Mopti,19395,Bankass,861,Bankass,14.077498,-3.515944
+MLI,RBD,155,Mali,1931,Mopti,19395,Bankass,865,Diallassagou,13.7377,-3.6265
+MLI,RBD,155,Mali,1931,Mopti,19396,Djenne,871,Djenne,13.9045,-4.5599
+MLI,RBD,155,Mali,1931,Mopti,19398,Koro,1817,Koro,14.06471667,-3.07965
+MLI,RBD,155,Mali,1931,Mopti,19395,Bankass,883,Koulogon,13.7377,-3.6265
+MLI,RBD,155,Mali,1931,Mopti,19399,Mopti,252,Mopti Digue,14.489094,-4.192827
+MLI,RBD,155,Mali,1931,Mopti,19399,Mopti,893,Mopti Guangal,14.489094,-4.192827
+MLI,RBD,155,Mali,1932,Segou,19403,Bla,862,Bla,12.950069,-5.76024
+MLI,RBD,155,Mali,1932,Segou,19405,Niono,864,Diakawere,14.43840027,-5.999599934
+MLI,RBD,155,Mali,1932,Segou,19402,Baroueli,869,Dioro,12.8292,-6.4965
+MLI,RBD,155,Mali,1932,Segou,19405,Niono,873,Dogofri,14.8059,-6.0182
+MLI,RBD,155,Mali,1932,Segou,19403,Bla,874,Dougouolo,12.933803,-5.565329
+MLI,RBD,155,Mali,1932,Segou,19407,Segou,878,Fatine,13.57035542,-5.386962891
+MLI,RBD,155,Mali,1932,Segou,19405,Niono,1818,Kourouma,14.64576667,-6.000583333
+MLI,RBD,155,Mali,1932,Segou,19404,Macina,911,Macina,13.9951,-5.7337
+MLI,RBD,155,Mali,1932,Segou,19404,Macina,892,Monimpebougou,14.14750004,-5.521666527
+MLI,RBD,155,Mali,1932,Segou,19405,Niono,897,Niono,14.2526,-5.993
+MLI,RBD,155,Mali,1932,Segou,19406,San,900,San,13.303346,-4.895615
+MLI,RBD,155,Mali,1932,Segou,19407,Segou,902,Segou Chateau,13.43169975,-6.21570015
+MLI,RBD,155,Mali,1932,Segou,19405,Niono,903,Shiango,14.3985,-5.9753
+MLI,RBD,155,Mali,1932,Segou,19405,Niono,907,Sokolo,14.7328,-6.1219
+MLI,RBD,155,Mali,1932,Segou,19403,Bla,909,Touna,13.1173,-5.8303
+MLI,RBD,155,Mali,1933,Sikasso,19409,Bougouni,863,Bougouni,11.416988,-7.478992
+MLI,RBD,155,Mali,1933,Sikasso,19415,Yorosso,1819,Kifosso,12.4997184,-4.9013473
+MLI,RBD,155,Mali,1933,Sikasso,19409,Bougouni,884,Koumantou,11.407198,-6.846836
+MLI,RBD,155,Mali,1933,Sikasso,19415,Yorosso,885,Koury,12.1832,-4.803
+MLI,RBD,155,Mali,1933,Sikasso,19412,Koutiala,886,Koutiala,12.391726,-5.464209
+MLI,RBD,155,Mali,1933,Sikasso,19410,Kadiolo,889,Loulouni,10.916667,-5.666667
+MLI,RBD,155,Mali,1933,Sikasso,19412,Koutiala,894,M'Pessoba,12.67260265,-5.715629101
+MLI,RBD,155,Mali,1933,Sikasso,19412,Koutiala,901,Segou Centre,12.6666202,-5.71682
+MLI,RBD,155,Mali,1933,Sikasso,19413,Sikasso,256,Sikasso Centre,11.3135,-5.6697
+MLI,RBD,155,Mali,1933,Sikasso,19413,Sikasso,904,Sikasso Medine,11.3135004,-5.669700146
+MLI,RBD,155,Mali,1933,Sikasso,19414,Yanfolila,1815,Yanfolila,11.17731667,-8.154583333
+MLI,RBD,155,Mali,1933,Sikasso,19415,Yorosso,1816,Yorosso,12.3555,-4.77905
+MLI,RBD,155,Mali,1933,Sikasso,19413,Sikasso,910,Zangasso,11.5782,-6.0273
+MLI,RBD,155,Mali,1934,Tombouctou,19417,Goundam,870,Dire,16.2684613,-3.6217802
+MLI,RBD,155,Mali,1934,Tombouctou,19419,Niafunke,888,Lere,15.7184406,-4.9013473
+MLI,RBD,155,Mali,1934,Tombouctou,19420,Tombouctou,255,Tombouctou,16.770456,-3.005588
+MLI,RBD,155,Mali,1934,Tombouctou,19417,Goundam,908,Tonka,16.128863,-3.747765
+MRT,RBD,159,Mauritania,2004,Adrar,19490,Aoujeft,696,Aoujeft,19.962222,-13.059444
+MRT,RBD,159,Mauritania,2004,Adrar,19491,Atar,1613,Atar,20.51091,-13.04978
+MRT,RBD,159,Mauritania,2004,Adrar,19493,#Ouadane,1626,Ouadane,20.927666,-11.621376
+MRT,RBD,159,Mauritania,2005,Assaba,19494,Barkeol,1614,Barkeol,16.640389,-12.498493
+MRT,RBD,159,Mauritania,2005,Assaba,19497,Kankossa,1357,Kankossa,15.938907,-11.527006
+MRT,RBD,159,Mauritania,2005,Assaba,19498,Kiffa,1617,Kiffa,16.617069,-11.40388
+MRT,RBD,159,Mauritania,2006,Brakna,19499,Aleg,1612,Aleg,17.0516148,-13.9114989
+MRT,RBD,159,Mauritania,2006,Brakna,19501,Boghe,689,Boghe,16.5950699,-14.2599437
+MRT,RBD,159,Mauritania,2006,Brakna,19503,Maghta Lahjar,690,Magta-lahjar,17.52,-13.1
+MRT,RBD,159,Mauritania,2006,Brakna,19502,M'Bagne,1620,Mbagne,16.15177,-13.77648
+MRT,RBD,159,Mauritania,2007,Dakhlet-Nouadhibou,19504,Nouadhibou,1625,Nouadhibou,20.9025,-17.042222
+MRT,RBD,159,Mauritania,2008,Gorgol,19505,Kaedi,1618,Lexeiba1,16.215843,-13.144934
+MRT,RBD,159,Mauritania,2008,Gorgol,19507,Maghama,1619,Maghama,15.509153,-12.850055
+MRT,RBD,159,Mauritania,2008,Gorgol,19506,M'Bout,1621,Mbout,16.02294,-12.57946
+MRT,RBD,159,Mauritania,2008,Gorgol,19505,Kaedi,694,Toufounde-Cive,15.65,-13.2166667
+MRT,RBD,159,Mauritania,2009,Guidimakha,19510,Selibaby,1615,Djougountourou,14.770003,-12.250899
+MRT,RBD,159,Mauritania,2009,Guidimakha,19509,Ould Yenge,1627,Ould Yenge,15.52,-11.72
+MRT,RBD,159,Mauritania,2009,Guidimakha,19510,Selibaby,1629,Selibaby,15.158946,-12.182897
+MRT,RBD,159,Mauritania,2009,Guidimakha,19510,Selibaby,1637,Wompou,15.131041,-12.72555
+MRT,RBD,159,Mauritania,2010,Hodh Ech Chargi,19511,Amourj,695,Adel Bagrou,15.4975,-6.950556
+MRT,RBD,159,Mauritania,2010,Hodh Ech Chargi,19514,Nema,1624,Nema,16.6162,-7.2535
+MRT,RBD,159,Mauritania,2010,Hodh Ech Chargi,19512,Bassikounou,1636,Vassala,15.5571,-5.516
+MRT,RBD,159,Mauritania,2011,Hodh El Gharbi,19520,Tintane,1396,Tentane,16.38,-10.17
+MRT,RBD,159,Mauritania,2011,Hodh El Gharbi,19520,Tintane,1635,Twil,15.52,-10.13
+MRT,RBD,159,Mauritania,2013,Nouakchott,19522,Nouakchott,693,Nouakchott,18.1194444,-16.0405556
+MRT,RBD,159,Mauritania,2013,Nouakchott,19522,Nouakchott,1630,Socogim,18.1,-15.95
+MRT,RBD,159,Mauritania,2014,Tagant,19523,Moudjeria,692,Moudjeria,17.873645,-12.331847
+MRT,RBD,159,Mauritania,2014,Tagant,19525,Tidjikja,1632,Tidjikja,18.555,-11.4256
+MRT,RBD,159,Mauritania,2015,Tiris-Zemmour,19528,Zoueratt,1638,Zoueiratt,22.688333,-12.459167
+MRT,RBD,159,Mauritania,2016,Trarza,19531,Mederdra,691,Mederdra,16.896389,-15.756111
+MRT,RBD,159,Mauritania,2016,Trarza,19530,Keur Macene,1623,Ndiago,16.174692,-16.497448
+NER,RBD,181,Niger,2202,Agadez,22553,Tchighozerine,545,Aderbissinat,15.6275,7.8945
+NER,RBD,181,Niger,2202,Agadez,22553,Tchighozerine,546,Agadez Commune,16.973333,7.991111
+NER,RBD,181,Niger,2202,Agadez,22551,Arlit,548,Arlit,18.736944,7.385278
+NER,RBD,181,Niger,2202,Agadez,22553,Tchighozerine,585,Ingall,16.787778,6.934167
+NER,RBD,181,Niger,2203,Diffa,22554,Diffa,1281,Chetimari,13.182148,12.422285
+NER,RBD,181,Niger,2203,Diffa,22554,Diffa,562,Diffa Commune,13.31536,12.611345
+NER,RBD,181,Niger,2203,Diffa,22555,Maine-soroa,579,Goudoumaria,13.7109,11.1885
+NER,RBD,181,Niger,2203,Diffa,22555,Maine-soroa,600,Maine Soroa,13.211394,12.0241
+NER,RBD,181,Niger,2203,Diffa,22556,N'guigmi,606,Nguigmi,14.249532,13.109211
+NER,RBD,181,Niger,2204,Dosso,22557,Birni N'gaoure,554,Birnin Gaoure,13.081729,2.910993
+NER,RBD,181,Niger,2204,Dosso,22558,Dogondoutchi,564,Dogon Kiria,14.060509,4.353556
+NER,RBD,181,Niger,2204,Dosso,22558,Dogondoutchi,565,Dogondoutchi,13.63933,4.028748
+NER,RBD,181,Niger,2204,Dosso,22559,Dosso,567,Dosso Commune,13.049,3.1937
+NER,RBD,181,Niger,2204,Dosso,22559,Dosso,572,Falwel,12.900956,3.418527
+NER,RBD,181,Niger,2204,Dosso,22560,Gaya,577,Gaya,11.884347,3.44919
+NER,RBD,181,Niger,2204,Dosso,22561,Loga,597,Loga,13.6132,3.2358
+NER,RBD,181,Niger,2204,Dosso,22559,Dosso,605,Mokko,13.176425,3.271975
+NER,RBD,181,Niger,2205,Maradi,22564,Guidan Roumji,558,Chadakori,13.675666,6.989097
+NER,RBD,181,Niger,2205,Maradi,22563,Dakoro,628,Dakoro,13.816187,6.42151
+NER,RBD,181,Niger,2205,Maradi,22565,Madarounfa,560,Dan Issa,13.204825,7.257503
+NER,RBD,181,Niger,2205,Maradi,22563,Dakoro,561,Dan-Goulbi,13.979918,6.554276
+NER,RBD,181,Niger,2205,Maradi,22565,Madarounfa,575,Garare,13.5,7.101744
+NER,RBD,181,Niger,2205,Maradi,22564,Guidan Roumji,581,Guidan Roumdji,13.657597,6.695675
+NER,RBD,181,Niger,2205,Maradi,22566,Mayahi,587,Kanembakache,13.955323,7.671215
+NER,RBD,181,Niger,2205,Maradi,22563,Dakoro,595,Kornaka,14.102636,6.901148
+NER,RBD,181,Niger,2205,Maradi,22567,Tessaoua,599,Maidjirgui,13.738666,8.134894
+NER,RBD,181,Niger,2205,Maradi,22565,Madarounfa,602,Maradi Commune,13.5,7.101744
+NER,RBD,181,Niger,2205,Maradi,22566,Mayahi,604,Mayahi,13.955323,7.671215
+NER,RBD,181,Niger,2205,Maradi,22564,Guidan Roumji,610,Sabon Machi,13.871593,6.974098
+NER,RBD,181,Niger,2205,Maradi,22562,Aguie,616,Tchadoua,13.546428,7.446136
+NER,RBD,181,Niger,2205,Maradi,22567,Tessaoua,619,Tessaoua,13.757367,7.987405
+NER,RBD,181,Niger,2206,Niamey,22569,Commune 2,556,Bonkaney,13.516667,2.116667
+NER,RBD,181,Niger,2206,Niamey,22569,Commune 2,584,Harobanda,13.516667,2.116667
+NER,RBD,181,Niger,2206,Niamey,22569,Commune 2,590,Katako,13.516667,2.116667
+NER,RBD,181,Niger,2206,Niamey,22569,Commune 2,609,Petit Marche,13.516667,2.116667
+NER,RBD,181,Niger,2206,Niamey,22569,Commune 2,624,Wadata,13.516667,2.116667
+NER,RBD,181,Niger,2207,Tahoua,22577,Tchin Tabaradene,544,Abalak,15.4509,6.2793
+NER,RBD,181,Niger,2207,Tahoua,22573,Illela,550,Badaguichiri,14.5245,5.3676
+NER,RBD,181,Niger,2207,Tahoua,22572,Bouza,557,Bouza,14.422931,6.042784
+NER,RBD,181,Niger,2207,Tahoua,22571,Birni N'konni,574,Galmi,13.962994,5.672808
+NER,RBD,181,Niger,2207,Tahoua,22574,Keita,576,Garhanga,14.5578,5.7617
+NER,RBD,181,Niger,2207,Tahoua,22575,Madaoua,586,Jataka,13.77,6.17
+NER,RBD,181,Niger,2207,Tahoua,22577,Tchin Tabaradene,588,Kaou,15.6,5.38
+NER,RBD,181,Niger,2207,Tahoua,22572,Bouza,589,Karofane,14.313737,6.152652
+NER,RBD,181,Niger,2207,Tahoua,22574,Keita,592,Keita,14.7551,5.7749
+NER,RBD,181,Niger,2207,Tahoua,22571,Birni N'konni,594,Konni,13.793685,5.250556
+NER,RBD,181,Niger,2207,Tahoua,22577,Tchin Tabaradene,629,Nguel Kolo,15.41,5.72
+NER,RBD,181,Niger,2207,Tahoua,22575,Madaoua,608,Ourno,14.299648,6.454153
+NER,RBD,181,Niger,2207,Tahoua,22576,Tahoua,613,Tahoua Commune,14.8888,5.2692
+NER,RBD,181,Niger,2207,Tahoua,22577,Tchin Tabaradene,617,Tchintabaraden,15.8969,5.7985
+NER,RBD,181,Niger,2207,Tahoua,22576,Tahoua,623,Tounfafi,14.9927,5.5165
+NER,RBD,181,Niger,2208,Tillaberi,22578,Filingue,543,Abala,14.9369,3.4336
+NER,RBD,181,Niger,2208,Tillaberi,22583,Tillaberi,549,Ayorou,14.730746,0.917385
+NER,RBD,181,Niger,2208,Tillaberi,22578,Filingue,626,Balayara,13.7838,2.9523
+NER,RBD,181,Niger,2208,Tillaberi,22582,Tera,553,Bankilare,14.576534,0.726692
+NER,RBD,181,Niger,2208,Tillaberi,22583,Tillaberi,555,Bonfeba,14.3801,1.2102
+NER,RBD,181,Niger,2208,Tillaberi,22578,Filingue,573,Filingue,14.3521,3.3168
+NER,RBD,181,Niger,2208,Tillaberi,22582,Tera,578,Gotheye,13.8612,1.5661
+NER,RBD,181,Niger,2208,Tillaberi,22579,Kollo,593,Kirtachi,12.7936,2.4776
+NER,RBD,181,Niger,2208,Tillaberi,22580,Ouallam,601,Mangaize,14.6827,1.9538
+NER,RBD,181,Niger,2208,Tillaberi,22580,Ouallam,607,Ouallam,14.3188,2.0866
+NER,RBD,181,Niger,2208,Tillaberi,22582,Tera,618,Tera,14.007762,0.753059
+NER,RBD,181,Niger,2208,Tillaberi,22583,Tillaberi,627,Tillaberi Commune,14.211667,1.453056
+NER,RBD,181,Niger,2208,Tillaberi,22581,Say,622,Torodi,13.119167,1.799444
+NER,RBD,181,Niger,2209,Zinder,22588,Tanout,551,Bakin Birgi,14.25584,8.794948
+NER,RBD,181,Niger,2209,Zinder,22587,Miria,566,Dole,13.804869,8.988371
+NER,RBD,181,Niger,2209,Zinder,22585,Magaria,568,Dungass,13.061534,9.343423
+NER,RBD,181,Niger,2209,Zinder,22584,Goure,580,Goure,13.983504,10.270354
+NER,RBD,181,Niger,2209,Zinder,22584,Goure,582,Guidiguir,13.668499,9.831307
+NER,RBD,181,Niger,2209,Zinder,22587,Miria,583,Guidimouni,13.69291,9.512403
+NER,RBD,181,Niger,2209,Zinder,22584,Goure,591,Kazoe,14.2176,9.9709
+NER,RBD,181,Niger,2209,Zinder,22587,Miria,596,Koundoumaoua,13.66495,8.36011
+NER,RBD,181,Niger,2209,Zinder,22587,Miria,598,Magaria,13.842343,8.520289
+NER,RBD,181,Niger,2209,Zinder,22586,Matamey,603,Matameye,13.423087,8.47485
+NER,RBD,181,Niger,2209,Zinder,22585,Magaria,611,Sassoumbroum,13.11723,8.486289
+NER,RBD,181,Niger,2209,Zinder,22584,Goure,612,Soubdou,13.791867,10.534377
+NER,RBD,181,Niger,2209,Zinder,22588,Tanout,615,Tanout,14.970886,8.887861
+NER,RBD,181,Niger,2209,Zinder,22587,Miria,1463,Zinder Commune,13.81,8.98
+NGA,RBD,182,Nigeria,2216,Borno,22709,Mobbar,1040,Damassack (CBM),13.01,12.56
+NGA,RBD,182,Nigeria,2223,Jigawa,22816,Sule-tan,1041,Mai Gatari (CBM),12.78,9.44
+NGA,RBD,182,Nigeria,2226,Katsina,22872,Jibia,1038,Jibia (CBM),13.08,7.24
+NGA,RBD,182,Nigeria,2226,Katsina,22867,Daura,1039,Mai Adoua (CBM),13.18,8.23
+NGA,RBD,182,Nigeria,65709,Sokoto,23082,Gada,1037,Illela (CBM),13.645,5.278
+SEN,RBD,217,Senegal,1378,$Kaffrine,1396,$Kaffrine,453,Dioli Mandakh,13.983333,-15.333333
+SEN,RBD,217,Senegal,1378,$Kaffrine,1380,$Birkilane,417,Kaffrine,14.121667,-15.693056
+SEN,RBD,217,Senegal,1378,$Kaffrine,25328,,422,Koungueul,13.983333,-14.8
+SEN,RBD,217,Senegal,1378,$Kaffrine,1380,$Birkilane,425,Mabo,13.916667,-15.683333
+SEN,RBD,217,Senegal,1374,$Kedougou,1397,$Kedougou,419,Kedougou,12.483333,-11.95
+SEN,RBD,217,Senegal,1374,$Kedougou,1397,$Kedougou,1543,Mako,12.8555,-12.3506
+SEN,RBD,217,Senegal,1374,$Kedougou,25341,,1542,Salemata,12.6341958,-12.819851
+SEN,RBD,217,Senegal,1376,$Sedhiou,1609,$Sedhiou,452,Sedhiou,12.708056,-15.556944
+SEN,RBD,217,Senegal,2636,Dakar,25319,Dakar,408,Castors,14.726389,-17.448611
+SEN,RBD,217,Senegal,2636,Dakar,25319,Dakar,410,Dakar,14.736667,-17.633889
+SEN,RBD,217,Senegal,2636,Dakar,25319,Dakar,457,Gueule Tapee,14.684167,-17.457778
+SEN,RBD,217,Senegal,2636,Dakar,47597,#Pikine,442,Thiaroye,14.7425,-17.379444
+SEN,RBD,217,Senegal,2636,Dakar,25319,Dakar,447,Tilene,14.736667,-17.633889
+SEN,RBD,217,Senegal,47585,Diourbel,25322,Bambey,406,Bambey,14.70074,-16.45911
+SEN,RBD,217,Senegal,47585,Diourbel,25322,Bambey,413,Diourbel,14.662778,-16.3925
+SEN,RBD,217,Senegal,47585,Diourbel,25323,Diourbel,432,Ndindy,14.883333,-16.216667
+SEN,RBD,217,Senegal,47585,Diourbel,25322,Bambey,700,Sandjara,14.7,-16.433333
+SEN,RBD,217,Senegal,47585,Diourbel,47596,Mbacke,448,Touba,14.85,-15.883333
+SEN,RBD,217,Senegal,47586,Fatick,25325,Fatick,411,Diakhao,14.466667,-16.3
+SEN,RBD,217,Senegal,47586,Fatick,25325,Fatick,414,Fatick,14.358056,-16.585833
+SEN,RBD,217,Senegal,47586,Fatick,25325,Fatick,415,Gossas,14.497222,-16.234167
+SEN,RBD,217,Senegal,47586,Fatick,25326,Foundiougne,420,Keur I. Yacine,13.867983,-16.243029
+SEN,RBD,217,Senegal,47586,Fatick,47591,Gossas,428,Mbar,14.533333,-15.766667
+SEN,RBD,217,Senegal,47586,Fatick,25326,Foundiougne,1544,Missirah,13.68042,-16.50128
+SEN,RBD,217,Senegal,47586,Fatick,25326,Foundiougne,436,Passy,13.983333,-16.266667
+SEN,RBD,217,Senegal,2639,Kaolack,1395,$Guinguineo,698,Birkelane,14.12835,-15.88189
+SEN,RBD,217,Senegal,2639,Kaolack,25328,#Kaffrine,699,Diama Gadio,,
+SEN,RBD,217,Senegal,2639,Kaolack,25329,Kaolack,418,Kaolack,14.1825,-16.253333
+SEN,RBD,217,Senegal,2639,Kaolack,25329,Kaolack,697,N'Doffane,13.919217,-15.9259271
+SEN,RBD,217,Senegal,2639,Kaolack,25330,Nioro du rip,451,Ndrame Escale,13.8,-16.166667
+SEN,RBD,217,Senegal,2639,Kaolack,25330,Nioro du rip,437,Porokhane,13.7,-15.833333
+SEN,RBD,217,Senegal,2640,Kolda,25331,Kolda,412,Diaobe,12.7,-14.4
+SEN,RBD,217,Senegal,2640,Kolda,25331,Kolda,421,Kolda,12.883333,-14.95
+SEN,RBD,217,Senegal,2640,Kolda,25331,Kolda,439,Sare Yoba,12.765833,-15.1075
+SEN,RBD,217,Senegal,47587,Louga,25336,Louga,416,Gouille Mbeuth,15.6743,-16.0303
+SEN,RBD,217,Senegal,47587,Louga,25336,Louga,424,Louga,15.618672,-16.224361
+SEN,RBD,217,Senegal,47587,Louga,25334,Kebemer,431,Ndiagne,15.1028,-15.9642
+SEN,RBD,217,Senegal,47587,Louga,25334,Kebemer,438,Sagatta,15.2758,-16.1739
+SEN,RBD,217,Senegal,47588,Matam,47595,Matam,426,Matam,15.6175,-13.330278
+SEN,RBD,217,Senegal,47588,Matam,47593,Kanel,433,Orkodiere,15.282106,-12.961135
+SEN,RBD,217,Senegal,47588,Matam,47595,Matam,434,Ourossogui,15.6,-13.316667
+SEN,RBD,217,Senegal,47588,Matam,47595,Matam,446,Thiodaye,15.9922431,-13.6637688
+SEN,RBD,217,Senegal,47588,Matam,47599,Ranerou,456,Velingara,15,-14.666667
+SEN,RBD,217,Senegal,47589,Saint louis,47590,Dagana,409,Dagana,16.476667,-15.6
+SEN,RBD,217,Senegal,47589,Saint louis,47598,Podor,454,Dodel,16.485493,-14.428457
+SEN,RBD,217,Senegal,47589,Saint louis,47598,Podor,1397,Galoya,16.07004,-13.8488
+SEN,RBD,217,Senegal,47589,Saint louis,47600,Saint louis,430,Mpal,15.9139,-16.2599
+SEN,RBD,217,Senegal,47589,Saint louis,47590,Dagana,1398,Rosso,16.5,-15.8166667
+SEN,RBD,217,Senegal,47589,Saint louis,47600,Saint louis,440,Saint-Louis,16.02463,-16.489531
+SEN,RBD,217,Senegal,47589,Saint louis,47598,Podor,444,Thille Boubacar,16.516667,-15.083333
+SEN,RBD,217,Senegal,2643,Tambacounda,25340,Bakel,405,Bakel,14.902377,-12.459351
+SEN,RBD,217,Senegal,2643,Tambacounda,25342,Tambacounda,423,Kouthiaba,14.183333,-14.466667
+SEN,RBD,217,Senegal,2643,Tambacounda,25342,Tambacounda,429,Mereto,13.816667,-14.45
+SEN,RBD,217,Senegal,2643,Tambacounda,25342,Tambacounda,441,Tambacounda,13.753889,-13.758611
+SEN,RBD,217,Senegal,2644,Thies,25343,Mbour,427,Mbafaye,14.566667,-16.783333
+SEN,RBD,217,Senegal,2644,Thies,25344,Thies,443,Thies,14.834167,-17.106111
+SEN,RBD,217,Senegal,2644,Thies,25345,Tivaoune,445,Thilmakha,15.0301,-16.2502
+SEN,RBD,217,Senegal,2644,Thies,25344,Thies,449,Touba Toul,14.816667,-16.666667
+SEN,RBD,217,Senegal,2645,Ziguinchor,25346,Bignona,407,Bignona,12.810278,-16.226389
+SEN,RBD,217,Senegal,2645,Ziguinchor,25347,Oussouye,435,Oussouye,12.485,-16.546944
+SEN,RBD,217,Senegal,2645,Ziguinchor,25348,Ziguinchor,455,Saint-Maur,12.583333,-16.271944
+SEN,RBD,217,Senegal,2645,Ziguinchor,25348,Ziguinchor,450,Zigiunchor,12.583333,-16.271944
+SLE,RBD,221,Sierra Leone,2654,Eastern,25406,Kailahun,344,Kailahun,8.283333,-10.566667
+SLE,RBD,221,Sierra Leone,2654,Eastern,25407,Kenema,342,Kenema,7.876667,-11.1875
+SLE,RBD,221,Sierra Leone,2654,Eastern,25408,Kono,1788,Kono,8.645999908,-10.97539997
+SLE,RBD,221,Sierra Leone,2655,Northern,25409,Bombali,1776,Bombali,9.2475837,-12.1632718
+SLE,RBD,221,Sierra Leone,2655,Northern,25410,Kambia,1789,Kambia,9.116666794,-12.91666698
+SLE,RBD,221,Sierra Leone,2655,Northern,25411,Koinadugu,1773,Koinadugu,9.5168769,-11.36363
+SLE,RBD,221,Sierra Leone,2655,Northern,25412,Port Loko,345,Port Loko,8.766667,-12.783333
+SLE,RBD,221,Sierra Leone,2655,Northern,25413,Tonkolili,1777,Tonkolili,8.9804274,-11.7947561
+SLE,RBD,221,Sierra Leone,2656,Southern,25415,Bonthe,341,Bo,7.540278,-12.26
+SLE,RBD,221,Sierra Leone,2656,Southern,25415,Bonthe,1774,Bonthe,7.5257028,-12.5039922
+SLE,RBD,221,Sierra Leone,2656,Southern,25416,Moyamba,1775,Moyamba,8.1620514,-12.4351923
+SLE,RBD,221,Sierra Leone,2656,Southern,25417,Pujehun,350,Pujehun,7.358056,-11.720833
+SLE,RBD,221,Sierra Leone,2657,Western Area,111381,$Western Area Urban,1772,Freetown,8.4656765,-13.2317225
+COG,RBJ,59,Congo,970,Bouenza,14428,Nkayi District,1821,Nkayi,-4.1828379,13.2865504
+COG,RBJ,59,Congo,971,Cuvette,0,,1822,Owando,-0.4829632,15.8936224
+COG,RBJ,59,Congo,973,Kouilou,0,,707,Grand marche/Fond Ntie-Ntie/Nkouikou,-4.79472208,11.8461113
+COG,RBJ,59,Congo,974,Lekoumou,0,,1820,Sibiti,-3.6846513,13.3500652
+COG,RBJ,59,Congo,975,Likouala,0,,704,Bakandi,1.638056,18.066667
+COG,RBJ,59,Congo,975,Likouala,0,,705,Monzombo,3.431111,18.596944
+COG,RBJ,59,Congo,978,Pool,0,,703,Mikalou,-4.259167,15.284722
+COG,RBJ,59,Congo,978,Pool,0,,701,Moungali,-4.259167,15.284722
+COG,RBJ,59,Congo,978,Pool,0,,702,Ouenze,-4.2452176,15.2809247
+COG,RBJ,59,Congo,978,Pool,0,,706,Total,-4.259167,15.284722
+COD,RBJ,68,Democratic Republic of the Congo,1066,Bandundu,14959,Bandundu,1596,Bandundu ville,-3.31,17.37
+COD,RBJ,68,Democratic Republic of the Congo,1066,Bandundu,74357,$Kikwit,1597,Kikwit,-5.0386111,18.8180556
+COD,RBJ,68,Democratic Republic of the Congo,1067,Bas-Congo,0,,1598,Boma,-5.82,13.05
+COD,RBJ,68,Democratic Republic of the Congo,1067,Bas-Congo,14967,Matadi,1599,Matadi,-5.8166667,13.45
+COD,RBJ,68,Democratic Republic of the Congo,1068,Equateur,74355,$Gbadolite,1649,Gbadolite,4.2833333,21.0166667
+COD,RBJ,68,Democratic Republic of the Congo,1068,Equateur,14968,Equateur,146,Mbandaka,0.066667,18.266667
+COD,RBJ,68,Democratic Republic of the Congo,1069,Kasai Occidental,14974,Kananga,1602,Kananga,-5.8958333,22.4177778
+COD,RBJ,68,Democratic Republic of the Congo,1069,Kasai Occidental,0,,1601,Tshikapa,-6.4166667,20.8
+COD,RBJ,68,Democratic Republic of the Congo,1070,Kasai Oriental,14978,Mbuji-Mayi,1651,Mbuji-mayi,-6.15,23.6
+COD,RBJ,68,Democratic Republic of the Congo,1070,Kasai Oriental,74362,$Mwene-Ditu,1603,Mwene-Ditu,-7,23.45
+COD,RBJ,68,Democratic Republic of the Congo,1071,Katanga,14986,Tanganyka,148,Kabalo,-6.05,26.916667
+COD,RBJ,68,Democratic Republic of the Congo,1071,Katanga,14986,Tanganyka,143,Kalemie,-5.933333,29.2
+COD,RBJ,68,Democratic Republic of the Congo,1071,Katanga,14981,Haut-Lomami,1604,Kamina,-8.7386111,24.9905556
+COD,RBJ,68,Democratic Republic of the Congo,1071,Katanga,0,,1605,Kolwezi,-10.7166667,25.4725
+COD,RBJ,68,Democratic Republic of the Congo,1071,Katanga,74360,$Likasi,1606,Likasi,-10.9813889,26.7333333
+COD,RBJ,68,Democratic Republic of the Congo,1071,Katanga,14985,Lubumbashi,145,Lubumbashi,-11.666667,27.466667
+COD,RBJ,68,Democratic Republic of the Congo,1071,Katanga,14986,Tanganyka,1395,Moba,-7.04,29.76
+COD,RBJ,68,Democratic Republic of the Congo,1072,Kinshasa,14987,Kinshasa,144,Kinshasa,-4.3,15.3
+COD,RBJ,68,Democratic Republic of the Congo,1073,Maniema,74358,$Kindu,149,Kindu,-2.95,25.95
+COD,RBJ,68,Democratic Republic of the Congo,1074,Nord-Kivu,115124,$Beni,1607,Beni,0.5,29.4666667
+COD,RBJ,68,Democratic Republic of the Congo,1074,Nord-Kivu,115125,$Butembo,1650,Butembo,0.15,29.2833333
+COD,RBJ,68,Democratic Republic of the Congo,1074,Nord-Kivu,74356,$Goma,152,Goma,-1.679167,29.222778
+COD,RBJ,68,Democratic Republic of the Congo,1075,Orientale,14992,Ituri,151,Bunia,1.566667,30.25
+COD,RBJ,68,Democratic Republic of the Congo,1075,Orientale,14991,Haut-Uele,1609,Isiro,2.7666667,27.6166667
+COD,RBJ,68,Democratic Republic of the Congo,1075,Orientale,14993,Kisangani,1608,Kisangani,0.5166667,25.2
+COD,RBJ,68,Democratic Republic of the Congo,1075,Orientale,14990,Bas-Uele,1648,Zongo,3.971459,23.39785
+COD,RBJ,68,Democratic Republic of the Congo,1076,Sud-Kivu,74354,$Bukavu,150,Bukavu,-2.508333,28.860833
+COD,RBJ,68,Democratic Republic of the Congo,1076,Sud-Kivu,14995,Sud-Kivu,147,Uvira,-3.406667,29.145833
+LSO,RBJ,142,Lesotho,1803,Berea,18829,Maqhaka,525,Berea,-29.23,27.61
+LSO,RBJ,142,Lesotho,1804,Butha Buthe,18858,Urban,523,Butha Buthe,-28.769409,28.26005
+LSO,RBJ,142,Lesotho,1805,Leribe,18881,Urban,524,Leribe,-28.8833333,28.05
+LSO,RBJ,142,Lesotho,1806,Mafeteng,18902,URBAN,526,Mafeteng,-29.8166667,27.25
+LSO,RBJ,142,Lesotho,1807,Maseru,18925,Urban,522,Maseru,-29.3166667,27.4833333
+LSO,RBJ,142,Lesotho,1808,Mohale's Hoek,18948,Urban,527,Mohale's Hoek,-30.15,27.46
+LSO,RBJ,142,Lesotho,1809,Mokhotlong,18970,Urban,531,Mokhotlong,-29.2833333,29.0833333
+LSO,RBJ,142,Lesotho,1810,Qacha's Nek,18991,Urban,530,Qacha's Nek,-30.1166667,28.6833333
+LSO,RBJ,142,Lesotho,1811,Quthing,0,,528,Quthing,-30.4,27.7166667
+LSO,RBJ,142,Lesotho,1812,Thaba Tseka,19049,Lesobeng,529,Thaba Tseka,-29.53,28.59
+MDG,RBJ,150,Madagascar,1880,#Antananarivo,41752,#Analamanga,753,Analamanga,-16.43326,48.515228
+MDG,RBJ,150,Madagascar,1880,#Antananarivo,123870,,740,Antananarivo,-18.916667,47.516667
+MDG,RBJ,150,Madagascar,1880,#Antananarivo,41761,#Bongolava,748,Bongolava,-24.966667,45.633333
+MDG,RBJ,150,Madagascar,1880,#Antananarivo,41765,#Itasy,756,Itasy,-18.916667,47.466667
+MDG,RBJ,150,Madagascar,1880,#Antananarivo,41770,#Vakinankaratra,751,Vakinakaratra,-19.86886,47.038307
+MDG,RBJ,150,Madagascar,1882,#Fianarantsoa,41751,#Amoron'i Mania,760,Amoron'I Mania,-20.520847,47.251717
+MDG,RBJ,150,Madagascar,1882,#Fianarantsoa,41757,#Atsimo Atsinanana,752,Atsimo Atsinanana,-22.847044,47.761735
+MDG,RBJ,150,Madagascar,1882,#Fianarantsoa,41763,#Haute Matsiatra,755,Haute Matsiatra,-21.466882,47.08478
+MDG,RBJ,150,Madagascar,1882,#Fianarantsoa,41764,#Ihorombe,742,Ihorombe,-20.966667,46.55
+MDG,RBJ,150,Madagascar,1882,#Fianarantsoa,41771,#Vatovavy Fitovinany,745,Vatovavy Fitovinany,-22.155008,48.006641
+MDG,RBJ,150,Madagascar,1883,#Mahajanga,41759,#Betsiboka,762,Betsiboka,-16.866667,46.95
+MDG,RBJ,150,Madagascar,1883,#Mahajanga,41760,#Boeny,741,Boeny,-15.9,45.933333
+MDG,RBJ,150,Madagascar,1883,#Mahajanga,41766,#Melaky,743,Melaky,-18.054355,44.034362
+MDG,RBJ,150,Madagascar,1883,#Mahajanga,41769,#Sofia,747,Sofia,-14.878681,47.986436
+MDG,RBJ,150,Madagascar,1884,#Toamasina,41750,#Alaotra Mangoro,754,Alaotra Mangoro,-17.844118,48.41392
+MDG,RBJ,150,Madagascar,1884,#Toamasina,41753,#Analanjirofo,758,Analanjirofo,-17.387385,49.414505
+MDG,RBJ,150,Madagascar,1884,#Toamasina,41758,#Atsinanana,750,Atsinanana,-18.151631,49.412976
+MDG,RBJ,150,Madagascar,1885,#Toliara,41755,#Anosy,737,Amboasary,-25.04134369,46.38404465
+MDG,RBJ,150,Madagascar,1885,#Toliara,41754,#Androy,736,Ambovombe-androy,-25.166667,46.083333
+MDG,RBJ,150,Madagascar,1885,#Toliara,41756,#Atsimo Andrefana,733,Ampanihy,-23.7,44.533333
+MDG,RBJ,150,Madagascar,1885,#Toliara,41754,#Androy,749,Androy,-24.35,45.116667
+MDG,RBJ,150,Madagascar,1885,#Toliara,41755,#Anosy,759,Anosy,-19.866667,45.466667
+MDG,RBJ,150,Madagascar,1885,#Toliara,41756,#Atsimo Andrefana,757,Atsimo Andrefana,-23.351391,43.668702
+MDG,RBJ,150,Madagascar,1885,#Toliara,41754,#Androy,738,Bekily,-24.22191048,45.31993103
+MDG,RBJ,150,Madagascar,1885,#Toliara,41754,#Androy,734,Beloha,-25.166667,45.05
+MDG,RBJ,150,Madagascar,1885,#Toliara,41756,#Atsimo Andrefana,732,Betioky,-23.72198677,44.38275528
+MDG,RBJ,150,Madagascar,1885,#Toliara,0,,739,Fort-Dauphin,-25.033333,47
+MDG,RBJ,150,Madagascar,1885,#Toliara,41767,#Menabe,761,Menabe,-20.297603,44.320247
+MDG,RBJ,150,Madagascar,1885,#Toliara,41754,#Androy,735,Tsihombe,-25.3,45.483333
+MDG,RBJ,150,Madagascar,1881,Atsinanana,41762,#Diana,746,Diana,-12.325483,49.292395
+MDG,RBJ,150,Madagascar,1881,Atsinanana,41768,#Sava,744,Sava,-22.8,46.766667
+MWI,RBJ,152,Malawi,1888,Central Region,19310,Lilongwe,765,Bembeke turn off,-14.39506,34.39265
+MWI,RBJ,152,Malawi,1888,Central Region,19308,Dowa,766,Bowe,-13.3,33.716667
+MWI,RBJ,152,Malawi,1888,Central Region,0,,1710,Chamama,-12.92800045,33.80179977
+MWI,RBJ,152,Malawi,1888,Central Region,19309,Kasungu,768,Chatoloma,-13.316667,33.483333
+MWI,RBJ,152,Malawi,1888,Central Region,19313,Ntcheu,771,Chimbiya,-15.08,34.58
+MWI,RBJ,152,Malawi,1888,Central Region,19308,Dowa,825,Dowa,-13.683333,33.983333
+MWI,RBJ,152,Malawi,1888,Central Region,19312,Nkhotakota,775,Dwangwa,-12.566667,34.15
+MWI,RBJ,152,Malawi,1888,Central Region,19309,Kasungu,829,Kasiya,-12.8,33.716667
+MWI,RBJ,152,Malawi,1888,Central Region,19309,Kasungu,780,Kasungu,-13.033333,33.483333
+MWI,RBJ,152,Malawi,1888,Central Region,19310,Lilongwe,827,Lilongwe,-13.983333,33.783333
+MWI,RBJ,152,Malawi,1888,Central Region,19313,Ntcheu,826,Lizulu,-14.516667,34.466667
+MWI,RBJ,152,Malawi,1888,Central Region,19308,Dowa,785,Madisi,-13.416667,33.6
+MWI,RBJ,152,Malawi,1888,Central Region,19314,Ntchisi,786,Malomo,-13.15,33.833333
+MWI,RBJ,152,Malawi,1888,Central Region,19311,Mchinji,789,Mchinji,-13.8,32.9
+MWI,RBJ,152,Malawi,1888,Central Region,19310,Lilongwe,791,Mitundu,-14.25,33.766667
+MWI,RBJ,152,Malawi,1888,Central Region,19311,Mchinji,792,Mkanda,-13.516667,32.95
+MWI,RBJ,152,Malawi,1888,Central Region,19308,Dowa,795,Mponela,-13.516667,33.716667
+MWI,RBJ,152,Malawi,1888,Central Region,19307,Dedza,796,Mtakataka,-14.233333,34.516667
+MWI,RBJ,152,Malawi,1888,Central Region,19312,Nkhotakota,798,Mwansambo,-13.3,34.116667
+MWI,RBJ,152,Malawi,1888,Central Region,19308,Dowa,831,Nambuma,-13.70352,33.59763
+MWI,RBJ,152,Malawi,1888,Central Region,0,,803,Nanjiri,-14.07154,33.8371
+MWI,RBJ,152,Malawi,1888,Central Region,19309,Kasungu,807,Nkhamenya,-12.566667,33.516667
+MWI,RBJ,152,Malawi,1888,Central Region,19309,Kasungu,809,Nkhoma,-12.716667,33.4
+MWI,RBJ,152,Malawi,1888,Central Region,19312,Nkhotakota,810,Nkhotakota,-12.916667,34.3
+MWI,RBJ,152,Malawi,1888,Central Region,19314,Ntchisi,812,Nsundwe,-13.383333,33.95
+MWI,RBJ,152,Malawi,1888,Central Region,19313,Ntcheu,814,Ntcheu,-14.816667,34.633333
+MWI,RBJ,152,Malawi,1888,Central Region,19314,Ntchisi,815,Ntchisi,-13.366667,34
+MWI,RBJ,152,Malawi,1888,Central Region,19313,Ntcheu,832,Ntonda,-14.983333,34.75
+MWI,RBJ,152,Malawi,1888,Central Region,19315,Salima,819,Salima,-13.783333,34.433333
+MWI,RBJ,152,Malawi,1888,Central Region,19310,Lilongwe,820,Santhe,-13.933333,33.433333
+MWI,RBJ,152,Malawi,1888,Central Region,19313,Ntcheu,821,Sharpevaley,-14.616667,34.733333
+MWI,RBJ,152,Malawi,1888,Central Region,19307,Dedza,822,Thete,-14.3,34.083333
+MWI,RBJ,152,Malawi,1888,Central Region,19313,Ntcheu,833,Tsangano turn off,-14.816667,34.633333
+MWI,RBJ,152,Malawi,1889,Northern Region,19318,Mzimba,770,Chilumba,-11.1,33.683333
+MWI,RBJ,152,Malawi,1889,Northern Region,42173,Nkhata Bay,772,Chintheche,-11.833333,34.166667
+MWI,RBJ,152,Malawi,1889,Northern Region,19316,Chitipa,774,Chitipa,-9.716667,33.266667
+MWI,RBJ,152,Malawi,1889,Northern Region,19318,Mzimba,776,Embangweni,-12.166667,33.466667
+MWI,RBJ,152,Malawi,1889,Northern Region,19318,Mzimba,777,Hewe,-11.2,33.466667
+MWI,RBJ,152,Malawi,1889,Northern Region,19318,Mzimba,828,Jenda,-12.35,33.55
+MWI,RBJ,152,Malawi,1889,Northern Region,19317,Karonga,779,Karonga,-9.933333,33.933333
+MWI,RBJ,152,Malawi,1889,Northern Region,19316,Chitipa,790,Misuku,-9.666667,33.516667
+MWI,RBJ,152,Malawi,1889,Northern Region,19318,Mzimba,794,Mpamba,-12.65,33.683333
+MWI,RBJ,152,Malawi,1889,Northern Region,19318,Mzimba,800,Mzimba,-11.9,33.6
+MWI,RBJ,152,Malawi,1889,Northern Region,19318,Mzimba,801,Mzuzu,-11.45,33.916667
+MWI,RBJ,152,Malawi,1889,Northern Region,0,,808,Nkhata Bay,-11.60000038,34.29999924
+MWI,RBJ,152,Malawi,1889,Northern Region,19316,Chitipa,816,Nthalire,-10.35,33.65
+MWI,RBJ,152,Malawi,1889,Northern Region,19320,Rumphi,818,Rumphi,-11.016667,33.866667
+MWI,RBJ,152,Malawi,1890,Southern Region,42175,Machinga,763,Balaka,-14.966667,35.5
+MWI,RBJ,152,Malawi,1890,Southern Region,19328,Nsanje,764,Bangula,-16.55,35.133333
+MWI,RBJ,152,Malawi,1890,Southern Region,19321,Blantyre,767,Bvumbwe,-15.783333,35
+MWI,RBJ,152,Malawi,1890,Southern Region,19328,Nsanje,769,Chikwawa,-16.766667,35.283333
+MWI,RBJ,152,Malawi,1890,Southern Region,19323,Chiradzulu,773,Chiradzulu,-15.7,35.183333
+MWI,RBJ,152,Malawi,1890,Southern Region,19330,Zomba,778,Jali,-15.5,35.45
+MWI,RBJ,152,Malawi,1890,Southern Region,19321,Blantyre,781,Limbe,-15.816667,35.05
+MWI,RBJ,152,Malawi,1890,Southern Region,42175,Machinga,782,Liwonde,-14.866667,35.466667
+MWI,RBJ,152,Malawi,1890,Southern Region,19329,Thyolo,783,Luchenza,-16.016667,35.3
+MWI,RBJ,152,Malawi,1890,Southern Region,19321,Blantyre,784,Lunzu,-15.65,35.05
+MWI,RBJ,152,Malawi,1890,Southern Region,19325,Mangochi,787,Mangochi,-14.466667,35.266667
+MWI,RBJ,152,Malawi,1890,Southern Region,19330,Zomba,788,Mayaka,-15.383333,35.333333
+MWI,RBJ,152,Malawi,1890,Southern Region,42177,Phalombe,830,Migowi,-15.7,35.683333
+MWI,RBJ,152,Malawi,1890,Southern Region,19325,Mangochi,793,Monkey Bay,-14.083333,34.916667
+MWI,RBJ,152,Malawi,1890,Southern Region,42176,Mulanje,797,Muloza,-16.033333,35.5
+MWI,RBJ,152,Malawi,1890,Southern Region,65271,Mwanza,799,Mwanza,-15.616667,34.516667
+MWI,RBJ,152,Malawi,1890,Southern Region,19325,Mangochi,802,Namwera,-14.366667,35.5
+MWI,RBJ,152,Malawi,1890,Southern Region,19322,Chikwawa,804,Nchalo,-16.266667,34.916667
+MWI,RBJ,152,Malawi,1890,Southern Region,65270,Neno,805,Neno,-15.4,34.65
+MWI,RBJ,152,Malawi,1890,Southern Region,19328,Nsanje,806,Ngabu,-16.966667,35.216667
+MWI,RBJ,152,Malawi,1890,Southern Region,19328,Nsanje,811,Nsanje,-16.93037987,35.25904083
+MWI,RBJ,152,Malawi,1890,Southern Region,42175,Machinga,813,Ntaja,-14.866667,35.533333
+MWI,RBJ,152,Malawi,1890,Southern Region,42177,Phalombe,817,Phalombe,-15.8,35.65
+MWI,RBJ,152,Malawi,1890,Southern Region,19330,Zomba,823,Thondwe,-15.5,35.45
+MWI,RBJ,152,Malawi,1890,Southern Region,19330,Zomba,824,Zomba,-15.383333,35.333333
+MOZ,RBJ,170,Mozambique,2117,#Maputo (city),41374,,321,Maputo,-25.965278,32.589167
+MOZ,RBJ,170,Mozambique,2112,Cabo Delgado,21841,Montepuez,333,Montepuez,-13.125556,38.999722
+MOZ,RBJ,170,Mozambique,2112,Cabo Delgado,65247,Cidade de Pemba,323,Pemba,-12.960833,40.507778
+MOZ,RBJ,170,Mozambique,2113,Gaza,21853,Chokwe,317,Chokwe,-24.533333,32.983333
+MOZ,RBJ,170,Mozambique,2113,Gaza,65248,Cidade de Xai-Xai,340,Xai Xai,-25.051944,33.644167
+MOZ,RBJ,170,Mozambique,2114,Inhambane,65249,Cidade de Inhambane,329,Inhambane,-23.865,35.383333
+MOZ,RBJ,170,Mozambique,2114,Inhambane,21867,Massinga,330,Massinga,-23.096667,35.337778
+MOZ,RBJ,170,Mozambique,2114,Inhambane,65250,Maxixe,331,Maxixe,-23.859722,35.347222
+MOZ,RBJ,170,Mozambique,2115,Manica,65251,Cidade de Chimoio,327,Chimoio,-19.116389,33.483333
+MOZ,RBJ,170,Mozambique,2115,Manica,21877,Manica,320,Manica,-18.933332,32.877127
+MOZ,RBJ,170,Mozambique,2118,Nampula,21903,Nacala-A-Velha,335,Nacala,-14.553611,40.625
+MOZ,RBJ,170,Mozambique,2118,Nampula,21899,Nampula,322,Nampula,-14.894444,40.28
+MOZ,RBJ,170,Mozambique,2118,Nampula,21906,Ribaue,338,Ribaue,-15.049444,38.281389
+MOZ,RBJ,170,Mozambique,2119,Niassa,21907,Cuamba,328,Cuamba,-14.844722,36.606944
+MOZ,RBJ,170,Mozambique,2119,Niassa,65262,Cidade de Lichinga,319,Lichinga,-13.312778,35.240556
+MOZ,RBJ,170,Mozambique,2120,Sofala,65263,Cidade da Beira,316,Beira,-19.843611,34.838889
+MOZ,RBJ,170,Mozambique,2120,Sofala,21928,Gorongosa,318,Gorongoza,-18.675556,34.072778
+MOZ,RBJ,170,Mozambique,2120,Sofala,21933,Nhamatanda,336,Nhamatanda,-19.269167,34.212778
+MOZ,RBJ,170,Mozambique,2121,Tete,21934,Angonia,326,Angonia,34.36425,-14.72353
+MOZ,RBJ,170,Mozambique,2121,Tete,21943,Mutarara,334,Mutarara,-17.44,35.073889
+MOZ,RBJ,170,Mozambique,2121,Tete,65264,Cidade de Tete,339,Tete,-16.156389,33.586667
+MOZ,RBJ,170,Mozambique,2122,Zambezia,21955,Alto Molocue,325,Alto Molocue,37.68827,-15.63109
+MOZ,RBJ,170,Mozambique,2122,Zambezia,21953,Milange,324,Milange,-16.098611,35.77
+MOZ,RBJ,170,Mozambique,2122,Zambezia,21954,Mocuba,332,Mocuba,-16.8375,36.985556
+MOZ,RBJ,170,Mozambique,2122,Zambezia,65266,Cidade de Quelimane,337,Quelimane,-17.878611,36.888333
+TZA,RBJ,257,United Republic of Tanzania,48357,Arusha,48384,Arusha Urban,80,Arusha,-3.366667,36.683333
+TZA,RBJ,257,United Republic of Tanzania,48358,Dar es salaam,48388,Ilala,83,Dar Es Salaam,-6.8,39.283333
+TZA,RBJ,257,United Republic of Tanzania,48359,Dodoma,48395,Mpwapwa,84,Dodoma,-7.29067,36.340375
+TZA,RBJ,257,United Republic of Tanzania,115002,Geita,115030,$Geita,1798,Geita,-2.8850378,32.2313539
+TZA,RBJ,257,United Republic of Tanzania,48360,Iringa,48397,Iringa Urban,85,Iringa,-7.766667,35.7
+TZA,RBJ,257,United Republic of Tanzania,48361,Kagera,48405,Bukoba Urban,82,Bukoba,-1.331667,31.812222
+TZA,RBJ,257,United Republic of Tanzania,115005,Katavi,115118,$Mpanda Urban,1801,Mpanda,-6.3477635,31.0736389
+TZA,RBJ,257,United Republic of Tanzania,48362,Kigoma,0,,86,Kigoma,-4.876944,29.626667
+TZA,RBJ,257,United Republic of Tanzania,48363,Kilimanjaro,48415,Moshi Urban,90,Moshi,-3.35,37.333333
+TZA,RBJ,257,United Republic of Tanzania,48364,Lindi,48421,Lindi Urban,87,Lindi,-10,39.716667
+TZA,RBJ,257,United Republic of Tanzania,48365,Manyara,115120,$Babati Urban,81,Babati,-4.216667,35.75
+TZA,RBJ,257,United Republic of Tanzania,48366,Mara,48432,Musoma Urban,99,Musoma,-1.5,33.8
+TZA,RBJ,257,United Republic of Tanzania,48367,Mbeya,48440,Mbeya Urban,88,Mbeya,-8.9,33.45
+TZA,RBJ,257,United Republic of Tanzania,48368,Morogoro,48446,Morogoro Urban,89,Morogoro,-6.816667,37.666667
+TZA,RBJ,257,United Republic of Tanzania,48369,Mtwara,48451,Mtwara Urban,91,Mtwara,-10.266667,40.183333
+TZA,RBJ,257,United Republic of Tanzania,115007,Njombe,115054,$Wanging'ombe,1800,Njombe,-8.9147528,34.6856509
+TZA,RBJ,257,United Republic of Tanzania,48374,Rukwa,48476,Sumbawanga Urban,100,Sumbawanga,-7.966667,31.616667
+TZA,RBJ,257,United Republic of Tanzania,48375,Ruvuma,48480,Songea Urban,95,Songea,-10.683333,35.65
+TZA,RBJ,257,United Republic of Tanzania,48376,Shinyanga,48489,Shinyanga Urban,93,Shinyanga,-3.666667,33.433333
+TZA,RBJ,257,United Republic of Tanzania,48377,Singida,48493,Singida Urban,94,Singida,-4.816667,34.75
+TZA,RBJ,257,United Republic of Tanzania,48380,Tabora,48497,Tabora Urban,96,Tabora,-5.016667,32.8
+TZA,RBJ,257,United Republic of Tanzania,48381,Tanga,48506,Tanga Urban,97,Tanga,-5.066667,39.1
+ZMB,RBJ,270,Zambia,3426,Central,65174,Chibombo,1430,Chibombo,-14.65,28.0666667
+ZMB,RBJ,270,Zambia,3426,Central,65175,Kabwe,1439,Kabwe,-14.43571923,28.44420433
+ZMB,RBJ,270,Zambia,3426,Central,65175,Kabwe,373,Kabwe Rural,-14.433333,28.45
+ZMB,RBJ,270,Zambia,3426,Central,65175,Kabwe,374,Kabwe Urban,-14.433333,28.45
+ZMB,RBJ,270,Zambia,3426,Central,65176,Kapiri-Mposhi,1441,Kapiri-Mposhi,-13.965182,28.680855
+ZMB,RBJ,270,Zambia,3426,Central,65179,Serenje,1447,Mambwe,-13.016667,30.583333
+ZMB,RBJ,270,Zambia,3426,Central,65177,Mkushi,392,Mkushi,-14.366667,29.366667
+ZMB,RBJ,270,Zambia,3426,Central,65178,Mumbwa,399,Mumbwa,-14.983333,27.066667
+ZMB,RBJ,270,Zambia,3426,Central,65179,Serenje,520,Serenje,-13.166667,30.783333
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65180,Chililabombwe,1432,Chililabombwe,-12.3666667,27.8333333
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65181,Chingola,369,Chingola,-12.533333,27.85
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65182,Kalulushi,376,Kalulushi,-12.833333,28.083333
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65183,Kitwe,381,Kitwe,-12.816667,28.2
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65184,Luanshya,384,Luanshya,-13.133333,28.4
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65187,Mpongwe,1444,Lufwanyama,-13.445598,27.7516
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65186,Masaiti,1448,Masaiti,-13.266667,28.416667
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65187,Mpongwe,1840,Mpongwe,-13.5119941,28.1561533
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65188,Mufulira,398,Mufulira,-12.55,28.233333
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65189,Ndola,1456,Ndola,-12.9666667,28.6333333
+ZMB,RBJ,270,Zambia,3427,Copperbelt,65189,Ndola,403,Ndola Rural,-12.966667,28.633333
+ZMB,RBJ,270,Zambia,3428,Eastern,65190,Chadiza,393,Chadiza,-13.95,32.85
+ZMB,RBJ,270,Zambia,3428,Eastern,65191,Chama,1428,Chama,-11.2,33.1666667
+ZMB,RBJ,270,Zambia,3428,Eastern,65192,Chipata,370,Chipata,-13.633333,32.65
+ZMB,RBJ,270,Zambia,3428,Eastern,65193,Katete,394,Katete,-14.1,32.083333
+ZMB,RBJ,270,Zambia,3428,Eastern,65194,Lundazi,385,Lundazi,-12.3,33.183333
+ZMB,RBJ,270,Zambia,3428,Eastern,65196,Nyimba,1457,Nyimba,-14.55,30.8333333
+ZMB,RBJ,270,Zambia,3428,Eastern,65197,Petauke,404,Petauke,-14.25,31.333333
+ZMB,RBJ,270,Zambia,3429,Luapula,65198,Chienge,1431,Chiengi,-8.481689453,28.93830872
+ZMB,RBJ,270,Zambia,3429,Luapula,65199,Kawambwa,380,Kawambwa,-9.783333,29.083333
+ZMB,RBJ,270,Zambia,3429,Luapula,65200,Mansa,389,Mansa,-11.2,28.883333
+ZMB,RBJ,270,Zambia,3429,Luapula,65204,Samfya,1449,Milenge,-11.957983,29.498184
+ZMB,RBJ,270,Zambia,3429,Luapula,65202,Mwense,400,Mwense,-10.383333,28.683333
+ZMB,RBJ,270,Zambia,3429,Luapula,65203,Nchelenge,402,Nchelenge,-9.35,28.733333
+ZMB,RBJ,270,Zambia,3429,Luapula,65204,Samfya,518,Samfya,-11.35,29.55
+ZMB,RBJ,270,Zambia,3430,Lusaka,65205,Chongwe,1435,Chongwe,-15.35,28.7
+ZMB,RBJ,270,Zambia,3430,Lusaka,65206,Kafue,1440,Kafue,-15.7666667,28.1833333
+ZMB,RBJ,270,Zambia,3430,Lusaka,65207,Luangwa,383,Luangwa,-15.616667,30.416667
+ZMB,RBJ,270,Zambia,3430,Lusaka,65208,Lusaka,1446,Lusaka,-15.4166667,28.2833333
+ZMB,RBJ,270,Zambia,3430,Lusaka,65208,Lusaka,386,Lusaka Rural,-15.416667,28.283333
+ZMB,RBJ,270,Zambia,3430,Lusaka,65208,Lusaka,387,Lusaka Urban,-15.416667,28.283333
+ZMB,RBJ,270,Zambia,3431,North-Western,65221,Chavuma,1429,Chavuma,-13.102558,22.693991
+ZMB,RBJ,270,Zambia,3431,North-Western,65222,Kabompo,1438,Kabompo,-13.6,24.2
+ZMB,RBJ,270,Zambia,3431,North-Western,65223,Kasempa,379,Kasempa,-13.45,25.833333
+ZMB,RBJ,270,Zambia,3431,North-Western,65224,Mufumbwe,1452,Mufumbwe,-13.6833333,24.8
+ZMB,RBJ,270,Zambia,3431,North-Western,65225,Mwinilunga,401,Mwinilunga,-11.85,24.366667
+ZMB,RBJ,270,Zambia,3431,North-Western,65226,Solwezi,521,Solwezi,-12.183333,26.4
+ZMB,RBJ,270,Zambia,3431,North-Western,65227,Zambezi,1461,Zambezi,-13.55,23.1166667
+ZMB,RBJ,270,Zambia,3432,Northern,65209,Chilubi,1433,Chilubi,-11.15345,29.90361
+ZMB,RBJ,270,Zambia,3432,Northern,65210,Chinsali,1434,Chinsali,-10.55,32.0666667
+ZMB,RBJ,270,Zambia,3432,Northern,65211,Isoka,372,Isoka,-10.133333,32.633333
+ZMB,RBJ,270,Zambia,3432,Northern,65212,Kaputa,1442,Kaputa,-8.4666667,29.6666667
+ZMB,RBJ,270,Zambia,3432,Northern,65213,Kasama,378,Kasama,-10.2,31.2
+ZMB,RBJ,270,Zambia,3432,Northern,65214,Luwingu,388,Luwingu,-10.266667,29.9
+ZMB,RBJ,270,Zambia,3432,Northern,65215,Mbala,391,Mbala,-8.833333,31.383333
+ZMB,RBJ,270,Zambia,3432,Northern,65216,Mpika,397,Mpika,-11.833333,31.45
+ZMB,RBJ,270,Zambia,3432,Northern,65217,Mporokoso,1450,Mporokoso,-9.3833333,30.1333333
+ZMB,RBJ,270,Zambia,3432,Northern,65218,Mpulungu,1451,Mpulungu,-8.7666667,31.1333333
+ZMB,RBJ,270,Zambia,3432,Northern,65219,Mungwi,1453,Mungwi,-10.1666667,31.3833333
+ZMB,RBJ,270,Zambia,3432,Northern,65220,Nakonde,1454,Nakonde,-9.3333333,32.7666667
+ZMB,RBJ,270,Zambia,3433,Southern,65228,Choma,371,Choma,-16.816667,26.983333
+ZMB,RBJ,270,Zambia,3433,Southern,65229,Gwembe,1436,Gwembe,-16.5,27.6166667
+ZMB,RBJ,270,Zambia,3433,Southern,65230,Itezhi-tezhi,1437,Itezhi-tezhi,-15.759869,26.021264
+ZMB,RBJ,270,Zambia,3433,Southern,65231,Kalomo,375,Kalomo,-17.05,26.5
+ZMB,RBJ,270,Zambia,3433,Southern,65232,Kazungula,1443,Kazungula,-17.795068,25.274389
+ZMB,RBJ,270,Zambia,3433,Southern,65233,Livingstone,382,Livingstone,-17.85,25.866667
+ZMB,RBJ,270,Zambia,3433,Southern,65234,Mazabuka,390,Mazabuka,-15.866667,27.766667
+ZMB,RBJ,270,Zambia,3433,Southern,65235,Monze,396,Monze,-16.283333,27.483333
+ZMB,RBJ,270,Zambia,3433,Southern,65236,Namwala,1455,Namwala,-15.75,26.45
+ZMB,RBJ,270,Zambia,3433,Southern,65237,Siavonga,1460,Siavonga,-16.5333333,28.7166667
+ZMB,RBJ,270,Zambia,3434,Western,65239,Kalabo,1462,Kalabo,-14.9666667,22.6833333
+ZMB,RBJ,270,Zambia,3434,Western,65240,Kaoma,377,Kaoma,-14.783333,24.8
+ZMB,RBJ,270,Zambia,3434,Western,65241,Lukulu,1445,Lukulu,-14.3833333,23.25
+ZMB,RBJ,270,Zambia,3434,Western,65242,Mongu,395,Mongu,-15.25,23.133333
+ZMB,RBJ,270,Zambia,3434,Western,65243,Senanga,519,Senanga,-16.116667,23.266667
+ZMB,RBJ,270,Zambia,3434,Western,65244,Sesheke,1458,Sesheke,-17.4666667,24.3
+ZMB,RBJ,270,Zambia,3434,Western,65245,Shang'ombo,1459,Shang'ombo,-16.323881,22.102503
+ZWE,RBJ,271,Zimbabwe,3435,Bulawayo,33051,Bulawayo,715,Renkini Bus Terminus,-20.15,28.583333
+ZWE,RBJ,271,Zimbabwe,3436,Harare,0,,708,Mbare,-17.858056,31.037222
+ZWE,RBJ,271,Zimbabwe,3437,Manicaland,33055,Chipinge,726,Checheche,-20.188333,32.623645
+ZWE,RBJ,271,Zimbabwe,3437,Manicaland,33053,Buhera,727,Murambinda,-19.333333,31.433333
+ZWE,RBJ,271,Zimbabwe,3437,Manicaland,33054,Chimanimani,725,Nyanyadzi,-19.766667,32.416667
+ZWE,RBJ,271,Zimbabwe,3437,Manicaland,61704,Mutare,724,Sakubva,-18.985751,32.643099
+ZWE,RBJ,271,Zimbabwe,3438,Mashonaland Central,33060,Bindura,713,Bindura,-17.301922,31.330563
+ZWE,RBJ,271,Zimbabwe,3438,Mashonaland Central,33064,Mount Darwin,731,Mount Darwin,-16.7833333,31.5833333
+ZWE,RBJ,271,Zimbabwe,3439,Mashonaland East,33069,Marondera,709,Dombotombo,-18.185266,31.551933
+ZWE,RBJ,271,Zimbabwe,3439,Mashonaland East,33071,Murehwa,711,Murehwa,-17.643215,31.783996
+ZWE,RBJ,271,Zimbabwe,3440,Mashonaland West,33079,Makonde,712,Chikonohono,-17.366667,30.2
+ZWE,RBJ,271,Zimbabwe,3440,Mashonaland West,33075,Chegutu,710,Murombedzi,-18.130206,30.140737
+ZWE,RBJ,271,Zimbabwe,3441,Masvingo,33085,Masvingo,719,Mucheke,-20.083333,30.816667
+ZWE,RBJ,271,Zimbabwe,3441,Masvingo,33084,Gutu,728,Mupandawana,-19.65,31.166667
+ZWE,RBJ,271,Zimbabwe,3441,Masvingo,33083,Chivi,720,Ngundu,-20.307285,30.510171
+ZWE,RBJ,271,Zimbabwe,3441,Masvingo,33082,Chiredzi,721,Tshovani,-21.05,31.666667
+ZWE,RBJ,271,Zimbabwe,3442,Matabeleland North,33088,Binga,718,Binga centre,-17.620275,27.341391
+ZWE,RBJ,271,Zimbabwe,3442,Matabeleland North,61705,Hwange,730,Hwange Town Bus Terminus,-18.366667,26.483333
+ZWE,RBJ,271,Zimbabwe,3442,Matabeleland North,33092,Nkayi,716,Nkayi Growth Point,-18.999158,28.898316
+ZWE,RBJ,271,Zimbabwe,3443,Matabeleland South,33095,Beitbridge,729,Dulibadzimu Market,-22.216667,30
+ZWE,RBJ,271,Zimbabwe,3443,Matabeleland South,33097,Gwanda,717,Gwanda town,-20.936219,29.006977
+ZWE,RBJ,271,Zimbabwe,3444,Midlands,33103,Gweru,723,Kombai,-19.45,29.816667
+ZWE,RBJ,271,Zimbabwe,3444,Midlands,33107,Zvishavane,722,Mandava,-20.326744,30.066478
+BDI,RBN,43,Burundi,40542,Bubanza,40561,Mpanda,1827,Musenyi,-3.171391,29.40454
+BDI,RBN,43,Burundi,40543,Bujumbura Mairie,40575,Ngagara,201,Bujumbura,-3.3643,29.3579
+BDI,RBN,43,Burundi,40543,Bujumbura Mairie,40577,Rohero,207,Sogemac (central market Bujumbura),-3.38,29.36
+BDI,RBN,43,Burundi,40547,Cibitoke,40610,Rugombo,1826,Rugombo,-2.81487,29.079221
+BDI,RBN,43,Burundi,40548,Gitega,40617,Itaba,202,Gitega,-3.6375,30.0401
+BDI,RBN,43,Burundi,40551,Kirundo,40642,Kirundo,203,Kirundo,-2.584722,30.097222
+BDI,RBN,43,Burundi,40554,Muyinga,40662,Muyinga,204,Muyinga,-2.849444,30.336111
+BDI,RBN,43,Burundi,40556,Ngozi,40675,Ngozi,206,Ngozi,-2.908333,29.827778
+BDI,RBN,43,Burundi,40558,Ruyigi,40691,Ruyigi,205,Ruyigi,-3.476389,30.248611
+DJI,RBN,70,Djibouti,1093,Ali Sabieh,15272,Ali Sabieh,537,Ali Sabieh,11.15,42.71
+DJI,RBN,70,Djibouti,1094,Dikhil,15274,Dikhil,538,Dikhil,11.108611,42.373889
+DJI,RBN,70,Djibouti,1095,Djibouti,15276,Djibouti,536,Arta,11.522222,42.841944
+DJI,RBN,70,Djibouti,1096,Obock,15278,Obock,539,Obock,11.963056,43.290556
+DJI,RBN,70,Djibouti,1097,Tadjourah,15282,Tadjourah,540,Tadjourah,11.785278,42.884444
+ETH,RBN,79,Ethiopia,1227,Addis Ababa,149277,$Region 14,480,Addis Ababa,9.024325,38.749226
+ETH,RBN,79,Ethiopia,1228,Afar,40789,Zone 2,511,Abaala,13.3564035,39.7575272
+ETH,RBN,79,Ethiopia,1228,Afar,40788,Zone 1,1831,Asayta,11.563611,41.439444
+ETH,RBN,79,Ethiopia,1229,Amhara,47682,North Shewa(R3),467,Abomsa,9.9833333,39.9833333
+ETH,RBN,79,Ethiopia,1229,Amhara,40802,South Wollo,489,Ajeber,10.633333,38.783333
+ETH,RBN,79,Ethiopia,1229,Amhara,149279,$No Name,482,Baher Dar,11.6,37.383333
+ETH,RBN,79,Ethiopia,1229,Amhara,40800,Oromia,469,Bati,11.183333,40.016667
+ETH,RBN,79,Ethiopia,1229,Amhara,40804,West Gojam,503,Bure,10.7,37.0666667
+ETH,RBN,79,Ethiopia,1229,Amhara,40797,North Gonder,510,Debark,13.15815,37.900291
+ETH,RBN,79,Ethiopia,1229,Amhara,47682,North Shewa(R3),504,Debre Birhan,9.6833333,39.5333333
+ETH,RBN,79,Ethiopia,1229,Amhara,40796,East Gojam,502,Debre Markos,10.33361,37.72995
+ETH,RBN,79,Ethiopia,1229,Amhara,40802,South Wollo,484,Desse,11.133333,39.633333
+ETH,RBN,79,Ethiopia,1229,Amhara,40801,South Gonder,492,Ebinat,12.133333,38.05
+ETH,RBN,79,Ethiopia,1229,Amhara,40797,North Gonder,485,Gonder,12.6,37.466667
+ETH,RBN,79,Ethiopia,1229,Amhara,40799,North Wollo,475,Kobo,12.15,39.633333
+ETH,RBN,79,Ethiopia,1229,Amhara,40796,East Gojam,496,Mota,11.083333,37.866667
+ETH,RBN,79,Ethiopia,1229,Amhara,40799,North Wollo,465,Robit,12.016667,39.633333
+ETH,RBN,79,Ethiopia,1229,Amhara,40803,Wag Himra,497,Sekota,12.630556,39.034722
+ETH,RBN,79,Ethiopia,1230,Beneshangul Gumu,40805,Asosa,1832,Assosa,10.06667,34.53333
+ETH,RBN,79,Ethiopia,1231,Dire Dawa,40809,Dire Dawa,472,Dire Dawa,9.593056,41.866111
+ETH,RBN,79,Ethiopia,1232,Gambela,149284,$Agnuak,506,Gambela,8.25,34.5833333
+ETH,RBN,79,Ethiopia,1232,Gambela,149285,$Majang,517,Meti,7.233333,35.316667
+ETH,RBN,79,Ethiopia,47678,Oromia,47694,West Shewa,481,Ambo,8.983333,37.85
+ETH,RBN,79,Ethiopia,47678,Oromia,47686,Arsi,491,Assela,7.95,39.133333
+ETH,RBN,79,Ethiopia,47678,Oromia,47689,East Harerge,462,Babile,9.225556,42.332222
+ETH,RBN,79,Ethiopia,47678,Oromia,47689,East Harerge,463,Beddenno,9.11667,41.61667
+ETH,RBN,79,Ethiopia,47678,Oromia,40824,West Harerge,470,Bedessa,8.9,40.783333
+ETH,RBN,79,Ethiopia,47678,Oromia,47689,East Harerge,464,Deder,9.3166667,41.41667
+ETH,RBN,79,Ethiopia,47678,Oromia,47687,Bale,471,Delo,7.25,40.466667
+ETH,RBN,79,Ethiopia,47678,Oromia,47691,Guji,514,Derashe,5.66667,39.43333
+ETH,RBN,79,Ethiopia,47678,Oromia,47687,Bale,515,Gordamole,6.10803,40.7552
+ETH,RBN,79,Ethiopia,47678,Oromia,40822,Jimma,486,Jimma,7.666667,36.833333
+ETH,RBN,79,Ethiopia,47678,Oromia,40822,Jimma,494,Kersa,7.666667,36.833333
+ETH,RBN,79,Ethiopia,47678,Oromia,149291,$Horo Guduru,495,Merti,9.5,36.983333
+ETH,RBN,79,Ethiopia,47678,Oromia,47690,East Shewa,512,Nazareth,8.55,39.266667
+ETH,RBN,79,Ethiopia,47678,Oromia,40820,East Wellega,499,Nekempt,9.083333,36.55
+ETH,RBN,79,Ethiopia,47678,Oromia,47687,Bale,483,Robe,7.133333,40
+ETH,RBN,79,Ethiopia,47678,Oromia,149294,$West Arsi,488,Shashemene,7.18333,38.58333
+ETH,RBN,79,Ethiopia,47678,Oromia,47690,East Shewa,468,Wolenchiti,8.66667,39.43333
+ETH,RBN,79,Ethiopia,47678,Oromia,47693,South West Shewa,500,Woliso,8.533333,37.983333
+ETH,RBN,79,Ethiopia,47678,Oromia,47688,Borena,479,Yabelo,4.883333,38.083333
+ETH,RBN,79,Ethiopia,47678,Oromia,47690,East Shewa,501,Ziway,7.933333,38.716667
+ETH,RBN,79,Ethiopia,1236,SNNPR,47699,Gamo Gofa,490,Amaro,6.366667,36.866667
+ETH,RBN,79,Ethiopia,1236,SNNPR,40838,Sidama,513,Aroresa,6.216667,39.016667
+ETH,RBN,79,Ethiopia,1236,SNNPR,40838,Sidama,516,Awassa Zuriya,7.05,38.466667
+ETH,RBN,79,Ethiopia,1236,SNNPR,47699,Gamo Gofa,473,Gamo Gofa,6.616667,37.15
+ETH,RBN,79,Ethiopia,1236,SNNPR,40833,Hadiya,474,Hossana,7.583333,37.883333
+ETH,RBN,79,Ethiopia,1236,SNNPR,149297,$Segen Peoples',493,Karati,5.25,37.483333
+ETH,RBN,79,Ethiopia,1236,SNNPR,47706,Wolayita,476,Sodo,6.85,37.75
+ETH,RBN,79,Ethiopia,1236,SNNPR,40839,South Omo,498,Turmi,4.966667,36.483333
+ETH,RBN,79,Ethiopia,1236,SNNPR,40831,Gedio,478,Wonago,6.316667,38.266667
+ETH,RBN,79,Ethiopia,47679,Somali,40845,Fafan,461,Jijiga,9.3333,42.81667
+ETH,RBN,79,Ethiopia,1237,Tigray,40850,Central,466,Abi Adi,13.560833,38.973889
+ETH,RBN,79,Ethiopia,1237,Tigray,40851,#Easetern Tigray,508,Adigrat,14.27395,39.4622
+ETH,RBN,79,Ethiopia,1237,Tigray,40850,Central,507,Adwa,14.15936,38.900742
+ETH,RBN,79,Ethiopia,1237,Tigray,149298,$Southern,458,Alamata,12.418333,39.5575
+ETH,RBN,79,Ethiopia,1237,Tigray,40851,#Easetern Tigray,509,Hawzien,14.03333,39.45
+ETH,RBN,79,Ethiopia,1237,Tigray,47711,Western,505,Humera,14.290593,36.608076
+ETH,RBN,79,Ethiopia,1237,Tigray,149298,$Southern,459,Korem,12.5058333,39.5227778
+ETH,RBN,79,Ethiopia,1237,Tigray,149298,$Southern,487,Mekele,13.496667,39.475278
+ETH,RBN,79,Ethiopia,1237,Tigray,149298,$Southern,856,Sik'ela,13.088746,39.00994
+ETH,RBN,79,Ethiopia,1237,Tigray,40850,Central,477,Wekro,14.106699,38.540339
+KEN,RBN,133,Kenya,51326,Coast,51346,Tana River,1854,Hola (Tana River),-1.5039143,40.0274159
+KEN,RBN,133,Kenya,51326,Coast,51340,Kilifi,1852,Kilifi,-3.6301,39.85113
+KEN,RBN,133,Kenya,51326,Coast,51344,Mombasa,191,Mombasa,-4.05,39.666667
+KEN,RBN,133,Kenya,51327,Eastern,51349,Kitui,187,Kitui,-1.366667,38.016667
+KEN,RBN,133,Kenya,51327,Eastern,51352,Marsabit,190,Marsabit,2.333333,37.983333
+KEN,RBN,133,Kenya,51328,Nairobi,51360,Nairobi,184,Nairobi,-1.283333,36.816667
+KEN,RBN,133,Kenya,51329,North Eastern,51361,Garissa,1855,Garissa,-0.4564,39.64603
+KEN,RBN,133,Kenya,51329,North Eastern,51363,Mandera,189,Mandera,3.936804,41.858383
+KEN,RBN,133,Kenya,51330,Nyanza,51369,Kisumu,186,Kisumu,-0.1,34.75
+KEN,RBN,133,Kenya,51331,Rift Valley,51393,Uasin Gishu,185,Eldoret,0.516667,35.283333
+KEN,RBN,133,Kenya,51331,Rift Valley,51380,Kajiado,1853,Kajiado,-1.84153,36.7913
+KEN,RBN,133,Kenya,51331,Rift Valley,51392,Turkana,188,Lodwar (Turkana),3.116667,35.6
+KEN,RBN,133,Kenya,51331,Rift Valley,51377,Baringo,1851,Marigat (Baringo),0.4647,35.96007
+KEN,RBN,133,Kenya,51331,Rift Valley,51386,Nakuru,1850,Nakuru,-0.28296,36.0744
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21974,$Bugesera,1383,Batiment,-2.145556,30.091389
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21986,$Kirehe,1060,Gatore,-2.273056,30.709167
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21984,$Kayonza,1066,Kabarondo,-2.017222,30.548611
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21989,$Ngoma,1074,Kibungo,-2.164444,30.541944
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21978,$Gatsibo,1403,Kimironko,-1.7528,30.345
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21974,$Bugesera,1404,Kinazi,-2.143368,30.093505
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21978,$Gatsibo,1079,Kiramuruzi,-1.801483,30.398887
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21992,$Nyagatare,1561,Matimba,-1.113685,30.427121
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,22003,$Rwamagana,1088,Musha,-1.9158,30.3419
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,22003,$Rwamagana,1490,Ntunga,-1.957409,30.354718
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21992,$Nyagatare,1093,Nyagatare,-1.298333,30.321944
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21974,$Bugesera,1096,Nyamata,-2.2075,30.243611
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21974,$Bugesera,1105,Ruhuha,-2.145556,30.091389
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21992,$Nyagatare,1106,Rukomo,-1.336111,30.270833
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21986,$Kirehe,1410,Rusumo,-2.273056,30.709167
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,21978,$Gatsibo,1109,Rwagitima,-1.798,30.4158
+RWA,RBN,205,Rwanda,21969,$East/Iburasirazuba,22003,$Rwamagana,1110,Rwamagana,-1.9487,30.4347
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21976,$Gakenke,1046,Base,-1.65,29.8747
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21988,$Musanze,1051,Byangabo,-1.559,29.5494
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21979,$Gicumbi,1052,Byumba,-1.5775,30.0625
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21979,$Gicumbi,1491,Gacurabwenge,-1.5814501,30.0674182
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21976,$Gakenke,1056,Gakenke,-1.6483,29.7999
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,22000,$Rulindo,1058,Gaseke,-1.6155,29.9248
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21976,$Gakenke,1402,Karenge,-1.6407,29.8157
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21975,$Burera,1489,Muhondo,-1.5985,29.8771
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21979,$Gicumbi,1085,Mukarange,-1.528056,30.078611
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21988,$Musanze,1087,Musanze,-1.5013,29.609
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21988,$Musanze,1488,Nkora,-1.5245,29.67
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,22000,$Rulindo,1102,Rugarama,-1.6279,29.9304
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21976,$Gakenke,1409,Ruhango,-1.6455,29.7199
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21988,$Musanze,1104,Ruhengeri,-1.5041667,29.6358333
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,21976,$Gakenke,1107,Rushashi,-1.739,29.8693
+RWA,RBN,205,Rwanda,21971,$North/Amajyaruguru,22000,$Rulindo,1562,Rusine,-1.808133027,30.1252506
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21999,$Ruhango,1400,Buhanda,-2.229088,29.66174828
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21981,$Huye,1050,Butare,-2.6038,29.7431
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21993,$Nyamagabe,1057,Gasarenda,-2.513,29.475
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21982,$Kamonyi,1059,Gashyushya,-2.045,29.841944
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21993,$Nyamagabe,1062,Gikongoro,-2.463972,29.573888
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21981,$Huye,1401,Huye,-2.5805,29.716
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21999,$Ruhango,1065,Kabacuzi,-2.25111,29.62694
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21981,$Huye,1484,Karambi,-2.5064,29.6126
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21982,$Kamonyi,1072,Kayenzi,-1.898611,29.85
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21993,$Nyamagabe,1073,Kibirizi,-2.452937,29.523734
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21981,$Huye,1485,Kizi,-2.5297,29.653
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21997,$Nyaruguru,1486,Miko,-2.6718,29.6081
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21982,$Kamonyi,1405,Mugina,-2.102778,29.9525
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21981,$Huye,1406,Muhanga,-2.430907,29.675259
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21995,$Nyanza,1089,Ndago,-2.416667,29.883333
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21981,$Huye,1408,Nkoto,-2.5623,29.6645
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21981,$Huye,1098,Nyanza,-2.5817,29.7217
+RWA,RBN,205,Rwanda,21972,$South/Amajyepfo,21981,$Huye,1103,Rugogwe,-2.4912,29.7252
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,22002,$Rutsiro,1045,Birambo,-1.918,29.4497
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21994,$Nyamasheke,1047,Bugarama,-2.3321,29.2128
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21994,$Nyamasheke,1560,Bumazi,-2.45,29
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21994,$Nyamasheke,1049,Bushenge,-2.4268,29.0021
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,22002,$Rutsiro,1053,Congo - Nil,-1.9577,29.3843
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,22002,$Rutsiro,1055,Gakeli,-1.9464,29.4846
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21998,$Rubavu,1063,Gisenyi,-1.702778,29.256389
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21990,$Ngororero,1067,Kabaya,-1.747,29.5431
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,22001,$Rusizi,1070,Kamembe,-2.4798,28.9022
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21983,$Karongi,1487,Kibuye,-2.0555556,29.3497222
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21994,$Nyamasheke,1078,Kirambo,-2.3155,29.1415
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21998,$Rubavu,1080,Kora,-1.598889,29.382222
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21998,$Rubavu,1081,Mahoko,-1.7,29.333333
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21991,$Nyabihu,1084,Mukamira,-1.61447,29.512615
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21991,$Nyabihu,1407,Ngororero,-1.6458,29.6196
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,22002,$Rutsiro,1092,Nyagahanika,-1.798989864,29.32849053
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,22002,$Rutsiro,1095,Nyakarambi,-1.8988,29.4222
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21991,$Nyabihu,1100,Rambura,-1.6757,29.5166
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21998,$Rubavu,1101,Rubavu,-1.6825,29.296944
+RWA,RBN,205,Rwanda,21973,$West/Iburengerazuba,21991,$Nyabihu,1411,Vunga,-1.6871,29.6284
+RWA,RBN,205,Rwanda,2587,Kigali City/Umujyi wa Kigali,25245,Kicukiro,1054,Gahanga,-1.976944,30.105833
+RWA,RBN,205,Rwanda,2587,Kigali City/Umujyi wa Kigali,25245,Kicukiro,1075,Kicukiro,-1.976944,30.105833
+RWA,RBN,205,Rwanda,2587,Kigali City/Umujyi wa Kigali,25246,Nyarugenge,1077,Kimisagara,-1.953611,30.060556
+RWA,RBN,205,Rwanda,2587,Kigali City/Umujyi wa Kigali,21977,$Gasabo,1086,Mulindi,-1.953611,30.060556
+RWA,RBN,205,Rwanda,2587,Kigali City/Umujyi wa Kigali,25246,Nyarugenge,1091,Nyabugogo,-1.953611,30.060556
+RWA,RBN,205,Rwanda,2587,Kigali City/Umujyi wa Kigali,25246,Nyarugenge,1097,Nyamirambo,-1.940278,30.065278
+RWA,RBN,205,Rwanda,2587,Kigali City/Umujyi wa Kigali,25246,Nyarugenge,1885,Nyarugenge,-1.9567157,30.0636349
+SOM,RBN,226,Somalia,2692,Banadir,25672,Banadir,1421,Mogadishu,2.0666667,45.3666667
+SOM,RBN,226,Somalia,2690,Bari,25663,Bossaso,1414,Bossaso,11.26,49.18
+SOM,RBN,226,Somalia,2690,Bari,25667,Qardho,1420,Qardho,9.50307,49.088261
+SOM,RBN,226,Somalia,2691,Bay,25668,Baydhaba,1413,Borama,2.933333,43.7
+SOM,RBN,226,Somalia,2695,Hiraan,25684,Belet Weyne,1894,Beletweine,4.7358333,45.2036111
+SOM,RBN,226,Somalia,2700,Mudug,25705,Gaalkacyo,1417,Gaalkacyo,6.772749,47.424278
+SOM,RBN,226,Somalia,2701,Nugaal,25712,Garoowe,1418,Garowe,8.4,48.48
+SOM,RBN,226,Somalia,2702,Sanaag,25715,Ceerigaabo,1416,Ceerigaabo,10.62339,47.365391
+SOM,RBN,226,Somalia,2704,Togdheer,25720,Burco,1415,Burco,9.52392,45.536831
+SOM,RBN,226,Somalia,2705,Woqooyi Galbeed,25724,Berbera,1412,Berbera,10.4355556,45.0163889
+SOM,RBN,226,Somalia,2705,Woqooyi Galbeed,25726,Hargeysa,1419,Hargeysa,9.56,44.065
+SSD,RBN,70001,South Sudan,2748,Central Equatoria,37033,Bahr Al Jabal,1388,Konyo Konyo,4.845972,31.601203
+SSD,RBN,70001,South Sudan,2750,Eastern Equatoria,37042,Amatonge,1786,Torit,4.4102396,32.5740376
+SSD,RBN,70001,South Sudan,2746,El Buheyrat,37023,Rumbek,1390,Rumbek,6.8,29.6833333
+SSD,RBN,70001,South Sudan,2751,Jonglei,37053,Bor,1386,Bor,6.21,31.57
+SSD,RBN,70001,South Sudan,2754,Northern Bahr El Ghazal,37077,Aweil,1384,Aweil (Town),8.768157,27.40019
+SSD,RBN,70001,South Sudan,2747,Unity,37118,Rabkona,1385,Bentiu,9.2333333,29.8333333
+SSD,RBN,70001,South Sudan,2747,Unity,37117,Faring,1391,Jau,10.2802778,29.9780556
+SSD,RBN,70001,South Sudan,37021,Upper Nile,37126,Tonga,1389,Malakal,9.533424,31.660485
+SSD,RBN,70001,South Sudan,2765,Warrap,37127,Gogrial,1387,Kuajok,8.471676,28.123873
+UGA,RBN,253,Uganda,766,$Kween,42204,,261,Kapchorwa,1.382778,34.524444
+UGA,RBN,253,Uganda,1344,$Kyankwanzi,28447,,257,Kiboga,0.916111,31.774167
+UGA,RBN,253,Uganda,3111,Gulu,28404,Gulu Municipality,262,Gulu,2.766667,32.305556
+UGA,RBN,253,Uganda,42179,Iganga,28413,Kigulu,259,Iganga,0.609167,33.468611
+UGA,RBN,253,Uganda,3114,Jinja,28416,Jinja Municipality,260,Jinja,0.424444,33.204167
+UGA,RBN,253,Uganda,42182,Kampala,42202,Central Kampala,258,Owino,0.322805,32.574841
+UGA,RBN,253,Uganda,47082,Lira,28462,Lira Municipality,263,Lira,2.235,32.909722
+UGA,RBN,253,Uganda,47086,Mbarara,28487,Mbarara Municipality,264,Mbarara,-0.605675,30.64855
+BOL,RBP,33,Bolivia,40443,Beni,6141,Cercado,314,Trinidad,-14.837491,-64.904286
+BOL,RBP,33,Bolivia,40444,Chuquisaca,40458,Oropeza,307,Sucre,-19.043056,-65.259167
+BOL,RBP,33,Bolivia,40445,Cochabamba,40470,Cercado,309,Cochabamba City,-17.389498,-66.156797
+BOL,RBP,33,Bolivia,40446,La Paz,6185,Murillo,308,La Paz City,-16.5,-68.15
+BOL,RBP,33,Bolivia,40447,Oruro,40492,Cercado,310,Oruro City,-17.983333,-67.15
+BOL,RBP,33,Bolivia,648,Pando,6204,Madre De Dios,315,Cobija,-11.783333,-67.9
+BOL,RBP,33,Bolivia,40448,Potosi,40522,Tomas Frias,311,Potosi,-19.583611,-65.753056
+BOL,RBP,33,Bolivia,40449,Santa Cruz,40523,Andres Iba�ez,313,Santa Cruz City,-17.8145819,-63.1560853
+BOL,RBP,33,Bolivia,40450,Tarija,40538,Cercado,312,Tarija City,-21.516667,-64.75
+COL,RBP,57,Colombia,935,Antioquia,13408,Medellin,842,Medellin,6.291389,-75.536111
+COL,RBP,57,Colombia,935,Antioquia,13440,San Vicente,848,San Vicente,6.232778,-75.336111
+COL,RBP,57,Colombia,937,Atlantico,13475,Barranquilla  (dist.port.,845,Barranquilla,10.963889,-74.796389
+COL,RBP,57,Colombia,938,Bolivar,13503,Cartagena (dist. Esp.),855,Cartagena,10.399722,-75.514444
+COL,RBP,57,Colombia,939,Boyaca,13649,Tunja,853,Tunja,5.535278,-73.367778
+COL,RBP,57,Colombia,944,Cauca,13722,Bolivar,850,Popayan,1.683333,-76.833333
+COL,RBP,57,Colombia,945,Cesar,13782,Valledupar,854,Valledupar,10.476944,-73.250556
+COL,RBP,57,Colombia,947,Cordoba,13820,Monteria,844,Monteria,8.7575,-75.89
+COL,RBP,57,Colombia,948,Cundinamarca,13914,Santafe De Bogota D.c.,840,Bogota,4.6,-74.083333
+COL,RBP,57,Colombia,954,Meta,14053,Restrepo,846,Villavicencio,4.153333,-73.635
+COL,RBP,57,Colombia,955,Narino,14102,Pasto,849,Pasto,1.213611,-77.281111
+COL,RBP,57,Colombia,956,Norte De Santander,14135,Cucutilla,851,Cucuta,7.542222,-72.776667
+COL,RBP,57,Colombia,958,Quindio,14177,Armenia,847,Armenia,4.533889,-75.681111
+COL,RBP,57,Colombia,961,Santander,14214,Bucaramanga,852,Bucaramanga,7.129722,-73.125833
+COL,RBP,57,Colombia,962,Sucre,14314,Sincelejo,843,Sincelejo,9.304722,-75.397778
+COL,RBP,57,Colombia,964,Valle Del Cauca,14374,Cali,841,Cali,3.437222,-76.5225
+SLV,RBP,75,El Salvador,1185,Cabanas,15580,Guacotecti,162,Sensuntepeque,13.866667,-88.633333
+SLV,RBP,75,El Salvador,1186,Chalatenango,15591,Chalatenango,154,Chalatenango,14.033333,-88.933333
+SLV,RBP,75,El Salvador,1187,Cuscatlan,15621,Cojutepeque,155,Cojutepeque,13.716667,-88.933333
+SLV,RBP,75,El Salvador,1189,La Paz,15679,Zacatecoluca,165,Zacatecoluca,13.5,-88.866667
+SLV,RBP,75,El Salvador,1190,La Union,15687,La Union,156,La Union,13.336944,-87.843889
+SLV,RBP,75,El Salvador,1191,Morazan,15716,San Francisco Gotera,157,San Francisco Gotera,13.7,-88.1
+SLV,RBP,75,El Salvador,1192,San Miguel,15740,San Miguel,158,San Miquel,13.4833333,-88.1833333
+SLV,RBP,75,El Salvador,1193,San Salvador,15758,San Salvador,159,San Salvador,13.708611,-89.203056
+SLV,RBP,75,El Salvador,1195,Santa Ana,15785,Santa Ana,161,Santa Ana,13.994167,-89.559722
+SLV,RBP,75,El Salvador,1196,Sonsonate,0,,153,Ahuachapan,13.92639351,-89.84112549
+SLV,RBP,75,El Salvador,1196,Sonsonate,15803,Sonsonate,163,Sonsonate,13.718889,-89.724167
+SLV,RBP,75,El Salvador,1197,Usulutan,15827,Usulutan,164,Usulutan,13.35,-88.45
+GTM,RBP,103,Guatemala,64821,Guatemala,64843,Guatemala,1145,La Terminal,14.6173222,-90.5221472
+HTI,RBP,108,Haiti,1409,Artibonite,17168,Gonaives,103,Gonaives,19.45,-72.683333
+HTI,RBP,108,Haiti,1410,Centre,17172,Hinche,104,Hinche,19.15,-72.016667
+HTI,RBP,108,Haiti,1411,Grande Anse,17177,Jeremie,106,Jeremie,18.616667,-74.083333
+HTI,RBP,108,Haiti,1412,Nord,17190,Cap Haitien,107,Cap-Haitien,19.757778,-72.204167
+HTI,RBP,108,Haiti,1413,Nord Est,17182,Ouanaminthe,108,Ouanaminthe,19.55,-71.733333
+HTI,RBP,108,Haiti,1414,Nord Ouest,17185,Port De Paix,110,Port-de-Paix,19.95,-72.833333
+HTI,RBP,108,Haiti,1415,Ouest,17198,Port-Au-Prince,109,Port-au-Prince,18.539167,-72.335
+HTI,RBP,108,Haiti,1416,Sud,17203,Cayes,102,Cayes,18.2,-73.75
+HTI,RBP,108,Haiti,1417,Sud Est,17201,Jacmel,105,Jacmel,18.234167,-72.534722
+NIC,RBP,180,Nicaragua,2196,Managua,22489,Managua,1895,Managua,12.1149926,-86.2361744
+PER,RBP,195,Peru,2342,Lima,24139,Lima,208,Lima,-12.05,-77.05
