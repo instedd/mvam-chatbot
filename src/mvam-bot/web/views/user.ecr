@@ -27,8 +27,8 @@
         <% fields.each do |field| %>
           <td>
             <% if value = survey.data[field]? %>
-              <% if value =~ /photo:\/\/(.+)/) %>
-                <a href="/files/<%= $~[1] %>" target="_blank">Download</a>
+              <% if value =~ /photo:\/\/(.+)/ %>
+                <a class="glyphicon glyphicon-download-alt" href="/files/<%= $~[1] %>"></a>
               <% else %>
                 <%= value %>
               <% end %>

@@ -39,6 +39,17 @@ get "/users/:id" do |env|
   end
 end
 
+get "/files/:id" do |env|
+  if file = MvamBot::DataFile.find(env.params.url["id"])
+    env.response.headers.add "Content-Type", "application/octet-stream"
+    env.response.headers.add "Content-Disposition", "attachment; filename=\"#{env.params.url["id"]}.#{file.extension}\"" # TODO: CHECK EXT
+    env.response.content_length = file.data.size
+    env.response.write(file.data)
+  else
+    env.response.status_code = 404
+  end
+end
+
 Kemal.config.tap do |config|
   config.host_binding = MvamBot::Config.web_bind_address
   config.port = MvamBot::Config.web_bind_port
