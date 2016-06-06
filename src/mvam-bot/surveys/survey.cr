@@ -74,10 +74,9 @@ module MvamBot
       end
 
       private def run(transition : FlowTransition)
-        # TODO: Support multiple requests when responding on telegram request
-        # if say = transition.say
-        #   @requestor.answer(say, update_user: false)
-        # end
+        if say = transition.say
+          @requestor.answer(say, update_user: false)
+        end
         run transition.target
       end
 

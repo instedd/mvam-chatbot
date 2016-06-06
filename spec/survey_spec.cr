@@ -165,7 +165,7 @@ describe ::MvamBot::Bot do
       file.data.should_not eq(nil)
     end
 
-    pending "should support refusing uploading a picture" do
+    it "should support refusing uploading a picture" do
       DB.cleanup
       bot = Bot.new
 
