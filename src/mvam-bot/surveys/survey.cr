@@ -85,8 +85,13 @@ module MvamBot
           end
         end
 
+        # Save survey data
+        SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final)
+
         if to_state.final
           user.conversation_step = nil
+          user.conversation_session_id = nil
+          user.conversation_state.clear
           MvamBot.logger.info("Survey completed at state #{to_state.id} for user #{user.id}")
         else
           # Store current state and previous not-transient state
@@ -95,7 +100,6 @@ module MvamBot
           user.conversation_step = "survey/#{to_state.id}#{query}"
         end
 
-        SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final)
         user.update
       end
 
