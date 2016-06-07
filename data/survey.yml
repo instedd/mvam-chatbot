@@ -16,18 +16,45 @@ states:
     say: Are you a man or a woman?
     transitions:
       - entity: gender
-        target: ask_enough_food
+        target: geolocate_user
         store: gender
       - intent: AskWhy
         target: why
       - intent: AskWho
         target: who
 
+  geolocate_user:
+    dummy: true
+    transitions:
+      - method: store_user_location
+        target: ask_enough_food
+      - default: true
+        target: ask_gps
+  
+  ask_gps:
+    say: Would you mind sharing your current position with us?
+    options:
+      - text: Sure
+        request_location: true
+      - text: Not really
+    transitions:
+      - location: true
+        target: ask_enough_food
+      - default: true
+        target: ask_location_name
+
+  ask_location_name:
+    say: What's the name of your nearest city?
+    transitions:
+      - default: true
+        store: location_name
+        target: ask_enough_food
+
   ask_enough_food:
     say: In the past seven days, were there days in which you did not have enough food or money to buy food?
     options:
-      - Yes
-      - No
+      - text: Yes
+      - text: No
     transitions:
       - target: ask_roof_photo
         message: ["Yes", "No"]
@@ -82,6 +109,9 @@ data:
   - gender
   - enough_food
   - roof_photo
+  - lat
+  - lng
+  - location_name
 
 # deprecated:
 #

@@ -205,7 +205,91 @@ describe ::MvamBot::Bot do
       file.data.should_not eq(nil)
     end
 
+    describe "geolocation" do
+      context "user with previously known lat/lng" do
+        it "should skip asking user for location if we already know it" do
+          DB.cleanup
+          bot = Bot.new
+          user = Factory::DB.user(conversation_step: "survey/ask_gender", location_lat: 10.0, location_lng: 20.0)
+          user.conversation_session_id = "TEST_SESSION_ID"
 
+          messages = handle_message("I am a man!", user: user, bot: bot, messages: { "I am a man!" => response({"gender" => "male"}) })
+          messages.size.should eq(1)
+          user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+        end
+
+        it "should store user location if we already know it" do
+          DB.cleanup
+          bot = Bot.new
+          user = Factory::DB.user(conversation_step: "survey/ask_gender", location_lat: 10.0, location_lng: 20.0)
+          user.conversation_session_id = "TEST_SESSION_ID"
+
+          handle_message("I am a man!", user: user, bot: bot, messages: { "I am a man!" => response({"gender" => "male"}) })
+
+          responses = MvamBot::SurveyResponse.for_user(user.id)
+          responses[0].data.should eq({"gender" => "male", "lat" => user.location_lat, "lng" => user.location_lng})
+        end
+      end
+
+      context "user without previously known lat/lng" do
+        it "should ask for gps access" do
+          DB.cleanup
+          bot = Bot.new
+          user = Factory::DB.user(conversation_step: "survey/ask_gender")
+          user.conversation_session_id = "TEST_SESSION_ID"
+
+          messages = handle_message("I am a man!", user: user, bot: bot, messages: { "I am a man!" => response({"gender" => "male"}) })
+          messages.size.should eq(1)
+          reply_buttons(messages[0]).should eq(["Sure", "Not really"])
+          user.conversation_step.not_nil!.should contain("survey/ask_gps")
+        end
+
+        context "user shares gps position" do
+          it "should continue to next step if user shares gps position" do
+            DB.cleanup
+            bot = Bot.new
+            user = Factory::DB.user(conversation_step: "survey/ask_gps")
+            user.conversation_session_id = "TEST_SESSION_ID"
+
+            messages = handle_message("", user: user, bot: bot, location: {10.0, 20.0})
+            messages.size.should eq(1)
+            user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+
+            responses = MvamBot::SurveyResponse.for_user(user.id)
+            responses[0].data.should eq({"lat" => 10.0, "lng" => 20.0})
+          end
+        end
+
+        context "if user refuses to share gps position" do
+          it "should ask the user to enter his location as text" do
+            DB.cleanup
+            bot = Bot.new
+            user = Factory::DB.user(conversation_step: "survey/ask_gps")
+            user.conversation_session_id = "TEST_SESSION_ID"
+
+            messages = handle_message("Not really", user: user, bot: bot)
+            messages.size.should eq(1)
+            messages[0][:text].should eq("What's the name of your nearest city?")
+
+            user.conversation_step.not_nil!.should contain("survey/ask_location_name")
+          end
+
+          it "should store response and continue to next question after reponse" do
+            DB.cleanup
+            bot = Bot.new
+            user = Factory::DB.user(conversation_step: "survey/ask_location_name")
+            user.conversation_session_id = "TEST_SESSION_ID"
+
+            messages = handle_message("Buenos Aires", user: user, bot: bot)
+            messages.size.should eq(1)
+            user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+
+            responses = MvamBot::SurveyResponse.for_user(user.id)
+            responses[0].data.should eq({"location_name" => "Buenos Aires"})
+          end
+        end
+      end
+    end
   end
 
 end

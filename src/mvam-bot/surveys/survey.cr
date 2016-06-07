@@ -32,6 +32,10 @@ module MvamBot
       end
 
       def handle(message)
+        advance(message)
+      end
+
+      def advance(message = nil)
         if transition = select_transition(message)
           run transition: transition
         else
@@ -79,7 +83,7 @@ module MvamBot
       private def run(to_state : FlowState)
         if say = to_state.say
           if options = to_state.options
-            requestor.answer_with_keyboard(say, options, update_user: false)
+            requestor.answer(say, build_keyboard(options), update_user: false)
           else
             requestor.answer(say, update_user: false)
           end
@@ -93,6 +97,12 @@ module MvamBot
           previous_id = (state_id && state.transient) ? @previous_state_id : state_id
           query = previous_id ? "?from=#{previous_id}" : ""
           user.conversation_step = "survey/#{to_state.id}#{query}"
+
+          if to_state.dummy
+            @previous_state_id = state.id
+            @state_id = to_state.id
+            return advance
+          end
         end
 
         SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final)
@@ -124,15 +134,19 @@ module MvamBot
       private def test_transition(transition, message)
         case transition.kind
         when :message
-          test_message_transition(transition, message)
+          message && test_message_transition(transition, message)
         when :intent
-          test_intent_transition(transition, message)
+          message && test_intent_transition(transition, message)
         when :entity
-          test_entity_transition(transition, message)
+          message && test_entity_transition(transition, message)
         when :photo
-          test_photo_transition(transition, message)
+          message && test_photo_transition(transition, message)
+        when :location
+          message && test_location_transition(transition, message)
+        when :method
+          test_method_transition(transition, message)
         when :default
-          true
+          test_default_transition(transition, message)
         end
       end
 
@@ -184,6 +198,49 @@ module MvamBot
           return true
         end
         return false
+      end
+
+      private def test_location_transition(transition, message)
+        if loc = message.location
+          user.conversation_state["lat"] = loc.latitude
+          user.conversation_state["lng"] = loc.longitude
+          return true
+        end
+        return false
+      end
+
+      private def test_method_transition(transition, message)
+        case transition.method
+        when "store_user_location"
+          return store_user_location
+        else
+          false
+        end
+      end
+
+      private def test_default_transition(transition, message)
+        if message && message.text && transition.store
+          user.conversation_state[transition.store.not_nil!] = message.text
+        end
+        return true
+      end
+
+      private def store_user_location
+        if user.location_lat && user.location_lng
+          user.conversation_state["lat"] = user.location_lat
+          user.conversation_state["lng"] = user.location_lng
+          return true
+        else
+          return false
+        end
+      end
+
+      private def build_keyboard(options)
+        buttons = options.map do |o|
+          [TelegramBot::KeyboardButton.new(o.text, request_location: o.request_location)]
+        end
+
+        TelegramBot::ReplyKeyboardMarkup.new(buttons, one_time_keyboard: true)
       end
 
     end

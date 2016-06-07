@@ -32,11 +32,12 @@ module MvamBot
 
       YAML.mapping({
         converse: { type: Bool, default: false },
+        dummy: { type: Bool, nilable: true },
         say: { type: String, nilable: true },
         transitions: { type: Array(FlowTransition), default: Array(FlowTransition).new },
         initial: { type: Bool, default: false },
         final: { type: Bool, default: false },
-        options: { type: Array(String), nilable: true },
+        options: { type: Array(Option), nilable: true },
         transient: { type: Bool, default: false }
       })
 
@@ -60,6 +61,8 @@ module MvamBot
         default: { type: Bool, default: false },
         store: { type: String, nilable: true },
         photo: { type: Bool, default: false },
+        location: { type: Bool, default: false },
+        method: { type: String, nilable: true },
         say: { type: String, nilable: true }
       })
 
@@ -72,11 +75,22 @@ module MvamBot
           :entity
         elsif photo
           :photo
+        elsif location
+          :location
+        elsif method
+          :method
         elsif default
           :default
         end
       end
 
+    end
+
+    class Option
+      YAML.mapping({
+        text: {type: String, nilable: false},
+        request_location: {type: Bool, default: false},
+      })
     end
 
   end
