@@ -63,6 +63,20 @@ module MvamBot
         say: { type: String, nilable: true }
       })
 
+      def kind
+        if message
+          :message
+        elsif intent
+          :intent
+        elsif entity
+          :entity
+        elsif photo
+          :photo
+        elsif default
+          :default
+        end
+      end
+
     end
 
   end

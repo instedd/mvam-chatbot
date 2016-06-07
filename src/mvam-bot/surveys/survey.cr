@@ -13,6 +13,7 @@ module MvamBot
       getter user
       getter requestor
       getter state_id
+      @wit_response : Wit::MessageResponse?
 
       def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler, @state_id : String? = nil, @previous_state_id : String? = nil)
       end
@@ -31,30 +32,11 @@ module MvamBot
       end
 
       def handle(message)
-        # If the message has a photo, check for transitions on photos
-        if photos = message.photo
-          if transition = state.transitions.find { |t| transition_applies?(t, photos: photos) }
-            run transition: transition
-            return
-          end
-        end
-
-        # Try to handle the message directly without falling back to wit using match on message
-        if text = message.text
-          if transition = state.transitions.find { |t| transition_applies?(t, message: message.text.not_nil!) }
-            run transition: transition
-            return
-          end
-        end
-
-        # If there is not a transition by exact message, then ask wit for entities
-        response = wit_understand(message.text.not_nil!)
-        if transition = state.transitions.find { |t| transition_applies?(t, entities: response.entities) }
+        if transition = select_transition(message)
           run transition: transition
-          return
+        else
+          MvamBot.logger.warn("No transition matched #{message} at state #{state_id} for user #{user.id}") unless state.final
         end
-
-        MvamBot.logger.warn("No transition matched #{message} with #{response.inspect} at state #{state_id} for user #{user.id}") unless state.final
       end
 
       def flow
@@ -70,7 +52,7 @@ module MvamBot
       end
 
       protected def wit_understand(message)
-        @requestor.wit_client.not_nil!.understand(message)
+        @wit_response ||= @requestor.wit_client.not_nil!.understand(message)
       end
 
       private def run(transition : FlowTransition)
@@ -127,50 +109,81 @@ module MvamBot
         end
       end
 
-      private def transition_applies?(transition, *, photos)
-        return nil if photos.size == 0
-        if transition_photo = transition.photo
-          MvamBot.logger.debug("Transition to #{transition.target} matched on photo")
-          telegram_file_id = (photos.find {|p| p.width >= 800} || photos.last).file_id
-          file_id = requestor.download_photo(telegram_file_id, user_id: user.id)
-          user.conversation_state[transition.store.not_nil!] = "photo://#{file_id}" if transition.store
+      # Selects the transition we should use based on the current context.
+      #
+      # Transitions are tested in order, each of them will examine the information
+      # available and determine if it is possible to go to their target state.
+      private def select_transition(message)
+        state.transitions.find { |t| test_transition(t, message) }
+      end
+
+      # Returns true iff this is the transition that must be applied based on the current context.
+      #
+      # The first transition that matches will be executed, which means any side effects of the
+      # transition (eg. storing information) can safely be performed here if returning true.
+      private def test_transition(transition, message)
+        case transition.kind
+        when :message
+          test_message_transition(transition, message)
+        when :intent
+          test_intent_transition(transition, message)
+        when :entity
+          test_entity_transition(transition, message)
+        when :photo
+          test_photo_transition(transition, message)
+        when :default
+          true
         end
       end
 
-      private def transition_applies?(transition, *, message)
-        if transition_messages = transition.message
-          if transition_messages.includes?(message)
-            MvamBot.logger.debug("Transition to #{transition.target} matched on message #{message}")
-            user.conversation_state[transition.store.not_nil!] = message if transition.store
+      private def test_message_transition(transition, message)
+        transition_messages = transition.message
+        text = message.text.not_nil!
+
+        if transition_messages
+          if transition_messages.includes?(text)
+            MvamBot.logger.debug("Transition to #{transition.target} matched on message #{text}")
+            user.conversation_state[transition.store.not_nil!] = text if transition.store
             return true
           end
         end
+        return false
       end
 
-      private def transition_applies?(transition, *, entities, message = nil)
-        return true if message && transition_applies?(transition, message: message)
+      private def test_intent_transition(transition, message)
+        response = wit_understand(message.text.not_nil!)
+        entities = response.entities
+        if extract_value(entities, "intent") == transition.intent
+          MvamBot.logger.debug("Transition to #{transition.target} matched on intent #{transition.intent}")
+          user.conversation_state[transition.store.not_nil!] = intent_answer_value(transition.intent) if transition.store
+          return true
+        end
+        return false
+      end
 
-        if transition.intent
-          if extract_value(entities, "intent") == transition.intent
-            MvamBot.logger.debug("Transition to #{transition.target} matched on intent #{transition.intent}")
-            user.conversation_state[transition.store.not_nil!] = intent_answer_value(transition.intent) if transition.store
-            return true
-          end
-        elsif entity = transition.entity
-          if value = extract_value(entities, entity)
+      private def test_entity_transition(transition, message)
+        response = wit_understand(message.text.not_nil!)
+        entities = response.entities
+        if entity = transition.entity
+          if value = extract_value(response.entities, entity)
             MvamBot.logger.debug("Transition to #{transition.target} matched on entity #{entity} with value #{value}")
             user.conversation_state[transition.store.not_nil!] = value if transition.store
             return true
           end
-        elsif transition.after
-          # TODO: Support transitioning after a delay
-        elsif transition.action
-          # TODO: Support transitioning upon an action
-        elsif transition.default
-          # TODO: Add default transitions when not-understood
-          MvamBot.logger.debug("Transition to #{transition.target} matched as default")
-          true
         end
+        return false
+      end
+
+      private def test_photo_transition(transition, message)
+        photos = message.photo
+        if (transition_photo = transition.photo) && photos && photos.size > 0
+          MvamBot.logger.debug("Transition to #{transition.target} matched on photo")
+          telegram_file_id = (photos.find {|p| p.width >= 800} || photos.last).file_id
+          file_id = requestor.download_photo(telegram_file_id, user_id: user.id)
+          user.conversation_state[transition.store.not_nil!] = "photo://#{file_id}" if transition.store
+          return true
+        end
+        return false
       end
 
     end
