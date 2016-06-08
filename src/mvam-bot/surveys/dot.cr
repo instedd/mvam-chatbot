@@ -44,14 +44,21 @@ module MvamBot
 
         flow.states.each do |id, state|
           state.transitions.each do |transition|
-            next if transition.target == "back"
-            label = if transition.action
-              "action:#{transition.action}"
-            elsif transition.entity
-              "entity:#{transition.entity}"
-            elsif transition.intent
-              "intent:#{transition.intent}"
-            end
+            next if transition.target == "back" || transition.target == "none"
+            label = case transition.kind
+                    when :entity
+                      "entity:#{transition.entity}"
+                    when :intent
+                      "intent:#{transition.intent}"
+                    when :photo
+                      "photo"
+                    when :location
+                      "location"
+                    when :method
+                      "method:#{transition.method}"
+                    when :default
+                      "otherwise"
+                    end
             dir = flow.states[transition.target].transitions.any? { |t| t.target == "back" } ? "both" : "forward"
 
             write "#{id} -> #{transition.target} [ label = \"#{label}\", dir = #{dir} ];"

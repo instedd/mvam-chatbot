@@ -8,15 +8,33 @@ ou?", shape = circle ];
 Are you a man
  or a woman?
 ", shape = circle ];
+	geolocate_user [ label = "geolocate_user
+", shape = circle ];
+	ask_gps [ label = "ask_gps
+Would you min
+d sharing yo
+ur curren...
+", shape = circle ];
+	ask_location_name [ label = "ask_location_name
+What's the na
+me of your n
+earest ci...
+", shape = circle ];
 	ask_enough_food [ label = "ask_enough_food
 In the past s
 even days, w
 ere there...
 ", shape = circle ];
+	ask_roof_photo [ label = "ask_roof_photo
+Would you ple
+ase send me 
+a picture...
+", shape = circle ];
 	thank_you [ label = "thank_you
-Thank you for
- your answer
-s.", shape = doublecircle ];
+That would be
+ all, thank 
+you for y...
+", shape = doublecircle ];
 	why [ label = "why
 We are asking
  you and oth
@@ -30,12 +48,20 @@ t assistant,
 	ask_age -> ask_gender [ label = "entity:number", dir = forward ];
 	ask_age -> why [ label = "intent:AskWhy", dir = both ];
 	ask_age -> who [ label = "intent:AskWho", dir = both ];
-	ask_gender -> ask_enough_food [ label = "entity:gender", dir = forward ];
+	ask_gender -> geolocate_user [ label = "entity:gender", dir = forward ];
 	ask_gender -> why [ label = "intent:AskWhy", dir = both ];
 	ask_gender -> who [ label = "intent:AskWho", dir = both ];
-	ask_enough_food -> thank_you [ label = "", dir = forward ];
-	ask_enough_food -> thank_you [ label = "intent:AnswerNo", dir = forward ];
-	ask_enough_food -> thank_you [ label = "intent:AnswerYes", dir = forward ];
+	geolocate_user -> ask_enough_food [ label = "method:store_user_location", dir = forward ];
+	geolocate_user -> ask_gps [ label = "otherwise", dir = forward ];
+	ask_gps -> ask_enough_food [ label = "location", dir = forward ];
+	ask_gps -> ask_location_name [ label = "otherwise", dir = forward ];
+	ask_location_name -> ask_enough_food [ label = "entity:location", dir = forward ];
+	ask_location_name -> ask_enough_food [ label = "otherwise", dir = forward ];
+	ask_enough_food -> ask_roof_photo [ label = "", dir = forward ];
+	ask_enough_food -> ask_roof_photo [ label = "intent:AnswerNo", dir = forward ];
+	ask_enough_food -> ask_roof_photo [ label = "intent:AnswerYes", dir = forward ];
+	ask_roof_photo -> thank_you [ label = "photo", dir = forward ];
+	ask_roof_photo -> thank_you [ label = "intent:AnswerNo", dir = forward ];
 	why -> who [ label = "intent:AskWho", dir = both ];
 	who -> why [ label = "intent:AskWhy", dir = both ];
 }
