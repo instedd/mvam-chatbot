@@ -7,7 +7,7 @@ WFP mVAM food prices Telegram bot.
 ## Dependencies
 
 * A PostgreSQL database version `9.5`, which can be provisioned via micrate and seeded via `bin/load-prices`.
-* A Telegram bot, created by talking to [BotFather](telegram.me/BotFather)
+* A Telegram bot, created by talking to [BotFather](https://telegram.me/BotFather)
 * A Wit.ai application
 
 ### Database setup
