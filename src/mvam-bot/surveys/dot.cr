@@ -27,6 +27,8 @@ module MvamBot
             "circle"
           end
 
+          style = state.dummy ? "dotted" : "solid"
+
           text = if say = state.say
             say = say.size > 36 ? "#{say[0..33]}..." : say
             say.chars.each_with_index.map do |(c, i)|
@@ -38,7 +40,7 @@ module MvamBot
             ""
           end
 
-          write "#{id} [ label = \"#{id}\n#{text}\", shape = #{shape} ];"
+          write "#{id} [ label = \"#{id}\n#{text}\", shape = #{shape}, style= #{style} ];"
           write "#{id} -> #{id} [ label = \"converse\" ]" if state.converse
         end
 

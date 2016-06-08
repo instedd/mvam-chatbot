@@ -3,48 +3,48 @@ digraph survey_flow {
 	size="40";
 	ask_age [ label = "ask_age
 How old are y
-ou?", shape = circle ];
+ou?", shape = circle, style= solid ];
 	ask_gender [ label = "ask_gender
 Are you a man
  or a woman?
-", shape = circle ];
+", shape = circle, style= solid ];
 	geolocate_user [ label = "geolocate_user
-", shape = circle ];
+", shape = circle, style= dotted ];
 	ask_gps [ label = "ask_gps
 Would you min
 d sharing yo
 ur curren...
-", shape = circle ];
+", shape = circle, style= solid ];
 	ask_location_name [ label = "ask_location_name
 What's the na
 me of your n
 earest ci...
-", shape = circle ];
+", shape = circle, style= solid ];
 	ask_enough_food [ label = "ask_enough_food
 In the past s
 even days, w
 ere there...
-", shape = circle ];
+", shape = circle, style= solid ];
 	ask_roof_photo [ label = "ask_roof_photo
 Would you ple
 ase send me 
 a picture...
-", shape = circle ];
+", shape = circle, style= solid ];
 	thank_you [ label = "thank_you
 That would be
  all, thank 
 you for y...
-", shape = doublecircle ];
+", shape = doublecircle, style= solid ];
 	why [ label = "why
 We are asking
  you and oth
 er people...
-", shape = circle ];
+", shape = circle, style= solid ];
 	who [ label = "who
 I am a WFP bo
 t assistant,
  for trac...
-", shape = circle ];
+", shape = circle, style= solid ];
 	ask_age -> ask_gender [ label = "entity:number", dir = forward ];
 	ask_age -> why [ label = "intent:AskWhy", dir = both ];
 	ask_age -> who [ label = "intent:AskWho", dir = both ];
@@ -56,6 +56,8 @@ t assistant,
 	ask_gps -> ask_enough_food [ label = "location", dir = forward ];
 	ask_gps -> ask_location_name [ label = "otherwise", dir = forward ];
 	ask_location_name -> ask_enough_food [ label = "entity:location", dir = forward ];
+	ask_location_name -> why [ label = "intent:AskWhy", dir = both ];
+	ask_location_name -> who [ label = "intent:AskWho", dir = both ];
 	ask_location_name -> ask_enough_food [ label = "otherwise", dir = forward ];
 	ask_enough_food -> ask_roof_photo [ label = "", dir = forward ];
 	ask_enough_food -> ask_roof_photo [ label = "intent:AnswerNo", dir = forward ];
