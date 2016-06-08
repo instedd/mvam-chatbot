@@ -13,7 +13,10 @@ module MvamBot
       getter user
       getter requestor
       getter state_id
-      @wit_response : Wit::MessageResponse?
+      
+      # cache wit responses by message
+      # note that with dummy states a Survey instance can span more than one state transition
+      @wit_cache = {} of String => Wit::MessageResponse
 
       def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler, @state_id : String? = nil, @previous_state_id : String? = nil)
       end
@@ -56,7 +59,7 @@ module MvamBot
       end
 
       protected def wit_understand(message)
-        @wit_response ||= @requestor.wit_client.not_nil!.understand(message)
+        @wit_cache[message] ||= @requestor.wit_client.not_nil!.understand(message)
       end
 
       private def run(transition : FlowTransition)
