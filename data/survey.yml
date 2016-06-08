@@ -46,8 +46,14 @@ states:
   ask_location_name:
     say: What's the name of your nearest city?
     transitions:
-      - default: true
+      - entity: location
         store: location_name
+        target: ask_enough_food
+      - intent: AskWhy
+        target: why
+      - intent: AskWho
+        target: who
+      - default: true
         target: ask_enough_food
 
   ask_enough_food:

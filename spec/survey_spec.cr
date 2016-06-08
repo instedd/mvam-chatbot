@@ -280,7 +280,7 @@ describe ::MvamBot::Bot do
             user = Factory::DB.user(conversation_step: "survey/ask_location_name")
             user.conversation_session_id = "TEST_SESSION_ID"
 
-            messages = handle_message("Buenos Aires", user: user, bot: bot)
+            messages = handle_message("I live in Buenos Aires", user: user, bot: bot, messages: { "I live in Buenos Aires" => response({"location" => "Buenos Aires"}) })
             messages.size.should eq(1)
             user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
 

@@ -28,5 +28,8 @@ db_setup: db_create db_migrate db_seed
 test:
 	@TEST_PG_URL="postgres://`whoami`@localhost/$(TEST_DB)" crystal spec
 
+run-web:
+	@source .env && crystal src/mvam-web.cr
+
 run:
 	@source .env && crystal src/mvam-bot.cr
