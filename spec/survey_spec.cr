@@ -274,18 +274,92 @@ describe ::MvamBot::Bot do
             user.conversation_step.not_nil!.should contain("survey/ask_location_name")
           end
 
-          it "should store response and continue to next question after reponse" do
-            DB.cleanup
-            bot = Bot.new
-            user = Factory::DB.user(conversation_step: "survey/ask_location_name")
-            user.conversation_session_id = "TEST_SESSION_ID"
+          context "geolocation yields a single result" do
+            it "should store response and continue to next question" do
+              DB.cleanup
+              bot = Bot.new
+              user = Factory::DB.user(conversation_step: "survey/ask_location_name")
+              user.conversation_session_id = "TEST_SESSION_ID"
 
-            messages = handle_message("I live in Buenos Aires", user: user, bot: bot, messages: { "I live in Buenos Aires" => response({"location" => "Buenos Aires"}) })
-            messages.size.should eq(1)
-            user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+              messages = handle_message("I live in Buenos Aires",
+                                        user: user,
+                                        bot: bot,
+                                        messages: { "I live in Buenos Aires" => response({"location" => "Buenos Aires"}) },
+                                        geocoding: {"Buenos Aires" => {"Buenos Aires, Argentina" => {10.0, 20.0}}})
 
-            responses = MvamBot::SurveyResponse.for_user(user.id)
-            responses[0].data.should eq({"location_name" => "Buenos Aires"})
+              messages.size.should eq(1)
+              user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses[0].data.should eq({"lat" => 10.0, "lng" => 20.0, "location_name" => "Buenos Aires"})
+            end
+          end
+
+          context "geolocation yields no result" do
+            it "continue to next question" do
+              DB.cleanup
+              bot = Bot.new
+              user = Factory::DB.user(conversation_step: "survey/ask_location_name")
+              user.conversation_session_id = "TEST_SESSION_ID"
+
+              messages = handle_message("I live in Buenos Aires",
+                                        user: user,
+                                        bot: bot,
+                                        messages: { "I live in Buenos Aires" => response({"location" => "Buenos Aires"}) })
+
+              messages.size.should eq(1)
+              user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses[0].data.should eq({"location_name" => "Buenos Aires"})
+            end
+
+          end
+
+          context "geolocation yields multiple results" do
+            it "asks the user to select his real location" do
+              DB.cleanup
+              bot = Bot.new
+              user = Factory::DB.user(conversation_step: "survey/ask_location_name")
+              user.conversation_session_id = "TEST_SESSION_ID"
+
+              messages = handle_message("I live in Buenos Aires",
+                                        user: user,
+                                        bot: bot,
+                                        messages: { "I live in Buenos Aires" => response({"location" => "Buenos Aires"}) },
+                                        geocoding: {"Buenos Aires" => {
+                                                      "Ciudad de Buenos Aires, Argentina" => {10.0, 20.0},
+                                                      "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
+                                        }})
+
+              user.conversation_step.not_nil!.should contain("survey/ask_which_location")
+
+              messages.size.should eq(1)
+              reply_buttons(messages[0]).should eq([
+                "Ciudad de Buenos Aires, Argentina",
+                "Provincia de Buenos Aires, Argentina"
+              ])
+            end
+
+            it "stores position of selected geolocation result" do
+              DB.cleanup
+              bot = Bot.new
+              user = Factory::DB.user(conversation_step: "survey/ask_which_location")
+              user.conversation_session_id = "TEST_SESSION_ID"
+
+              messages = handle_message("Ciudad de Buenos Aires, Argentina",
+                                        user: user,
+                                        bot: bot,
+                                        geocoding: {"Ciudad de Buenos Aires, Argentina" => {
+                                                      "Ciudad de Buenos Aires, Argentina" => {10.0, 20.0},
+                                                      "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
+                                        }})
+
+              user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses[0].data.should eq({"lat" => 10.0, "lng" => 20.0})
+            end
           end
         end
       end

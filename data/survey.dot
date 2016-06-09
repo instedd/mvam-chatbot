@@ -20,6 +20,12 @@ What's the na
 me of your n
 earest ci...
 ", shape = circle, style= solid ];
+	geocode [ label = "geocode
+", shape = circle, style= dotted ];
+	ask_which_location [ label = "ask_which_location
+Is any of the
+se places ne
+ar you?", shape = circle, style= solid ];
 	ask_enough_food [ label = "ask_enough_food
 In the past s
 even days, w
@@ -55,10 +61,15 @@ t assistant,
 	geolocate_user -> ask_gps [ label = "otherwise", dir = forward ];
 	ask_gps -> ask_enough_food [ label = "location", dir = forward ];
 	ask_gps -> ask_location_name [ label = "otherwise", dir = forward ];
-	ask_location_name -> ask_enough_food [ label = "entity:location", dir = forward ];
+	ask_location_name -> geocode [ label = "entity:location", dir = forward ];
 	ask_location_name -> why [ label = "intent:AskWhy", dir = both ];
 	ask_location_name -> who [ label = "intent:AskWho", dir = both ];
 	ask_location_name -> ask_enough_food [ label = "otherwise", dir = forward ];
+	geocode -> ask_enough_food [ label = "method:geocode_ok", dir = forward ];
+	geocode -> ask_which_location [ label = "method:geocode_multiple_results", dir = forward ];
+	geocode -> ask_enough_food [ label = "otherwise", dir = forward ];
+	ask_which_location -> ask_enough_food [ label = "method:store_chosen_location_coordinates", dir = forward ];
+	ask_which_location -> ask_enough_food [ label = "otherwise", dir = forward ];
 	ask_enough_food -> ask_roof_photo [ label = "", dir = forward ];
 	ask_enough_food -> ask_roof_photo [ label = "intent:AnswerNo", dir = forward ];
 	ask_enough_food -> ask_roof_photo [ label = "intent:AnswerYes", dir = forward ];

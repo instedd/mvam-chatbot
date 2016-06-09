@@ -17,6 +17,7 @@ module MvamBot
       # cache wit responses by message
       # note that with dummy states a Survey instance can span more than one state transition
       @wit_cache = {} of String => Wit::MessageResponse
+      @geocoding_results = {} of String => Hash(String, {Float64, Float64})
 
       def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler, @state_id : String? = nil, @previous_state_id : String? = nil)
       end
@@ -87,6 +88,11 @@ module MvamBot
         if say = to_state.say
           if options = to_state.options
             requestor.answer(say, build_keyboard(options), update_user: false)
+          elsif options_from = to_state.options_from
+            case options_from
+            when "geocoding_result"
+              requestor.answer(say, build_keyboard(options_from_geocoding_result), update_user: false)
+            end
           else
             requestor.answer(say, update_user: false)
           end
@@ -216,9 +222,25 @@ module MvamBot
         case transition.method
         when "store_user_location"
           return store_user_location
+        when "geocode_ok"
+          return geocode_ok
+        when "geocode_multiple_results"
+          return geocode_multiple_results
+        when "store_chosen_location_coordinates"
+          store_chosen_location_coordinates(message)
         else
           false
         end
+      end
+
+      def store_chosen_location_coordinates(message)
+        if message && message.text
+          lat, lng = geocoding_result(message.text.not_nil!)[message.text.not_nil!]
+          user.conversation_state["lat"] = lat
+          user.conversation_state["lng"] = lng
+          return true
+        end
+        return false
       end
 
       private def test_default_transition(transition, message)
@@ -238,11 +260,49 @@ module MvamBot
         end
       end
 
-      private def build_keyboard(options)
-        buttons = options.map do |o|
-          [TelegramBot::KeyboardButton.new(o.text, request_location: o.request_location)]
-        end
+      private def reported_location_name
+        user.conversation_state["location_name"].as(String)
+      end
 
+      private def geocode_ok
+        matches = geocoding_result(reported_location_name)
+        if matches.size == 1
+          lat, lng = matches.first[1]
+          user.conversation_state["lat"] = lat
+          user.conversation_state["lng"] = lng
+          return true
+        else
+          return false
+        end
+      end
+
+      private def geocode_multiple_results
+        return geocoding_result(reported_location_name).size > 1
+      end
+
+      private def geocoding_result(query)
+        @geocoding_results[query] ||= @requestor.geocoder.lookup(query)
+      end
+
+      def options_from_geocoding_result
+        @geocoding_results.first[1].keys
+      end
+
+      private def build_keyboard(options : Array(String))
+        buttons = options.map { |o| [TelegramBot::KeyboardButton.new(o)] }
+        build_keyboard(buttons)
+      end
+
+      private def build_keyboard(options : Array(MvamBot::Surveys::Option))
+        buttons = options.map { |o| [TelegramBot::KeyboardButton.new(o.text, request_location: o.request_location)] }
+        build_keyboard(buttons)
+      end
+
+      private def build_keyboard(buttons : Array(TelegramBot::KeyboardButton))
+        TelegramBot::ReplyKeyboardMarkup.new(buttons, one_time_keyboard: true)
+      end
+
+      private def build_keyboard(buttons)
         TelegramBot::ReplyKeyboardMarkup.new(buttons, one_time_keyboard: true)
       end
 

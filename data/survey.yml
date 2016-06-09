@@ -48,13 +48,33 @@ states:
     transitions:
       - entity: location
         store: location_name
-        target: ask_enough_food
+        target: geocode
       - intent: AskWhy
         target: why
       - intent: AskWho
         target: who
       - default: true
         target: ask_enough_food
+
+  geocode:
+    dummy: true
+    transitions:
+      - method: geocode_ok
+        target: ask_enough_food
+      - method: geocode_multiple_results
+        target: ask_which_location
+      - default: true
+        target: ask_enough_food
+
+  ask_which_location:
+    say: Is any of these places near you?
+    options_from: geocoding_result
+    transitions:
+      - method: store_chosen_location_coordinates
+        target: ask_enough_food
+      - default: true
+        target: ask_enough_food
+
 
   ask_enough_food:
     say: In the past seven days, were there days in which you did not have enough food or money to buy food?

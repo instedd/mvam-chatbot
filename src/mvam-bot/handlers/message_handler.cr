@@ -43,6 +43,11 @@ module MvamBot
       end
     end
 
+    protected def geocoder
+      mapquest_token = MvamBot::Config.mapquest_token
+      Geocoder.new(mapquest_token)
+    end
+
     def handle_not_understood
       strike = user.conversation_step =~ /^misunderstood\/(\d+)/ ? ($~[1].to_i + 1) : 1
       user.conversation_step = "misunderstood/#{strike}"

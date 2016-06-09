@@ -38,6 +38,7 @@ module MvamBot
         initial: { type: Bool, default: false },
         final: { type: Bool, default: false },
         options: { type: Array(Option), nilable: true },
+        options_from: { type: String, nilable: true },
         transient: { type: Bool, default: false }
       })
 

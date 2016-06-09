@@ -24,9 +24,21 @@ module MvamBot::Spec
     end
   end
 
+  class Geocoder < ::MvamBot::Geocoder
+    def initialize(@results : Hash(String, Hash(String, {Float64, Float64})))
+    end
+
+    def lookup(query)
+      @results.fetch(query, {} of String => {Float64, Float64})
+    end
+  end
+
   class MessageHandler < ::MvamBot::MessageHandler
     setter wit_client
     @wit_client : ::MvamBot::WitClient?
+
+    setter geocoder
+    @geocoder : ::MvamBot::Geocoder?
 
     def initialize(*args)
       super(*args)
@@ -34,6 +46,10 @@ module MvamBot::Spec
 
     protected def wit_client
       @wit_client || super
+    end
+
+    protected def geocoder
+      @geocoder || super
     end
   end
 
@@ -53,16 +69,18 @@ module MvamBot::Spec
     MessageHandler.new(message, user, bot)
   end
 
-  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, photo : String? = nil, location : {Float64, Float64}? = nil)
+  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, geocoding = nil, photo : String? = nil, location : {Float64, Float64}? = nil)
     handler = message_handler(msg, user, bot, photo: photo, location: location)
     handler.wit_client = WitClient.new(handler.user, handler, messages)
+    handler.geocoder = Geocoder.new(geocoding || {} of String => Hash(String, {Float64, Float64}))
     handler.handle
     handler.bot.as(Bot).messages
   end
 
-  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, photo = nil, location : {Float64, Float64}? = nil, &wit : (String, String, Wit::Actions -> Wit::State))
+  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, geocoding = nil, photo = nil, location : {Float64, Float64}? = nil, &wit : (String, String, Wit::Actions -> Wit::State))
     handler = message_handler(msg, user, bot, photo: photo, location: location)
     handler.wit_client = WitClient.new(handler.user, handler, messages, &wit)
+    handler.geocoder = Geocoder.new(geocoding || {} of String => Hash(String, {Float64, Float64}))
     handler.handle
     handler.bot.as(Bot).messages
   end
