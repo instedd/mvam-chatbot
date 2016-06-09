@@ -267,7 +267,7 @@ module MvamBot
         match
       end
 
-      def store_chosen_location_coordinates(message)
+      private def store_chosen_location_coordinates(message)
         if message && message.text
           selection = geocoding_result(message.text.not_nil!)[message.text.not_nil!]?
           if selection
@@ -326,11 +326,11 @@ module MvamBot
         @geocoding_results[query] ||= @requestor.geocoder.lookup(query, reported_country_name)
       end
 
-      def options_from_geocoding_result
+      private def options_from_geocoding_result
         @geocoding_results.first[1].keys + ["None of the above"]
       end
 
-      def options_from_country_names
+      private def options_from_country_names
         MvamBot::Country.all_names
       end
 
