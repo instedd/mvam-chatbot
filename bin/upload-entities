@@ -1,41 +1,126 @@
 #! /usr/bin/env crystal
 
 require "http/client"
+require "json"
+require "yaml"
 
 require "../src/mvam-bot/wit/*"
 require "../src/mvam-bot/models/*"
 require "../src/mvam-bot/*"
 
-API_VERSION = "20160511"
-COMMODITY_ENTITY = "commodity"
+API_VERSION = "20160526"
 
-token = MvamBot::Config.wit_access_token
-raise "Wit.ai access token is required" if token.nil? || token.empty?
+FREE_TEXT = "free-text"
+KEYWORDS = "keywords"
+TRAIT = "trait"
 
-names = MvamBot::Price.commodity_names.map(&.downcase).group_by { |name| name.downcase.gsub(/\s+\(.+\)/, "") }
-values = names.map do |name, full_names|
-  # Livestock and meat have additional names between brackets after the name, such as Livestock (pig)
-  # unlike othe commodities that only have clarifications
-  expressions = if name == "livestock" || name == "meat"
-    full_names.map do |n|
-      m = /\((\w+)(?:,[^)]+)?\)/.match(n)
-      m ? m[1] : nil
-    end.compact.uniq
-  else
-    Array(String).new
-  end
-  { "value" => name, "expressions" => (expressions + [name]) }
+$token = MvamBot::Config.wit_access_token
+raise "Wit.ai access token is required" if $token.nil? || $token.not_nil!.empty?
+
+$entities : Array(String) = JSON.parse(HTTP::Client.get("https://api.wit.ai/entities?v=#{API_VERSION}", headers).body).as_a.map(&.to_s)
+puts "Entities found: #{$entities}"
+
+$expressions : Hash(String, Hash(String, Array(String))) = Hash(String, Hash(String, Array(String))).from_yaml({{ `cat data/expressions.yml`.stringify }})
+puts "Loaded expressions for #{$expressions.keys.join(", ")}"
+
+def headers
+  headers = HTTP::Headers.new
+  headers.add("authorization", "Bearer #{$token}")
+  headers.add("accept", "application/vnd.wit.#{API_VERSION}+json")
+  headers.add("Content-Type", "application/json")
+  headers
 end
 
-json = { "values" => values}
+def post_value_expressions(entity)
+  $expressions[entity].each do |value, expressions|
+    expressions.each do |expression|
+      post_value_expression(entity, value, expression)
+    end
+  end
+end
 
-headers = HTTP::Headers.new
-headers.add("authorization", "Bearer #{token}")
-headers.add("accept", "application/vnd.wit.20160519+json")
-headers.add("Content-Type", "application/json")
+def post_value_expression(entity, value, expression)
+  json = { "expression" => expression }
+  response = HTTP::Client.post("https://api.wit.ai/entities/#{entity}/values/#{value}/expressions?v=#{API_VERSION}", headers, json.to_json)
 
-puts "https://api.wit.ai/entities/#{COMMODITY_ENTITY}?v=#{API_VERSION}"
-response = HTTP::Client.put("https://api.wit.ai/entities/#{COMMODITY_ENTITY}?v=#{API_VERSION}", headers, json.to_json)
-puts "Uploaded #{values.size} to entity #{COMMODITY_ENTITY}"
-puts "Response: #{response.status_code}"
-puts " #{response.body}"
+  raise "Error when posting #{expression} for #{value} to #{entity}: #{response.body}" if !response.success?
+  puts "Added '#{expression}' for #{value} to #{entity}"
+  response
+end
+
+def create_entity(name, strategy, values)
+  if $entities.includes?(name)
+    puts "Skipping creation of entity #{name} as it already exists"
+    return nil
+  end
+
+  strategy_array = strategy.is_a?(Array) ? strategy : [strategy]
+  json = { "id" => name, "values" => values, "lookup" => strategy_array}
+  response = HTTP::Client.post("https://api.wit.ai/entities?v=#{API_VERSION}", headers, json.to_json)
+
+  raise "Error on request to #{name}: #{response.body}" if !response.success?
+  puts "Created #{name} with #{values.size} values"
+  response
+end
+
+def update_entity(name, values)
+  json = { "values" => values}
+  response = HTTP::Client.put("https://api.wit.ai/entities/#{name}?v=#{API_VERSION}", headers, json.to_json)
+
+  raise "Error on request to #{name}: #{response.body}" if !response.success?
+  puts "Updated #{name} with #{values.size} values"
+  response
+end
+
+def put_entity(name, strategy, values)
+  if $entities.includes?(name)
+    update_entity(name, values)
+  else
+    create_entity(name, strategy, values)
+  end
+end
+
+def put_commodities
+  names = MvamBot::Price.commodity_names.map(&.downcase).group_by { |name| name.downcase.gsub(/\s+\(.+\)/, "") }
+  values = names.map do |name, full_names|
+    # Livestock and meat have additional names between brackets after the name, such as Livestock (pig)
+    # unlike othe commodities that only have clarifications
+    expressions = if name == "livestock" || name == "meat"
+      full_names.map do |n|
+        m = /\((\w+)(?:,[^)]+)?\)/.match(n)
+        m ? m[1] : nil
+      end.compact.uniq
+    else
+      Array(String).new
+    end
+    { "value" => name, "expressions" => (expressions + [name]) }
+  end
+
+  put_entity "commodity", [FREE_TEXT, KEYWORDS], values
+end
+
+def put_genders
+  values = [
+    { "value" => "male", "expressions" => %w(boy guy man male gentleman) },
+    { "value" => "female", "expressions" => %w(girl woman lady miss) }
+  ]
+
+  put_entity "gender", [FREE_TEXT, KEYWORDS], values
+end
+
+def put_yes_no
+  values = $expressions["yes_no"].keys.map { |value| {"value" => value} }
+  create_entity "yes_no", [TRAIT], values
+  post_value_expressions("yes_no")
+end
+
+def put_intent
+  values = $expressions["intent"].keys.map { |value| {"value" => value} }
+  create_entity "intent", [TRAIT], values
+  post_value_expressions("intent")
+end
+
+put_commodities
+put_genders
+put_yes_no
+put_intent
