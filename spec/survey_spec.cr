@@ -7,7 +7,7 @@ describe ::MvamBot::Bot do
 
   describe "surveys" do
 
-    it "should start survey on a start-survey action" do
+    it "should start survey on a start action" do
       DB.cleanup
       bot = Bot.new
       user = Factory::DB.user_with_location
@@ -23,6 +23,27 @@ describe ::MvamBot::Bot do
       user.conversation_step.should eq("survey/start")
     end
 
+    it "should not greet the user again when returning from a clarification to the initial step" do
+      DB.cleanup
+      bot = Bot.new
+      user = Factory::DB.user_with_location
+
+      handle_message("/start", user: user, bot: bot) do |msg, sid, actions|
+        context = actions.merge(sid, user.conversation_state, entities({ "intent" => "Salutation"}), msg, 0.9)
+        actions.custom("start", sid, context, 0.9)
+      end
+
+      handle_message("Why?", user: user, bot: bot, messages: { "Why?" => response({"intent" => "AskWhy"}) })
+      handle_message("Fine", user: user, bot: bot, messages: { "Fine" => response({"yes_no" => "Yes"}) })
+
+      messages = bot.messages
+      messages.size.should eq(3)
+      messages[0][:text].should contain("Hello!")
+      messages[2][:text].should_not contain("Hello!")
+
+      user.conversation_step.not_nil!.should contain("survey/start")
+    end
+
     it "should not save a survey response if the user refused the survey" do
       DB.cleanup
       bot = Bot.new
@@ -34,7 +55,6 @@ describe ::MvamBot::Bot do
       end
 
       handle_message("No", user: user, bot: bot, messages: { "No" => response({"yes_no" => "No"}) })
-
       handle_message("No", user: user, bot: bot, messages: { "No" => response({"yes_no" => "No"}) })
 
       messages = bot.messages

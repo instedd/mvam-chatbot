@@ -14,7 +14,7 @@ states:
 
   start:
     initial: true
-    say: Hello! I'm a WFP bot assistant, I would like to ask you a few questions if you have a minute.
+    say: I would like to ask you a few questions if you have a minute.
     transitions:
       - entity: yes_no
         value: Yes

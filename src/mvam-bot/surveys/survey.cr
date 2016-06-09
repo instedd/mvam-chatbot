@@ -19,7 +19,7 @@ module MvamBot
       end
 
       def start
-        run(flow.start)
+        run(flow.start, extra_text: "Hello! I'm a WFP bot assistant. ")
       end
 
       def reschedule(when)
@@ -76,12 +76,12 @@ module MvamBot
         end
       end
 
-      private def run(to_state : FlowState)
+      private def run(to_state : FlowState, extra_text : String = "")
         if say = to_state.say
           if options = to_state.options
-            requestor.answer_with_keyboard(say, options, update_user: false)
+            requestor.answer_with_keyboard(extra_text + say, options, update_user: false)
           else
-            requestor.answer(say, update_user: false)
+            requestor.answer(extra_text + say, update_user: false)
           end
         end
 
