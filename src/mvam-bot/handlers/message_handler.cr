@@ -59,8 +59,8 @@ module MvamBot
       answer("Sorry, I did not understand what you just said.#{extra}")
     end
 
-    def handle_survey(step, previous)
-      MvamBot::Surveys::Survey.new(user, self, state_id: step, previous_state_id: previous).handle(message)
+    def handle_survey(step, previous, wit_message = nil)
+      MvamBot::Surveys::Survey.new(user, self, state_id: step, previous_state_id: previous).handle(message, wit_response: wit_message)
     end
 
     def geolocation
@@ -169,14 +169,19 @@ module MvamBot
 
       # Send to wit for processing
       if wit = wit_client
-        message = wit.speech(data: mp3.to_slice, content_type: "audio/mpeg3")
-        handle_entities(message.entities)
+        wit_response = wit.speech(data: mp3.to_slice, content_type: "audio/mpeg3")
+        message.text = wit_response._text
+        handle_wit_message(wit_response)
       end
     end
 
-    def handle_entities(entities)
+    def handle_wit_message(wit_message)
+      entities = wit_message.entities
       intent = extract_value(entities, "intent")
-      if commodity = extract_value(entities, "commodity")
+
+      if user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
+        handle_survey($~[1], $~[2]?, wit_message: wit_message)
+      elsif commodity = extract_value(entities, "commodity")
         handle_price(commodity.to_s)
       elsif intent == INTENT_QUERY_PRICE
         answer("What do you want to know the price of?")
