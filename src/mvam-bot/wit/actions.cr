@@ -55,7 +55,14 @@ module MvamBot
 
       case action_name
       when "show-price"
-        requestor.handle_price(context["commodity"].try(&.to_s) || "")
+        if context.has_key?("commodity") && !context["commodity"].to_s.strip.empty?
+          requestor.handle_price(context["commodity"].to_s)
+          context.delete("commodity")
+        elsif context.has_key?("yes_no") || context["intent"]? == "Thanks"
+          context.clear
+        else
+          requestor.answer("Sorry, I did not get what price you are looking for.")
+        end
       when "not-understood"
         requestor.handle_not_understood
       when "show-help"

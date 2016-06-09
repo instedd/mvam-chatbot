@@ -19,7 +19,7 @@ module MvamBot
       if message.text =~ /^\/price(.*)/
         handle_price($~[1])
       elsif message.text =~ /^\/echo(.*)/
-          handle_echo($~[1])
+        handle_echo($~[1])
       elsif message.text == "/help"
         handle_help
       elsif MvamBot::Geolocation.handles? user, message
