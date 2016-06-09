@@ -17,6 +17,7 @@ module MvamBot
 
     def say(session_id : String, context : Wit::State, message : String, confidence : Float64)
       user.conversation_step = nil
+      context.clear
       requestor.answer message, update_user: false
     end
 
@@ -50,14 +51,16 @@ module MvamBot
         requestor.handle_not_understood
       when "start"
         MvamBot::Surveys::Survey.new(user, requestor).start
+        context.clear
       else
         logger.warn("Unknown custom action: #{action_name}")
       end
+
       context
     end
 
     def stop(session_id : String, context : Wit::State, confidence : Float64) : Wit::State
-      context.clear
+      context
     end
 
   end
