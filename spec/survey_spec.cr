@@ -363,7 +363,8 @@ describe ::MvamBot::Bot do
               messages.size.should eq(1)
               reply_buttons(messages[0]).should eq([
                 "Ciudad de Buenos Aires, Argentina",
-                "Provincia de Buenos Aires, Argentina"
+                "Provincia de Buenos Aires, Argentina",
+                "None of the above"
               ])
             end
 

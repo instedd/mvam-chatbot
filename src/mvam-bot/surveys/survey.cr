@@ -265,10 +265,13 @@ module MvamBot
 
       def store_chosen_location_coordinates(message)
         if message && message.text
-          lat, lng = geocoding_result(message.text.not_nil!)[message.text.not_nil!]
-          user.conversation_state["lat"] = lat
-          user.conversation_state["lng"] = lng
-          return true
+          selection = geocoding_result(message.text.not_nil!)[message.text.not_nil!]?
+          if selection
+            lat, lng = selection
+            user.conversation_state["lat"] = lat
+            user.conversation_state["lng"] = lng
+            return true
+          end
         end
         return false
       end
@@ -319,7 +322,7 @@ module MvamBot
       end
 
       def options_from_geocoding_result
-        @geocoding_results.first[1].keys
+        @geocoding_results.first[1].keys + ["None of the above"]
       end
 
       def options_from_country_names
