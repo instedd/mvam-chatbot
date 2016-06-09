@@ -1,4 +1,5 @@
 require "TelegramBot"
+require "process"
 
 module MvamBot
 
@@ -8,15 +9,19 @@ module MvamBot
     getter user
     getter bot
 
+    include MvamBot::WitUtils
+
     def initialize(@message : TelegramBot::Message, @user : User, @bot : MvamBot::Bot)
     end
 
     def handle
-      return if message.text.nil? && message.location.nil? && message.photo.nil?
-      log = message.text || (message.photo ? "[photo]" : nil) || (message.location ? "[location]" : nil) || "empty"
+      return if message.text.nil? && message.location.nil? && message.photo.nil? && message.voice.nil?
+      log = message.text || (message.voice ? "voice://#{message.voice.not_nil!.file_id}" : nil) || (message.photo ? "[photo]" : nil) || (message.location ? "[location]" : nil) || "empty"
       MvamBot::Logs::Message.create(user.id, false, log, Time.utc_now)
 
-      if message.text =~ /^\/price(.*)/
+      if message.voice
+        handle_voice
+      elsif message.text =~ /^\/price(.*)/
         handle_price($~[1])
       elsif message.text =~ /^\/echo(.*)/
         handle_echo($~[1])
@@ -137,6 +142,49 @@ module MvamBot
     private def sample_price_query
       sample_prices = Price.search_by_commodity_id(nil, limit: 1, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
       sample_prices.empty? ? "" : " For example, try sending `/price #{sample_prices[0].short_commodity_name.downcase}`."
+    end
+
+    def handle_voice
+      voice = message.voice.not_nil!
+      file_id = voice.file_id
+      file = bot.get_file(file_id)
+      mime = voice.mime_type
+      raw = bot.download(file)
+      MvamBot.logger.debug("Downloaded voice #{file_id} for user #{user.id}")
+
+      # Convert to mp3
+      mp3 = MemoryIO.new
+      error = MemoryIO.new
+      status = Process.run("ffmpeg", {"-f", "ogg", "-i", "pipe:0", "-nostdin", "-ac", "1", "-f", "mp3", "-"}, input: MemoryIO.new(raw.to_slice), output: mp3, error: error)
+
+      # Save file locally in ogg if conversion failed and return
+      unless status.success?
+        MvamBot.logger.error("Error converting voice file: #{error.to_s}")
+        MvamBot::DataFile.create(id: file_id, user_id: user.id, extension: "ogg", data: raw.to_slice, kind: "voice")
+        return
+      end
+
+      # Save file locally as mp3
+      MvamBot::DataFile.create(id: file_id, user_id: user.id, extension: "mp3", data: mp3.to_slice, kind: "voice")
+
+      # Send to wit for processing
+      if wit = wit_client
+        message = wit.speech(data: mp3.to_slice, content_type: "audio/mpeg3")
+        handle_entities(message.entities)
+      end
+    end
+
+    def handle_entities(entities)
+      intent = extract_value(entities, "intent")
+      if commodity = extract_value(entities, "commodity")
+        handle_price(commodity.to_s)
+      elsif intent == INTENT_QUERY_PRICE
+        answer("What do you want to know the price of?")
+      elsif intent == INTENT_SALUTATION
+        handle_start
+      elsif intent == INTENT_ASK_CAPABILITIES
+        handle_help
+      end
     end
 
     def answer_location_complete(location)
