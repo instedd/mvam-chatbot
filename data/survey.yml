@@ -14,20 +14,20 @@ states:
   check_availability:
     say: Would you be available later? It will take just a minute.
     transitions:
-      - entities: yes_no
+      - entity: yes_no
         value: Yes
         target: ask_availability
-      - entities: yes_no
+      - entity: yes_no
         value: No
         target: no_survey
-      - entities: wit/datetime
+      - entity: wit/datetime
         store: survey_at
         target: reschedule_survey
 
   ask_availability:
     say: When would you be available?
     transitions:
-      - entities: wit/datetime
+      - entity: wit/datetime
         store: survey_at
         target: reschedule_survey
 
