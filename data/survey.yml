@@ -41,7 +41,18 @@ states:
       - location: true
         target: ask_enough_food
       - default: true
+        target: ask_country
+
+  ask_country:
+    say: What country do you live in?
+    options_from: country_names
+    transitions:
+      - message_from: country_names
+        store: country_name
         target: ask_location_name
+      - default: true
+        target: ask_enough_food
+
 
   ask_location_name:
     say: What's the name of your nearest city?
@@ -49,10 +60,6 @@ states:
       - entity: location
         store: location_name
         target: geocode
-      - intent: AskWhy
-        target: why
-      - intent: AskWho
-        target: who
       - default: true
         target: ask_enough_food
 
@@ -138,6 +145,7 @@ data:
   - lat
   - lng
   - location_name
+  - country_name
 
 # deprecated:
 #

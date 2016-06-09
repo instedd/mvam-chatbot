@@ -59,6 +59,7 @@ module MvamBot
         entity: { type: String, nilable: true },
         intent: { type: String, nilable: true },
         message: { type: Array(String), nilable: true },
+        message_from: { type: String, nilable: true },
         default: { type: Bool, default: false },
         store: { type: String, nilable: true },
         photo: { type: Bool, default: false },
@@ -70,6 +71,8 @@ module MvamBot
       def kind
         if message
           :message
+        elsif message_from
+          :message_from
         elsif intent
           :intent
         elsif entity

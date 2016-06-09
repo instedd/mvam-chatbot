@@ -15,6 +15,10 @@ Would you min
 d sharing yo
 ur curren...
 ", shape = circle, style= solid ];
+	ask_country [ label = "ask_country
+What country 
+do you live 
+in?", shape = circle, style= solid ];
 	ask_location_name [ label = "ask_location_name
 What's the na
 me of your n
@@ -60,10 +64,10 @@ t assistant,
 	geolocate_user -> ask_enough_food [ label = "method:store_user_location", dir = forward ];
 	geolocate_user -> ask_gps [ label = "otherwise", dir = forward ];
 	ask_gps -> ask_enough_food [ label = "location", dir = forward ];
-	ask_gps -> ask_location_name [ label = "otherwise", dir = forward ];
+	ask_gps -> ask_country [ label = "otherwise", dir = forward ];
+	ask_country -> ask_location_name [ label = "", dir = forward ];
+	ask_country -> ask_enough_food [ label = "otherwise", dir = forward ];
 	ask_location_name -> geocode [ label = "entity:location", dir = forward ];
-	ask_location_name -> why [ label = "intent:AskWhy", dir = both ];
-	ask_location_name -> who [ label = "intent:AskWho", dir = both ];
 	ask_location_name -> ask_enough_food [ label = "otherwise", dir = forward ];
 	geocode -> ask_enough_food [ label = "method:geocode_ok", dir = forward ];
 	geocode -> ask_which_location [ label = "method:geocode_multiple_results", dir = forward ];

@@ -269,7 +269,25 @@ describe ::MvamBot::Bot do
 
             messages = handle_message("Not really", user: user, bot: bot)
             messages.size.should eq(1)
+            messages[0][:text].should eq("What country do you live in?")
+            reply_buttons(messages[0]).should eq(MvamBot::Country.all_names)
+
+            user.conversation_step.not_nil!.should contain("survey/ask_country")
+          end
+
+          it "should store selected country and ask for location name after country selection" do
+            DB.cleanup
+            bot = Bot.new
+            user = Factory::DB.user(conversation_step: "survey/ask_country")
+            user.conversation_session_id = "TEST_SESSION_ID"
+
+            selected_country = MvamBot::Country.all.first
+
+            messages = handle_message(selected_country.name, user: user, bot: bot)
             messages[0][:text].should eq("What's the name of your nearest city?")
+
+            responses = MvamBot::SurveyResponse.for_user(user.id)
+            responses[0].data.should eq({"country_name" => selected_country.name})
 
             user.conversation_step.not_nil!.should contain("survey/ask_location_name")
           end
@@ -280,18 +298,24 @@ describe ::MvamBot::Bot do
               bot = Bot.new
               user = Factory::DB.user(conversation_step: "survey/ask_location_name")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_state["country_name"] = "Argentina"
 
               messages = handle_message("I live in Buenos Aires",
                                         user: user,
                                         bot: bot,
                                         messages: { "I live in Buenos Aires" => response({"location" => "Buenos Aires"}) },
-                                        geocoding: {"Buenos Aires" => {"Buenos Aires, Argentina" => {10.0, 20.0}}})
+                                        geocoding: { {"Buenos Aires", "Argentina"} => {"Buenos Aires, Argentina" => {10.0, 20.0}}})
 
               messages.size.should eq(1)
               user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
 
               responses = MvamBot::SurveyResponse.for_user(user.id)
-              responses[0].data.should eq({"lat" => 10.0, "lng" => 20.0, "location_name" => "Buenos Aires"})
+              responses[0].data.should eq({
+                "lat" => 10.0,
+                "lng" => 20.0,
+                "location_name" => "Buenos Aires",
+                "country_name" => "Argentina"
+              })
             end
           end
 
@@ -301,6 +325,7 @@ describe ::MvamBot::Bot do
               bot = Bot.new
               user = Factory::DB.user(conversation_step: "survey/ask_location_name")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_state["country_name"] = "Argentina"
 
               messages = handle_message("I live in Buenos Aires",
                                         user: user,
@@ -311,7 +336,7 @@ describe ::MvamBot::Bot do
               user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
 
               responses = MvamBot::SurveyResponse.for_user(user.id)
-              responses[0].data.should eq({"location_name" => "Buenos Aires"})
+              responses[0].data.should eq({"location_name" => "Buenos Aires", "country_name" => "Argentina"})
             end
 
           end
@@ -322,14 +347,15 @@ describe ::MvamBot::Bot do
               bot = Bot.new
               user = Factory::DB.user(conversation_step: "survey/ask_location_name")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_state["country_name"] = "Argentina"
 
               messages = handle_message("I live in Buenos Aires",
                                         user: user,
                                         bot: bot,
                                         messages: { "I live in Buenos Aires" => response({"location" => "Buenos Aires"}) },
-                                        geocoding: {"Buenos Aires" => {
-                                                      "Ciudad de Buenos Aires, Argentina" => {10.0, 20.0},
-                                                      "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
+                                        geocoding: { {"Buenos Aires", "Argentina"} => {
+                                                       "Ciudad de Buenos Aires, Argentina" => {10.0, 20.0},
+                                                       "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
                                         }})
 
               user.conversation_step.not_nil!.should contain("survey/ask_which_location")
@@ -346,19 +372,21 @@ describe ::MvamBot::Bot do
               bot = Bot.new
               user = Factory::DB.user(conversation_step: "survey/ask_which_location")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_state["country_name"] = "Argentina"
 
               messages = handle_message("Ciudad de Buenos Aires, Argentina",
                                         user: user,
                                         bot: bot,
-                                        geocoding: {"Ciudad de Buenos Aires, Argentina" => {
-                                                      "Ciudad de Buenos Aires, Argentina" => {10.0, 20.0},
-                                                      "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
+                                        geocoding: { {"Ciudad de Buenos Aires, Argentina", "Argentina"} => {
+                                                       "Ciudad de Buenos Aires, Argentina" => {10.0, 20.0},
+                                                       "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
                                         }})
 
               user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
 
               responses = MvamBot::SurveyResponse.for_user(user.id)
-              responses[0].data.should eq({"lat" => 10.0, "lng" => 20.0})
+              responses[0].data["lat"].should eq(10.0)
+              responses[0].data["lng"].should eq(20.0)
             end
           end
         end

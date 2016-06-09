@@ -19,17 +19,21 @@ module MvamBot::Spec
       @runner.not_nil!.call(message, session, actions)
     end
 
+    protected def understand(message : String)
+      get_message(message, "")
+    end
+
     protected def get_message(message : String, session : String)
       @messages.not_nil![message]
     end
   end
 
   class Geocoder < ::MvamBot::Geocoder
-    def initialize(@results : Hash(String, Hash(String, {Float64, Float64})))
+    def initialize(@results : Hash({String, String}, Hash(String, {Float64, Float64})))
     end
 
-    def lookup(query)
-      @results.fetch(query, {} of String => {Float64, Float64})
+    def lookup(query, country)
+      @results.fetch({query, country}, {} of String => {Float64, Float64})
     end
   end
 
@@ -72,7 +76,7 @@ module MvamBot::Spec
   def handle_message(msg = nil, user = nil, bot = nil, messages = nil, geocoding = nil, photo : String? = nil, location : {Float64, Float64}? = nil)
     handler = message_handler(msg, user, bot, photo: photo, location: location)
     handler.wit_client = WitClient.new(handler.user, handler, messages)
-    handler.geocoder = Geocoder.new(geocoding || {} of String => Hash(String, {Float64, Float64}))
+    handler.geocoder = Geocoder.new(geocoding || {} of {String, String} => Hash(String, {Float64, Float64}))
     handler.handle
     handler.bot.as(Bot).messages
   end
@@ -80,7 +84,7 @@ module MvamBot::Spec
   def handle_message(msg = nil, user = nil, bot = nil, messages = nil, geocoding = nil, photo = nil, location : {Float64, Float64}? = nil, &wit : (String, String, Wit::Actions -> Wit::State))
     handler = message_handler(msg, user, bot, photo: photo, location: location)
     handler.wit_client = WitClient.new(handler.user, handler, messages, &wit)
-    handler.geocoder = Geocoder.new(geocoding || {} of String => Hash(String, {Float64, Float64}))
+    handler.geocoder = Geocoder.new(geocoding || {} of {String, String} => Hash(String, {Float64, Float64}))
     handler.handle
     handler.bot.as(Bot).messages
   end
