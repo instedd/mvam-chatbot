@@ -44,7 +44,7 @@ module MvamBot
 
         flow.states.each do |id, state|
           state.transitions.each do |transition|
-            next if transition.target == "back"
+            next if transition.target == "back" || transition.target == "none"
             label = if transition.action
               "action:#{transition.action}"
             elsif transition.entity

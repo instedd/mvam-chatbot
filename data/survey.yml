@@ -48,7 +48,7 @@ states:
     final: true
 
   no_survey:
-    say: That's ok. Just say "hello" any time if you change your mind!
+    say: That's ok. Just say hello any time if you change your mind!
     final: true
 
   ask_age:
