@@ -92,13 +92,14 @@ module MvamBot
         price_trend_description = if price_trend.abs == 0
           "has not changed"
         elsif price_trend > 0
-          "went up #{price_trend}%"
+          "has a #{price_trend}% upward trend"
         else
-          "went down #{price_trend.abs}%"
+          "has a #{price_trend.abs}% downward trend"
         end
 
         price_trend_description = (format == :markdown) ? "*#{price_trend_description}*" : price_trend_description
-        return "The price #{price_trend_description} since #{last.time_description}."
+        price_timespan_description = price_trend.abs != 0 ? "." : " since #{last.time_description}."
+        return "The price #{price_trend_description}#{price_timespan_description}"
       end
 
       def trend_description(format = nil)
