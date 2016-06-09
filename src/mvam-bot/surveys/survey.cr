@@ -85,6 +85,12 @@ module MvamBot
       end
 
       private def run(to_state : FlowState)
+        if to_state.dummy
+          @previous_state_id = state.id
+          @state_id = to_state.id
+          return advance
+        end
+
         talk_to_user(to_state)
 
         if to_state.final
@@ -95,12 +101,6 @@ module MvamBot
           previous_id = (state_id && state.transient) ? @previous_state_id : state_id
           query = previous_id ? "?from=#{previous_id}" : ""
           user.conversation_step = "survey/#{to_state.id}#{query}"
-
-          if to_state.dummy
-            @previous_state_id = state.id
-            @state_id = to_state.id
-            return advance
-          end
         end
 
         SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final)
