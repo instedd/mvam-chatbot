@@ -81,6 +81,10 @@ To forward all not-understood messages to wit.ai:
 
 * `WIT_ACCESS_TOKEN`: access token for wit.ai application
 
+To enable geocoding for users location:
+
+ * `MAPQUEST_ACCESS_TOKEN`: access token for [MapQuest's open API](open.mapquestapi.com)
+
 ## Running
 
 Run locally with `crystal src/mvam-bot.cr`.
