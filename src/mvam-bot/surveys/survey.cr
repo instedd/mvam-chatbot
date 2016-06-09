@@ -159,7 +159,7 @@ module MvamBot
         entities = response.entities
         if extract_value(entities, "intent") == transition.intent
           MvamBot.logger.debug("Transition to #{transition.target} matched on intent #{transition.intent}")
-          user.conversation_state[transition.store.not_nil!] = intent_answer_value(transition.intent) if transition.store
+          user.conversation_state[transition.store.not_nil!] = transition.intent if transition.store
           return true
         end
         return false
@@ -170,9 +170,11 @@ module MvamBot
         entities = response.entities
         if entity = transition.entity
           if value = extract_value(response.entities, entity)
-            MvamBot.logger.debug("Transition to #{transition.target} matched on entity #{entity} with value #{value}")
-            user.conversation_state[transition.store.not_nil!] = value if transition.store
-            return true
+            if transition.value.nil? || transition.value == value
+              MvamBot.logger.debug("Transition to #{transition.target} matched on entity #{entity} with value #{value}")
+              user.conversation_state[transition.store.not_nil!] = value if transition.store
+              return true
+            end
           end
         end
         return false

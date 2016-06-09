@@ -50,7 +50,7 @@ openssl req -newkey rsa:2048 -sha256 -nodes -keyout cert.key -x509 -days 365 -ou
 
 An application that should be able to identify the required entities and intents.
 
-The `commodity` entity can be seeded with all the WFP DB prices by running `bin/upload-entities`.
+Several entities can be seeded with all the WFP DB prices by running `bin/upload-entities`.
 
 ## Environment
 

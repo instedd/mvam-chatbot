@@ -21,18 +21,18 @@ module MvamBot
     end
 
     def merge(session_id : String, context : Wit::State, entities : Hash(String, Array(JSON::Any)), msg : String?, confidence : Float64) : Wit::State
-      # Set intent
-      extract_value_into(entities, "intent", context)
+      # Get the intent
+      intent = extract_value_into(entities, "intent", context)
 
-      # On queryPrice, set commodity
-      case context["intent"]?
-      when QUERY_PRICE
-        extract_value_into(entities, "commodity", context)
-      when SCHEDULE
-        extract_value_into(entities, "wit/datetime", context, context_key: "survey_at")
-      else
-        context.delete("commodity")
-      end
+      # Set key states
+      set_context_key(context, STATE_QUERY_PRICE, context.has_key?(STATE_QUERY_PRICE) || intent == INTENT_QUERY_PRICE)
+
+      # Extract known entities
+      extract_value_into(entities, "commodity", context)
+      extract_value_into(entities, "yes_no", context)
+
+      # Extract intent-specific entities
+      extract_value_into(entities, "wit/datetime", context, context_key: "survey_at") if intent == INTENT_SCHEDULE
 
       context
     end
@@ -48,16 +48,16 @@ module MvamBot
         requestor.handle_price(context["commodity"].try(&.to_s) || "")
       when "not-understood"
         requestor.handle_not_understood
-      when "start-survey"
+      when "start"
         MvamBot::Surveys::Survey.new(user, requestor).start
-      when "reschedule-survey"
-        MvamBot::Surveys::Survey.new(user, requestor).reschedule(context["survey_at"].to_s)
-      when "no-survey"
-        MvamBot::Surveys::Survey.new(user, requestor).cancel
       else
         logger.warn("Unknown custom action: #{action_name}")
       end
       context
+    end
+
+    def stop(session_id : String, context : Wit::State, confidence : Float64) : Wit::State
+      context.clear
     end
 
   end

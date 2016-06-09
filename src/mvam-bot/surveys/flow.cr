@@ -55,6 +55,7 @@ module MvamBot
         after: { type: Int32, nilable: true },
         action: { type: String, nilable: true },
         entity: { type: String, nilable: true },
+        value: { type: String, nilable: true },
         intent: { type: String, nilable: true },
         message: { type: Array(String), nilable: true },
         default: { type: Bool, default: false },

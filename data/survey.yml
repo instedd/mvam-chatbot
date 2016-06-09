@@ -1,5 +1,44 @@
 states:
 
+  start:
+    initial: true
+    say: Hello! I'm a WFP bot assistant, I would like to ask you a few questions if you have a minute.
+    transitions:
+      - entity: yes_no
+        value: Yes
+        target: ask_age
+      - entity: yes_no
+        value: No
+        target: check_availability
+
+  check_availability:
+    say: Would you be available later? It will take just a minute.
+    transitions:
+      - entities: yes_no
+        value: Yes
+        target: ask_availability
+      - entities: yes_no
+        value: No
+        target: no_survey
+      - entities: wit/datetime
+        store: survey_at
+        target: reschedule_survey
+
+  ask_availability:
+    say: When would you be available?
+    transitions:
+      - entities: wit/datetime
+        store: survey_at
+        target: reschedule_survey
+
+  reschedule_survey:
+    say: Great, thanks! I'll talk to you then.
+    final: true
+
+  no_survey:
+    say: OK, sorry to hear that. Just say "hello" any time if you change your mind!
+    final: true
+
   ask_age:
     initial: true
     say: How old are you?
@@ -33,10 +72,7 @@ states:
         message: ["Yes", "No"]
         store: enough_food
       - target: ask_roof_photo
-        intent: AnswerNo
-        store: enough_food
-      - target: ask_roof_photo
-        intent: AnswerYes
+        entity: yes_no
         store: enough_food
 
   ask_roof_photo:
@@ -47,9 +83,15 @@ states:
         store: roof_photo
       - target: thank_you
         say: No problem
-        intent: AnswerNo
+        entity: yes_no
+        value: No
       - target: none
-        intent: AnswerYes
+        entity: yes_no
+        value: Yes
+      - intent: AskWhy
+        target: why
+      - intent: AskWho
+        target: who
 
   thank_you:
     say: That would be all, thank you for your answers!
@@ -62,7 +104,8 @@ states:
       - target: back
         after: 5
       - target: back
-        intent: AnswerYes
+        entity: yes_no
+        value: Yes
       - intent: AskWho
         target: who
 
@@ -75,7 +118,8 @@ states:
       - intent: AskWhy
         target: why
       - target: back
-        intent: AnswerYes
+        entity: yes_no
+        value: Yes
 
 data:
   - age

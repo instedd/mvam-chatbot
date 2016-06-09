@@ -13,14 +13,14 @@ describe ::MvamBot::Bot do
       user = Factory::DB.user_with_location
 
       messages = handle_message("/start", user: user, bot: bot) do |msg, sid, actions|
-        context = actions.merge(sid, user.conversation_state, entities({ "intent" => "AnswerYes"}), msg, 0.9)
-        actions.custom("start-survey", sid, context, 0.9)
+        context = actions.merge(sid, user.conversation_state, entities({ "intent" => "Salutation"}), msg, 0.9)
+        actions.custom("start", sid, context, 0.9)
       end
 
       messages.size.should eq(1)
-      messages[0][:text].should eq("How old are you?")
+      messages[0][:text].should contain("I would like to ask you a few questions if you have a minute")
 
-      user.conversation_step.should eq("survey/ask_age")
+      user.conversation_step.should eq("survey/start")
     end
 
     it "should move to the next step on an extracted entity" do
@@ -45,7 +45,7 @@ describe ::MvamBot::Bot do
       responses[0].completed.should eq(false)
     end
 
-    it "should extract boolean answer from intent" do
+    it "should extract boolean answer" do
       DB.cleanup
       bot = Bot.new
 
@@ -53,7 +53,7 @@ describe ::MvamBot::Bot do
       user.conversation_at = Time.utc_now
       user.conversation_session_id = "TEST_SESSION_ID"
 
-      messages = handle_message("Yeah", user: user, bot: bot, messages: { "Yeah" => response({"intent" => "AnswerYes"}) })
+      messages = handle_message("Yeah", user: user, bot: bot, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
       messages.size.should eq(1)
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
@@ -92,7 +92,7 @@ describe ::MvamBot::Bot do
       user.conversation_session_id = "TEST_SESSION_ID"
       user.conversation_at = Time.utc_now
 
-      messages = handle_message("No", user: user, bot: bot, messages: { "No" => response({"intent" => "AnswerNo"}) })
+      messages = handle_message("No", user: user, bot: bot, messages: { "No" => response({"yes_no" => "No"}) })
       messages.last[:text].downcase.should contain("thank you for your answers")
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
@@ -113,7 +113,7 @@ describe ::MvamBot::Bot do
       user.conversation_at = Time.utc_now
 
       handle_message("Why?", user: user, bot: bot, messages: { "Why?" => response({"intent" => "AskWhy"}) })
-      messages = handle_message("Ok", user: user, bot: bot, messages: { "Ok" => response({"intent" => "AnswerYes"}) })
+      messages = handle_message("Ok", user: user, bot: bot, messages: { "Ok" => response({"yes_no" => "Yes"}) })
 
       messages.size.should eq(2)
       messages[0][:text].should contain("because we are tracking food security")
@@ -132,7 +132,7 @@ describe ::MvamBot::Bot do
 
       handle_message("Why?", user: user, bot: bot, messages: { "Why?" => response({"intent" => "AskWhy"}) })
       handle_message("And who are you?", user: user, bot: bot, messages: { "And who are you?" => response({"intent" => "AskWho"}) })
-      messages = handle_message("Ok", user: user, bot: bot, messages: { "Ok" => response({"intent" => "AnswerYes"}) })
+      messages = handle_message("Ok", user: user, bot: bot, messages: { "Ok" => response({"yes_no" => "Yes"}) })
 
       messages.size.should eq(3)
       messages[0][:text].should contain("because we are tracking food security")
@@ -170,7 +170,7 @@ describe ::MvamBot::Bot do
       bot = Bot.new
 
       user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
-      messages = handle_message("no", user: user, bot: bot, messages: { "no" => response({"intent" => "AnswerNo"}) })
+      messages = handle_message("no", user: user, bot: bot, messages: { "no" => response({"yes_no" => "No"}) })
 
       messages.size.should eq(2)
       messages[0][:text].should contain("No problem")
@@ -186,7 +186,7 @@ describe ::MvamBot::Bot do
       bot = Bot.new
 
       user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
-      handle_message("sure", user: user, bot: bot, messages: { "sure" => response({"intent" => "AnswerYes"}) })
+      handle_message("sure", user: user, bot: bot, messages: { "sure" => response({"yes_no" => "Yes"}) })
       messages = handle_message(photo: "myphoto", user: user, bot: bot)
 
       messages.size.should eq(1)

@@ -65,11 +65,7 @@ module MvamBot
     end
 
     def handle_start
-      if wit = wit_client
-        wit.converse("/start")
-      else
-        answer("Hello! I'm a WFP bot assistant. Send `/help` if you want information on how I can be of assistance.")
-      end
+      MvamBot::Surveys::Survey.new(user, self).start
     end
 
     def handle_reset(what)
