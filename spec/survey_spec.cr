@@ -23,6 +23,30 @@ describe ::MvamBot::Bot do
       user.conversation_step.should eq("survey/start")
     end
 
+    it "should not save a survey response if the user refused the survey" do
+      DB.cleanup
+      bot = Bot.new
+      user = Factory::DB.user_with_location
+
+      handle_message("/start", user: user, bot: bot) do |msg, sid, actions|
+        context = actions.merge(sid, user.conversation_state, entities({ "intent" => "Salutation"}), msg, 0.9)
+        actions.custom("start", sid, context, 0.9)
+      end
+
+      handle_message("No", user: user, bot: bot, messages: { "No" => response({"yes_no" => "No"}) })
+
+      handle_message("No", user: user, bot: bot, messages: { "No" => response({"yes_no" => "No"}) })
+
+      messages = bot.messages
+      messages.size.should eq(3)
+      messages[0][:text].should contain("I would like to ask you a few questions if you have a minute")
+      messages[1][:text].should contain("Would you be available later")
+      messages[2][:text].should contain("Just say \"hello\" any time if you change your mind")
+
+      user.conversation_step.should eq(nil)
+      MvamBot::SurveyResponse.for_user(user.id).size.should eq(0)
+    end
+
     it "should move to the next step on an extracted entity" do
       DB.cleanup
       bot = Bot.new
@@ -170,6 +194,8 @@ describe ::MvamBot::Bot do
       bot = Bot.new
 
       user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+      user.conversation_state["gender"] = "male"
+
       messages = handle_message("no", user: user, bot: bot, messages: { "no" => response({"yes_no" => "No"}) })
 
       messages.size.should eq(2)
@@ -178,7 +204,7 @@ describe ::MvamBot::Bot do
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
       responses.size.should eq(1)
-      responses[0].data.should eq({} of String => String)
+      responses[0].data.should eq({"gender" => "male"})
     end
 
     it "should support a picture upload after a confirmation" do

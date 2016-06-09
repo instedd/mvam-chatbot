@@ -86,7 +86,7 @@ module MvamBot
         end
 
         # Save survey data
-        SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final)
+        SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final) unless survey_data.empty?
 
         if to_state.final
           user.conversation_step = nil
