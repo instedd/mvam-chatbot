@@ -27,6 +27,7 @@ module MvamBot
 
       # Set key states
       set_context_key(context, STATE_QUERY_PRICE, context.has_key?(STATE_QUERY_PRICE) || intent == INTENT_QUERY_PRICE)
+      set_context_key(context, STATE_SHOW_HELP, context.has_key?(STATE_SHOW_HELP) || intent == INTENT_ASK_CAPABILITIES)
 
       # Extract known entities
       extract_value_into(entities, "commodity", context)
@@ -49,6 +50,9 @@ module MvamBot
         requestor.handle_price(context["commodity"].try(&.to_s) || "")
       when "not-understood"
         requestor.handle_not_understood
+      when "show-help"
+        requestor.handle_help
+        context.clear
       when "start"
         MvamBot::Surveys::Survey.new(user, requestor).start
         context.clear

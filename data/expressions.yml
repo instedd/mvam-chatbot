@@ -15,6 +15,13 @@ yes_no:
     - No thanks
 
 intent:
+  AskCapabilities:
+    - How does this work?
+    - What can you do?
+  Thanks:
+    - Thank you
+    - Thanks
+    - Much appreciated
   AskWhy:
     - Why
     - Why are you asking me this?
