@@ -1,3 +1,15 @@
+survey_data:
+  - age
+  - gender
+  - enough_food
+  - roof_photo
+
+common_transitions:
+  - intent: AskWhy
+    target: why
+  - intent: AskWho
+    target: who
+
 states:
 
   start:
@@ -36,7 +48,7 @@ states:
     final: true
 
   no_survey:
-    say: OK, sorry to hear that. Just say "hello" any time if you change your mind!
+    say: That's ok. Just say "hello" any time if you change your mind!
     final: true
 
   ask_age:
@@ -46,10 +58,6 @@ states:
       - entity: number
         target: ask_gender
         store: age
-      - intent: AskWhy
-        target: why
-      - intent: AskWho
-        target: who
 
   ask_gender:
     say: Are you a man or a woman?
@@ -57,10 +65,6 @@ states:
       - entity: gender
         target: ask_enough_food
         store: gender
-      - intent: AskWhy
-        target: why
-      - intent: AskWho
-        target: who
 
   ask_enough_food:
     say: In the past seven days, were there days in which you did not have enough food or money to buy food?
@@ -88,10 +92,6 @@ states:
       - target: none
         entity: yes_no
         value: Yes
-      - intent: AskWhy
-        target: why
-      - intent: AskWho
-        target: who
 
   thank_you:
     say: That would be all, thank you for your answers!
@@ -106,8 +106,6 @@ states:
       - target: back
         entity: yes_no
         value: Yes
-      - intent: AskWho
-        target: who
 
   who:
     say: I am a WFP bot assistant, for tracking food security in your region.
@@ -115,53 +113,6 @@ states:
     transitions:
       - target: back
         after: 5
-      - intent: AskWhy
-        target: why
       - target: back
         entity: yes_no
         value: Yes
-
-data:
-  - age
-  - gender
-  - enough_food
-  - roof_photo
-
-# deprecated:
-#
-#   hello:
-#     actions:
-#       - say: Hi, I'm a WFP bot assistant, I'd like to ask you a few questions if you have a minute.
-#     transitions:
-#       - intent: AnswerYes
-#         target: ask_age
-#       - intent: AnswerNo
-#         target: survey_no
-#
-#   survey_no:
-#     actions:
-#       - say: Would you be available later? It is just a minute.
-#     transitions:
-#       - entity: { survey_at: wit/datetime }
-#         target: rescheduled
-#       - intent: AnswerYes
-#         target: reschedule
-#       - intent: AnswerNo
-#         target: no_reschedule
-#
-#   reschedule:
-#     actions:
-#       - say: When can I bother you?
-#     transitions:
-#       - entity: { survey_at: wit/datetime }
-#         target: rescheduled
-#       - intent: AnswerNo
-#         target: no_reschedule
-#
-#   rescheduled:
-#     actions:
-#       - say: Great, I'll talk to you then. Thank you!
-#
-#   no_reschedule:
-#     actions:
-#       - say: OK, sorry to hear that. Just say "hello" any time if you change your mind!

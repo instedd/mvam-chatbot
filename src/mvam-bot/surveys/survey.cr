@@ -113,12 +113,16 @@ module MvamBot
         end
       end
 
+      private def transitions_for(state)
+        state.final ? state.transitions : (state.transitions + flow.common_transitions)
+      end
+
       # Selects the transition we should use based on the current context.
       #
       # Transitions are tested in order, each of them will examine the information
       # available and determine if it is possible to go to their target state.
       private def select_transition(message)
-        state.transitions.find { |t| test_transition(t, message) }
+        transitions_for(state).find { |t| test_transition(t, message) }
       end
 
       # Returns true iff this is the transition that must be applied based on the current context.
