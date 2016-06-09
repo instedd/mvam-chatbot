@@ -12,10 +12,13 @@ module MvamBot
     include Wit::Actions
     include MvamBot::WitUtils
 
+    CONFIDENCE_THRESHOLD = 0.01
+
     def initialize(@user : User, @requestor : MessageHandler, @logger : Logger)
     end
 
     def say(session_id : String, context : Wit::State, message : String, confidence : Float64)
+      return requestor.handle_not_understood if confidence < CONFIDENCE_THRESHOLD
       user.conversation_step = nil
       context.clear
       requestor.answer message, update_user: false
@@ -45,6 +48,11 @@ module MvamBot
     end
 
     def custom(action_name : String, session_id : String, context : Wit::State, confidence : Float64) : Wit::State
+      if confidence < CONFIDENCE_THRESHOLD
+        requestor.handle_not_understood
+        return context
+      end
+
       case action_name
       when "show-price"
         requestor.handle_price(context["commodity"].try(&.to_s) || "")
