@@ -7,8 +7,9 @@ module MvamBot
     class Flow
       YAML.mapping({
         states: { type: Hash(String, FlowState), converter: FlowStates },
-        data: { type: Array(String) }
-      })
+        data: { type: Array(String), key: "survey_data" },
+        common_transitions: { type: Array(FlowTransition) }
+      }, strict: true)
 
       def start
         states.values.find(&.initial).not_nil!
@@ -40,7 +41,7 @@ module MvamBot
         options: { type: Array(Option), nilable: true },
         options_from: { type: String, nilable: true },
         transient: { type: Bool, default: false }
-      })
+      }, strict: true)
 
       getter id
 
@@ -57,6 +58,7 @@ module MvamBot
         after: { type: Int32, nilable: true },
         action: { type: String, nilable: true },
         entity: { type: String, nilable: true },
+        value: { type: String, nilable: true },
         intent: { type: String, nilable: true },
         message: { type: Array(String), nilable: true },
         message_from: { type: String, nilable: true },
@@ -66,7 +68,7 @@ module MvamBot
         location: { type: Bool, default: false },
         method: { type: String, nilable: true },
         say: { type: String, nilable: true }
-      })
+      }, strict: true)
 
       def kind
         if message

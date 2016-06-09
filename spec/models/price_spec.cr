@@ -28,7 +28,7 @@ describe ::MvamBot::Price do
         Factory.price(20.0, month: 1)
       ]
 
-      MvamBot::Price.trend_description(history).should eq("The price went up 50% since March 2015.")
+      MvamBot::Price.trend_description(history).should eq("The price has a 50% upward trend.")
     end
 
     it "should return a decrease for the past months" do
@@ -40,7 +40,7 @@ describe ::MvamBot::Price do
         Factory.price(5.0, month: 1)
       ]
 
-      MvamBot::Price.trend_description(history).should eq("The price went down 50% since March 2015.")
+      MvamBot::Price.trend_description(history).should eq("The price has a 50% downward trend.")
     end
 
     it "should return nil if not enough history records are available" do

@@ -23,7 +23,7 @@ module MvamBot
       end
 
       def start
-        run(flow.start)
+        run(flow.start, extra_text: "Hello! I'm a WFP bot assistant. ")
       end
 
       def reschedule(when)
@@ -84,17 +84,22 @@ module MvamBot
         end
       end
 
-      private def run(to_state : FlowState)
+      private def run(to_state : FlowState, extra_text : String = "")
         if to_state.dummy
           @previous_state_id = state.id
           @state_id = to_state.id
           return advance
         end
 
-        talk_to_user(to_state)
+        talk_to_user(to_state, extra_text)
+
+        # Save survey data
+        SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final) unless survey_data.empty?
 
         if to_state.final
           user.conversation_step = nil
+          user.conversation_session_id = nil
+          user.conversation_state.clear
           MvamBot.logger.info("Survey completed at state #{to_state.id} for user #{user.id}")
         else
           # Store current state and previous not-transient state
@@ -103,14 +108,14 @@ module MvamBot
           user.conversation_step = "survey/#{to_state.id}#{query}"
         end
 
-        SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final)
         user.update
       end
 
-      private def talk_to_user(to_state)
+      private def talk_to_user(to_state, extra_text)
         if say = to_state.say
+          text = extra_text + say
           if options = to_state.options
-            requestor.answer(say, build_keyboard(options), update_user: false)
+            requestor.answer(text, build_keyboard(options), update_user: false)
           elsif options_from = to_state.options_from
             options = case options_from
                       when "geocoding_result"
@@ -120,9 +125,9 @@ module MvamBot
                       else
                         raise "Unrecognised options #{options_from}"
                       end
-            requestor.answer(say, build_keyboard(options), update_user: false)
+            requestor.answer(text, build_keyboard(options), update_user: false)
           else
-            requestor.answer(say, update_user: false)
+            requestor.answer(text, update_user: false)
           end
         end
       end
@@ -137,12 +142,16 @@ module MvamBot
         end
       end
 
+      private def transitions_for(state)
+        state.final ? state.transitions : (state.transitions + flow.common_transitions)
+      end
+
       # Selects the transition we should use based on the current context.
       #
       # Transitions are tested in order, each of them will examine the information
       # available and determine if it is possible to go to their target state.
       private def select_transition(message)
-        state.transitions.find { |t| test_transition(t, message) }
+        transitions_for(state).find { |t| test_transition(t, message) }
       end
 
       # Returns true iff this is the transition that must be applied based on the current context.
@@ -208,7 +217,7 @@ module MvamBot
         entities = response.entities
         if extract_value(entities, "intent") == transition.intent
           MvamBot.logger.debug("Transition to #{transition.target} matched on intent #{transition.intent}")
-          user.conversation_state[transition.store.not_nil!] = intent_answer_value(transition.intent) if transition.store
+          user.conversation_state[transition.store.not_nil!] = transition.intent if transition.store
           return true
         end
         return false
@@ -219,9 +228,11 @@ module MvamBot
         entities = response.entities
         if entity = transition.entity
           if value = extract_value(response.entities, entity)
-            MvamBot.logger.debug("Transition to #{transition.target} matched on entity #{entity} with value #{value}")
-            user.conversation_state[transition.store.not_nil!] = value if transition.store
-            return true
+            if transition.value.nil? || transition.value == value
+              MvamBot.logger.debug("Transition to #{transition.target} matched on entity #{entity} with value #{value}")
+              user.conversation_state[transition.store.not_nil!] = value if transition.store
+              return true
+            end
           end
         end
         return false

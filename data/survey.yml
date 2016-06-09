@@ -1,4 +1,59 @@
+survey_data:
+  - age
+  - gender
+  - enough_food
+  - roof_photo
+  - lat
+  - lng
+  - location_name
+  - country_name
+
+common_transitions:
+  - intent: AskWhy
+    target: why
+  - intent: AskWho
+    target: who
+
 states:
+
+  start:
+    initial: true
+    say: I would like to ask you a few questions if you have a minute.
+    transitions:
+      - entity: yes_no
+        value: Yes
+        target: ask_age
+      - entity: yes_no
+        value: No
+        target: check_availability
+
+  check_availability:
+    say: Would you be available later? It will take just a minute.
+    transitions:
+      - entity: yes_no
+        value: Yes
+        target: ask_availability
+      - entity: yes_no
+        value: No
+        target: no_survey
+      - entity: wit/datetime
+        store: survey_at
+        target: reschedule_survey
+
+  ask_availability:
+    say: When would you be available?
+    transitions:
+      - entity: wit/datetime
+        store: survey_at
+        target: reschedule_survey
+
+  reschedule_survey:
+    say: Great, thanks! I'll talk to you then.
+    final: true
+
+  no_survey:
+    say: That's ok. Just say hello any time if you change your mind!
+    final: true
 
   ask_age:
     initial: true
@@ -7,10 +62,6 @@ states:
       - entity: number
         target: ask_gender
         store: age
-      - intent: AskWhy
-        target: why
-      - intent: AskWho
-        target: who
 
   ask_gender:
     say: Are you a man or a woman?
@@ -18,10 +69,6 @@ states:
       - entity: gender
         target: geolocate_user
         store: gender
-      - intent: AskWhy
-        target: why
-      - intent: AskWho
-        target: who
 
   geolocate_user:
     dummy: true
@@ -93,10 +140,7 @@ states:
         message: ["Yes", "No"]
         store: enough_food
       - target: ask_roof_photo
-        intent: AnswerNo
-        store: enough_food
-      - target: ask_roof_photo
-        intent: AnswerYes
+        entity: yes_no
         store: enough_food
 
   ask_roof_photo:
@@ -107,9 +151,11 @@ states:
         store: roof_photo
       - target: thank_you
         say: No problem
-        intent: AnswerNo
+        entity: yes_no
+        value: No
       - target: none
-        intent: AnswerYes
+        entity: yes_no
+        value: Yes
 
   thank_you:
     say: That would be all, thank you for your answers!
@@ -122,9 +168,8 @@ states:
       - target: back
         after: 5
       - target: back
-        intent: AnswerYes
-      - intent: AskWho
-        target: who
+        entity: yes_no
+        value: Yes
 
   who:
     say: I am a WFP bot assistant, for tracking food security in your region.
@@ -132,56 +177,6 @@ states:
     transitions:
       - target: back
         after: 5
-      - intent: AskWhy
-        target: why
       - target: back
-        intent: AnswerYes
-
-data:
-  - age
-  - gender
-  - enough_food
-  - roof_photo
-  - lat
-  - lng
-  - location_name
-  - country_name
-
-# deprecated:
-#
-#   hello:
-#     actions:
-#       - say: Hi, I'm a WFP bot assistant, I'd like to ask you a few questions if you have a minute.
-#     transitions:
-#       - intent: AnswerYes
-#         target: ask_age
-#       - intent: AnswerNo
-#         target: survey_no
-#
-#   survey_no:
-#     actions:
-#       - say: Would you be available later? It is just a minute.
-#     transitions:
-#       - entity: { survey_at: wit/datetime }
-#         target: rescheduled
-#       - intent: AnswerYes
-#         target: reschedule
-#       - intent: AnswerNo
-#         target: no_reschedule
-#
-#   reschedule:
-#     actions:
-#       - say: When can I bother you?
-#     transitions:
-#       - entity: { survey_at: wit/datetime }
-#         target: rescheduled
-#       - intent: AnswerNo
-#         target: no_reschedule
-#
-#   rescheduled:
-#     actions:
-#       - say: Great, I'll talk to you then. Thank you!
-#
-#   no_reschedule:
-#     actions:
-#       - say: OK, sorry to hear that. Just say "hello" any time if you change your mind!
+        entity: yes_no
+        value: Yes

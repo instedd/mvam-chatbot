@@ -1,0 +1,75 @@
+yes_no:
+  Yes:
+    - Yes
+    - Yeah
+    - Sure
+    - Yes please
+    - Ok
+    - Go ahead
+    - Definitely
+    - Fine
+  No:
+    - No
+    - Nope
+    - No please
+    - No thanks
+
+intent:
+  AskCapabilities:
+    - How does this work?
+    - What can you do?
+  Thanks:
+    - Thank you
+    - Thanks
+    - Much appreciated
+  AskWhy:
+    - Why
+    - Why are you asking me this?
+    - Why do you want to know this?
+    - why are you asking me this?
+    - why are you asking me that?
+    - Why do you want to know that?
+    - Why do you need to know that?
+    - Why?
+  AskWho:
+    - Who are you?
+    - Who do you work for?
+  Salutation:
+    - Hello
+    - Hi
+    - Good morning
+    - Good afternoon
+    - Good evening
+    - Greetings
+    - Hey
+    - Hey there
+    - /start
+    - /start start
+    - /start survey
+  Schedule:
+    - I'm free tomorrow morning
+    - I'm available later today
+    - Let's talk tomorrow evening
+  QueryPrice:
+    - How much is rice?
+    - What is the cost of maize?
+    - What is the price for wheat?
+    - I would like to know food prices
+    - food prices
+    - Could you send me food prices?
+    - would you send me food prices?
+    - Would you send me food prices?
+    - I want to know food prices
+    - How much is rice?
+    - what's the price of rice
+    - what's the price of rice?
+    - I want to know the price of tomatoes
+    - how much?
+    - price
+    - to learn the price of things such as rice would be a good thing
+    - how much is rice
+    - price of rice
+    - how much are tomatoes?
+    - what's the cost of maize?
+    - what is the price of rice?
+    - How much?

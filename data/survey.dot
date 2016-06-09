@@ -1,6 +1,30 @@
 digraph survey_flow {
 	rankdir=LR;
 	size="40";
+	start [ label = "start
+I would like 
+to ask you a
+ few ques...
+", shape = circle, style= solid ];
+	check_availability [ label = "check_availability
+Would you be 
+available la
+ter? It w...
+", shape = circle, style= solid ];
+	ask_availability [ label = "ask_availability
+When would yo
+u be availab
+le?", shape = circle, style= solid ];
+	reschedule_survey [ label = "reschedule_survey
+Great, thanks
+! I'll talk 
+to you th...
+", shape = doublecircle, style= solid ];
+	no_survey [ label = "no_survey
+That's ok. Ju
+st say hello
+ any time...
+", shape = doublecircle, style= solid ];
 	ask_age [ label = "ask_age
 How old are y
 ou?", shape = circle, style= solid ];
@@ -55,12 +79,14 @@ I am a WFP bo
 t assistant,
  for trac...
 ", shape = circle, style= solid ];
+	start -> ask_age [ label = "entity:yes_no", dir = forward ];
+	start -> check_availability [ label = "entity:yes_no", dir = forward ];
+	check_availability -> ask_availability [ label = "entity:yes_no", dir = forward ];
+	check_availability -> no_survey [ label = "entity:yes_no", dir = forward ];
+	check_availability -> reschedule_survey [ label = "entity:wit/datetime", dir = forward ];
+	ask_availability -> reschedule_survey [ label = "entity:wit/datetime", dir = forward ];
 	ask_age -> ask_gender [ label = "entity:number", dir = forward ];
-	ask_age -> why [ label = "intent:AskWhy", dir = both ];
-	ask_age -> who [ label = "intent:AskWho", dir = both ];
 	ask_gender -> geolocate_user [ label = "entity:gender", dir = forward ];
-	ask_gender -> why [ label = "intent:AskWhy", dir = both ];
-	ask_gender -> who [ label = "intent:AskWho", dir = both ];
 	geolocate_user -> ask_enough_food [ label = "method:store_user_location", dir = forward ];
 	geolocate_user -> ask_gps [ label = "otherwise", dir = forward ];
 	ask_gps -> ask_enough_food [ label = "location", dir = forward ];
@@ -75,10 +101,7 @@ t assistant,
 	ask_which_location -> ask_enough_food [ label = "method:store_chosen_location_coordinates", dir = forward ];
 	ask_which_location -> ask_enough_food [ label = "otherwise", dir = forward ];
 	ask_enough_food -> ask_roof_photo [ label = "", dir = forward ];
-	ask_enough_food -> ask_roof_photo [ label = "intent:AnswerNo", dir = forward ];
-	ask_enough_food -> ask_roof_photo [ label = "intent:AnswerYes", dir = forward ];
+	ask_enough_food -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "photo", dir = forward ];
-	ask_roof_photo -> thank_you [ label = "intent:AnswerNo", dir = forward ];
-	why -> who [ label = "intent:AskWho", dir = both ];
-	who -> why [ label = "intent:AskWhy", dir = both ];
+	ask_roof_photo -> thank_you [ label = "entity:yes_no", dir = forward ];
 }
