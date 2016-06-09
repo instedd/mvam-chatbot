@@ -243,24 +243,28 @@ module MvamBot
         if loc = message.location
           user.conversation_state["lat"] = loc.latitude
           user.conversation_state["lng"] = loc.longitude
+          MvamBot.logger.debug("Transition to #{transition.target} matched on location")
           return true
         end
         return false
       end
 
       private def test_method_transition(transition, message)
-        case transition.method
-        when "store_user_location"
-          return store_user_location
-        when "geocode_ok"
-          return geocode_ok
-        when "geocode_multiple_results"
-          return geocode_multiple_results
-        when "store_chosen_location_coordinates"
-          store_chosen_location_coordinates(message)
-        else
-          false
-        end
+        match = case transition.method
+                when "store_user_location"
+                  store_user_location
+                when "geocode_ok"
+                  geocode_ok
+                when "geocode_multiple_results"
+                  geocode_multiple_results
+                when "store_chosen_location_coordinates"
+                  store_chosen_location_coordinates(message)
+                else
+                  false
+                end
+
+        MvamBot.logger.debug("Transition to #{transition.target} matched on method #{transition.method}") if match
+        match
       end
 
       def store_chosen_location_coordinates(message)
@@ -280,6 +284,7 @@ module MvamBot
         if message && message.text && transition.store
           user.conversation_state[transition.store.not_nil!] = message.text
         end
+        MvamBot.logger.debug("Default transition will be used")
         return true
       end
 
