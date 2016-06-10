@@ -61,7 +61,7 @@ describe ::MvamBot::Bot do
       messages.size.should eq(3)
       messages[0][:text].should contain("I would like to ask you a few questions if you have a minute")
       messages[1][:text].should contain("Would you be available later")
-      messages[2][:text].should contain("Just say hello any time if you change your mind")
+      messages[2][:text].should contain("Just say \"hello\" any time if you change your mind")
 
       user.conversation_step.should eq(nil)
       MvamBot::SurveyResponse.for_user(user.id).size.should eq(0)

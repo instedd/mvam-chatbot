@@ -22,8 +22,8 @@ to you th...
 ", shape = doublecircle, style= solid ];
 	no_survey [ label = "no_survey
 That's ok. Ju
-st say hello
- any time...
+st say \"hell
+o\" any ti...
 ", shape = doublecircle, style= solid ];
 	ask_age [ label = "ask_age
 How old are y

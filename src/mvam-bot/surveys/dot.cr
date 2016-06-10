@@ -39,6 +39,7 @@ module MvamBot
           else
             ""
           end
+          text = text.gsub("\"", "\\\"")
 
           write "#{id} [ label = \"#{id}\n#{text}\", shape = #{shape}, style= #{style} ];"
           write "#{id} -> #{id} [ label = \"converse\" ]" if state.converse
