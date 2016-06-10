@@ -13,9 +13,11 @@ module MvamBot
 
       getter user
       getter requestor
+      getter message
       getter state_id
 
       MAX_RETRIES = 1
+      PING_INTERVAL = 10.seconds
 
       # Caches should be cleared after each transition.
       @wit_response : Wit::MessageResponse?
@@ -26,6 +28,9 @@ module MvamBot
       @state_id : String?
       @previous_state_id : String?
       @retries : Int32 = 0
+      @message : TelegramBot::Message?
+
+      @@user_timeouts : Hash(Int32, MvamBot::Topics::Pinger) = Hash(Int32, MvamBot::Topics::Pinger).new
 
       def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler)
         @retries = 0
@@ -43,26 +48,24 @@ module MvamBot
         return user.conversation_step =~ /^survey/
       end
 
+      def self.flow
+        @@flow
+      end
+
       def start
         clear_states
+        clear_user_timeout
         run(flow.start, extra_text: "Hello! I'm a WFP bot assistant. ")
       end
 
-      def reschedule(when)
-        # TODO: Reschedule poll for specified datetime
-        user.conversation_step = nil
-      end
-
-      def cancel
-        user.conversation_step = nil
-      end
-
       def handle(message, wit_response : Wit::MessageResponse? = nil)
+        @message = message
         @wit_response = wit_response if wit_response
-        advance(message)
+        advance
       end
 
-      def advance(message = nil)
+      private def advance
+        clear_user_timeout
         if transition = select_transition(message)
           @retries = 0
           run transition: transition
@@ -77,11 +80,7 @@ module MvamBot
         end
       end
 
-      def flow
-        @@flow
-      end
-
-      def self.flow
+      private def flow
         @@flow
       end
 
@@ -108,7 +107,7 @@ module MvamBot
             MvamBot.logger.error("Cannot transition to unset previous state from #{state_id} for user #{user.id}")
           end
         elsif state == "none"
-          # Do nothing, and stay on the current state
+          set_user_timeout
         else
           run flow.states[state]
         end
@@ -141,6 +140,7 @@ module MvamBot
             params.add("retries", @retries.to_s) if @retries > 0
           end
 
+          set_user_timeout
           user.conversation_step = "survey/#{to_state.id}?#{query}"
         end
 
@@ -467,6 +467,18 @@ module MvamBot
         end
       end
 
+      private def clear_user_timeout
+        if ping = @@user_timeouts.delete(user.id)
+          ping.cancel
+        end
+      end
+
+      private def set_user_timeout
+        clear_user_timeout
+        if msg = message
+          @@user_timeouts[user.id] = MvamBot::Topics::Pinger.new(requestor.bot, msg.chat.id).schedule(PING_INTERVAL)
+        end
+      end
 
     end
 
