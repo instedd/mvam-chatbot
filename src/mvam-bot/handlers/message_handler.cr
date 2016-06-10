@@ -43,6 +43,10 @@ module MvamBot
       end
     end
 
+    protected def geocoder
+      Geocoding.init
+    end
+
     def handle_not_understood
       strike = user.conversation_step =~ /^misunderstood\/(\d+)/ ? ($~[1].to_i + 1) : 1
       user.conversation_step = "misunderstood/#{strike}"
@@ -139,9 +143,8 @@ module MvamBot
       answer "Got it, I will send you food prices from #{location.name}. If you want to change it at anytime, just send `/location`."
     end
 
-    def answer_with_keyboard(text : String, buttons : Array(String), update_user : Bool = true)
-      keyboard = TelegramBot::ReplyKeyboardMarkup.new(buttons.map {|b| [b]}, one_time_keyboard: true)
-      answer(text, keyboard, update_user)
+    def answer_with_keyboard(text : String, options : Array(String) | Array(Surveys::Option), update_user = true, layout = :vertical)
+      answer(text, build_keyboard(options, layout), update_user)
     end
 
     def answer_with_inline(text : String, buttons : Array(Tuple(String, String)))
@@ -158,6 +161,24 @@ module MvamBot
       bot.send_message message.chat.id, text, reply_markup: keyboard, parse_mode: "Markdown"
       user.conversation_at = Time.utc_now
       user.update if update_user
+    end
+
+    def build_keyboard(options, layout = :vertical)
+      grid = layout == :vertical ? options.map { |o| [o] } : [options]
+
+      buttons = grid.map do |row|
+        row.map { |o| button(o) }
+      end
+
+      TelegramBot::ReplyKeyboardMarkup.new(buttons, one_time_keyboard: true)
+    end
+
+    def button(option : String)
+      TelegramBot::KeyboardButton.new(option)
+    end
+
+    def button(option : Surveys::Option)
+      TelegramBot::KeyboardButton.new(option.text, request_location: option.request_location)
     end
 
     def download_photo(file_id : String, user_id : Int32? = nil)

@@ -47,6 +47,14 @@ module MvamBot
       ENV["WIT_ACCESS_TOKEN"]?
     end
 
+    def self.mapquest_token : String | Nil
+      ENV["MAPQUEST_ACCESS_TOKEN"]?
+    end
+
+    def self.mapzen_token : String | Nil
+      ENV["MAPZEN_ACCESS_TOKEN"]?
+    end
+
     def self.web_username : String
       ENV["WEB_USERNAME"]
     end

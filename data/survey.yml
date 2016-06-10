@@ -3,6 +3,10 @@ survey_data:
   - gender
   - enough_food
   - roof_photo
+  - lat
+  - lng
+  - location_name
+  - country_name
 
 common_transitions:
   - intent: AskWhy
@@ -18,7 +22,7 @@ states:
     transitions:
       - entity: yes_no
         value: Yes
-        target: ask_age
+        target: geolocate_user
       - entity: yes_no
         value: No
         target: check_availability
@@ -48,7 +52,7 @@ states:
     final: true
 
   no_survey:
-    say: That's ok. Just say hello any time if you change your mind!
+    say: That's ok. Just say "hello" any time if you change your mind!
     final: true
 
   ask_age:
@@ -66,11 +70,71 @@ states:
         target: ask_enough_food
         store: gender
 
+  geolocate_user:
+    dummy: true
+    transitions:
+      - method: store_user_location
+        target: ask_age
+      - default: true
+        target: ask_gps
+  
+  ask_gps:
+    say: Could you share your current position with us?
+    options:
+      - text: Sure
+        request_location: true
+      - text: I'd rather not
+    transitions:
+      - location: true
+        target: ask_age
+      - default: true
+        target: ask_country
+
+  ask_country:
+    say: What country do you live in?
+    options_from: country_names
+    transitions:
+      - message_from: country_names
+        store: country_name
+        target: ask_location_name
+      - default: true
+        target: ask_age
+
+
+  ask_location_name:
+    say: What's the name of your town?
+    transitions:
+      - entity: location
+        store: location_name
+        target: geocode
+      - default: true
+        target: ask_age
+
+  geocode:
+    dummy: true
+    transitions:
+      - method: geocode_ok
+        target: ask_age
+      - method: geocode_multiple_results
+        target: ask_which_location
+      - default: true
+        target: ask_age
+
+  ask_which_location:
+    say: I'm not sure I know that town... is it any of these?
+    options_from: geocoding_result
+    transitions:
+      - method: store_chosen_location_coordinates
+        target: ask_age
+      - default: true
+        target: ask_age
+
+
   ask_enough_food:
     say: In the past seven days, were there days in which you did not have enough food or money to buy food?
     options:
-      - Yes
-      - No
+      - text: Yes
+      - text: No
     transitions:
       - target: ask_roof_photo
         message: ["Yes", "No"]

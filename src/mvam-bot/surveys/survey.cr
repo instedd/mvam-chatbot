@@ -13,7 +13,11 @@ module MvamBot
       getter user
       getter requestor
       getter state_id
-      @wit_response : Wit::MessageResponse?
+      
+      # cache wit responses by message
+      # note that with dummy states a Survey instance can span more than one state transition
+      @wit_cache = {} of String => Wit::MessageResponse
+      @geocoding_results = {} of String => Hash(String, {Float64, Float64})
 
       def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler, @state_id : String? = nil, @previous_state_id : String? = nil)
       end
@@ -32,6 +36,10 @@ module MvamBot
       end
 
       def handle(message)
+        advance(message)
+      end
+
+      def advance(message = nil)
         if transition = select_transition(message)
           run transition: transition
         else
@@ -52,7 +60,7 @@ module MvamBot
       end
 
       protected def wit_understand(message)
-        @wit_response ||= @requestor.wit_client.not_nil!.understand(message)
+        @wit_cache[message] ||= @requestor.wit_client.not_nil!.understand(message)
       end
 
       private def run(transition : FlowTransition)
@@ -77,13 +85,13 @@ module MvamBot
       end
 
       private def run(to_state : FlowState, extra_text : String = "")
-        if say = to_state.say
-          if options = to_state.options
-            requestor.answer_with_keyboard(extra_text + say, options, update_user: false)
-          else
-            requestor.answer(extra_text + say, update_user: false)
-          end
+        if to_state.dummy
+          @previous_state_id = state.id
+          @state_id = to_state.id
+          return advance
         end
+
+        talk_to_user(to_state, extra_text)
 
         # Save survey data
         SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final) unless survey_data.empty?
@@ -101,6 +109,27 @@ module MvamBot
         end
 
         user.update
+      end
+
+      private def talk_to_user(to_state, extra_text)
+        if say = to_state.say
+          text = extra_text + say
+          if options = to_state.options
+            requestor.answer_with_keyboard(text, options, update_user: false)
+          elsif options_from = to_state.options_from
+            options = case options_from
+                      when "geocoding_result"
+                        options_from_geocoding_result
+                      when "country_names"
+                        options_from_country_names
+                      else
+                        raise "Unrecognised options #{options_from}"
+                      end
+            requestor.answer_with_keyboard(text, options, update_user: false)
+          else
+            requestor.answer(text, update_user: false)
+          end
+        end
       end
 
       private def survey_data
@@ -132,15 +161,21 @@ module MvamBot
       private def test_transition(transition, message)
         case transition.kind
         when :message
-          test_message_transition(transition, message)
+          message && test_message_transition(transition, message)
+        when :message_from
+          message && test_message_from_transition(transition, message)
         when :intent
-          test_intent_transition(transition, message)
+          message && test_intent_transition(transition, message)
         when :entity
-          test_entity_transition(transition, message)
+          message && test_entity_transition(transition, message)
         when :photo
-          test_photo_transition(transition, message)
+          message && test_photo_transition(transition, message)
+        when :location
+          message && test_location_transition(transition, message)
+        when :method
+          test_method_transition(transition, message)
         when :default
-          true
+          test_default_transition(transition, message)
         end
       end
 
@@ -155,6 +190,25 @@ module MvamBot
             return true
           end
         end
+        return false
+      end
+
+      protected def test_message_from_transition(transition, message)
+        options_key = transition.message_from
+        options = case options_key
+                  when "country_names"
+                    MvamBot::Country.all_names
+                  else
+                    raise "Unknwon message options #{options_key}"
+                  end
+        text = message.text.not_nil!
+
+        if options.includes?(text)
+          MvamBot.logger.debug("Transition to #{transition.target} matched on message #{text}")
+          user.conversation_state[transition.store.not_nil!] = text if transition.store
+          return true
+        end
+
         return false
       end
 
@@ -194,6 +248,101 @@ module MvamBot
           return true
         end
         return false
+      end
+
+      private def test_location_transition(transition, message)
+        if loc = message.location
+          user.conversation_state["lat"] = loc.latitude
+          user.conversation_state["lng"] = loc.longitude
+          MvamBot.logger.debug("Transition to #{transition.target} matched on location")
+          return true
+        end
+        return false
+      end
+
+      private def test_method_transition(transition, message)
+        match = case transition.method
+                when "store_user_location"
+                  store_user_location
+                when "geocode_ok"
+                  geocode_ok
+                when "geocode_multiple_results"
+                  geocode_multiple_results
+                when "store_chosen_location_coordinates"
+                  store_chosen_location_coordinates(message)
+                else
+                  false
+                end
+
+        MvamBot.logger.debug("Transition to #{transition.target} matched on method #{transition.method}") if match
+        match
+      end
+
+      private def store_chosen_location_coordinates(message)
+        if message && message.text
+          selection = geocoding_result(message.text.not_nil!)[message.text.not_nil!]?
+          if selection
+            lat, lng = selection
+            user.conversation_state["lat"] = lat
+            user.conversation_state["lng"] = lng
+            return true
+          end
+        end
+        return false
+      end
+
+      private def test_default_transition(transition, message)
+        if message && message.text && transition.store
+          user.conversation_state[transition.store.not_nil!] = message.text
+        end
+        MvamBot.logger.debug("Default transition will be used")
+        return true
+      end
+
+      private def store_user_location
+        if user.location_lat && user.location_lng
+          user.conversation_state["lat"] = user.location_lat
+          user.conversation_state["lng"] = user.location_lng
+          return true
+        else
+          return false
+        end
+      end
+
+      private def reported_country_name
+        user.conversation_state["country_name"].as(String)
+      end
+
+      private def reported_location_name
+        user.conversation_state["location_name"].as(String)
+      end
+
+      private def geocode_ok
+        matches = geocoding_result(reported_location_name)
+        if matches.size == 1
+          lat, lng = matches.first[1]
+          user.conversation_state["lat"] = lat
+          user.conversation_state["lng"] = lng
+          return true
+        else
+          return false
+        end
+      end
+
+      private def geocode_multiple_results
+        return geocoding_result(reported_location_name).size > 1
+      end
+
+      private def geocoding_result(query)
+        @geocoding_results[query] ||= @requestor.geocoder.lookup(query, reported_country_name)
+      end
+
+      private def options_from_geocoding_result
+        @geocoding_results.first[1].keys + ["None of the above"]
+      end
+
+      private def options_from_country_names
+        MvamBot::Country.all_names
       end
 
     end

@@ -5,59 +5,81 @@ digraph survey_flow {
 I would like 
 to ask you a
  few ques...
-", shape = circle ];
+", shape = circle, style= solid ];
 	check_availability [ label = "check_availability
 Would you be 
 available la
 ter? It w...
-", shape = circle ];
+", shape = circle, style= solid ];
 	ask_availability [ label = "ask_availability
 When would yo
 u be availab
-le?", shape = circle ];
+le?", shape = circle, style= solid ];
 	reschedule_survey [ label = "reschedule_survey
 Great, thanks
 ! I'll talk 
 to you th...
-", shape = doublecircle ];
+", shape = doublecircle, style= solid ];
 	no_survey [ label = "no_survey
 That's ok. Ju
-st say hello
- any time...
-", shape = doublecircle ];
+st say \"hell
+o\" any ti...
+", shape = doublecircle, style= solid ];
 	ask_age [ label = "ask_age
 How old are y
-ou?", shape = circle ];
+ou?", shape = circle, style= solid ];
 	ask_gender [ label = "ask_gender
 Are you a man
  or a woman?
-", shape = circle ];
+", shape = circle, style= solid ];
+	geolocate_user [ label = "geolocate_user
+", shape = circle, style= dotted ];
+	ask_gps [ label = "ask_gps
+Could you sha
+re your curr
+ent posit...
+", shape = circle, style= solid ];
+	ask_country [ label = "ask_country
+What country 
+do you live 
+in?", shape = circle, style= solid ];
+	ask_location_name [ label = "ask_location_name
+What's the na
+me of your t
+own?", shape = circle, style= solid ];
+	geocode [ label = "geocode
+", shape = circle, style= dotted ];
+	ask_which_location [ label = "ask_which_location
+I'm not sure 
+I know that 
+town... i...
+", shape = circle, style= solid ];
 	ask_enough_food [ label = "ask_enough_food
 In the past s
 even days, w
 ere there...
-", shape = circle ];
+", shape = circle, style= solid ];
 	ask_roof_photo [ label = "ask_roof_photo
 Would you ple
 ase send me 
 a picture...
-", shape = circle ];
+", shape = circle, style= solid ];
 	thank_you [ label = "thank_you
 That would be
  all, thank 
 you for y...
-", shape = doublecircle ];
+", shape = doublecircle, style= solid ];
 	why [ label = "why
 We are asking
  you and oth
 er people...
-", shape = circle ];
+", shape = circle, style= solid ];
 	who [ label = "who
 I am a WFP bo
 t assistant,
  for trac...
-", shape = circle ];
-	start -> ask_age [ label = "entity:yes_no", dir = forward ];
+", shape = circle, style= solid ];
+	start -> geolocate_user [ label = "entity:yes_no", dir = forward ];
 	start -> check_availability [ label = "entity:yes_no", dir = forward ];
 	check_availability -> ask_availability [ label = "entity:yes_no", dir = forward ];
 	check_availability -> no_survey [ label = "entity:yes_no", dir = forward ];
@@ -65,8 +87,21 @@ t assistant,
 	ask_availability -> reschedule_survey [ label = "entity:wit/datetime", dir = forward ];
 	ask_age -> ask_gender [ label = "entity:number", dir = forward ];
 	ask_gender -> ask_enough_food [ label = "entity:gender", dir = forward ];
+	geolocate_user -> ask_age [ label = "method:store_user_location", dir = forward ];
+	geolocate_user -> ask_gps [ label = "otherwise", dir = forward ];
+	ask_gps -> ask_age [ label = "location", dir = forward ];
+	ask_gps -> ask_country [ label = "otherwise", dir = forward ];
+	ask_country -> ask_location_name [ label = "", dir = forward ];
+	ask_country -> ask_age [ label = "otherwise", dir = forward ];
+	ask_location_name -> geocode [ label = "entity:location", dir = forward ];
+	ask_location_name -> ask_age [ label = "otherwise", dir = forward ];
+	geocode -> ask_age [ label = "method:geocode_ok", dir = forward ];
+	geocode -> ask_which_location [ label = "method:geocode_multiple_results", dir = forward ];
+	geocode -> ask_age [ label = "otherwise", dir = forward ];
+	ask_which_location -> ask_age [ label = "method:store_chosen_location_coordinates", dir = forward ];
+	ask_which_location -> ask_age [ label = "otherwise", dir = forward ];
 	ask_enough_food -> ask_roof_photo [ label = "", dir = forward ];
 	ask_enough_food -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
-	ask_roof_photo -> thank_you [ label = "", dir = forward ];
+	ask_roof_photo -> thank_you [ label = "photo", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "entity:yes_no", dir = forward ];
 }

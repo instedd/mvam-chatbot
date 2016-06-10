@@ -27,6 +27,8 @@ module MvamBot
             "circle"
           end
 
+          style = state.dummy ? "dotted" : "solid"
+
           text = if say = state.say
             say = say.size > 36 ? "#{say[0..33]}..." : say
             say.chars.each_with_index.map do |(c, i)|
@@ -37,21 +39,29 @@ module MvamBot
           else
             ""
           end
+          text = text.gsub("\"", "\\\"")
 
-          write "#{id} [ label = \"#{id}\n#{text}\", shape = #{shape} ];"
+          write "#{id} [ label = \"#{id}\n#{text}\", shape = #{shape}, style= #{style} ];"
           write "#{id} -> #{id} [ label = \"converse\" ]" if state.converse
         end
 
         flow.states.each do |id, state|
           state.transitions.each do |transition|
             next if transition.target == "back" || transition.target == "none"
-            label = if transition.action
-              "action:#{transition.action}"
-            elsif transition.entity
-              "entity:#{transition.entity}"
-            elsif transition.intent
-              "intent:#{transition.intent}"
-            end
+            label = case transition.kind
+                    when :entity
+                      "entity:#{transition.entity}"
+                    when :intent
+                      "intent:#{transition.intent}"
+                    when :photo
+                      "photo"
+                    when :location
+                      "location"
+                    when :method
+                      "method:#{transition.method}"
+                    when :default
+                      "otherwise"
+                    end
             dir = flow.states[transition.target].transitions.any? { |t| t.target == "back" } ? "both" : "forward"
 
             write "#{id} -> #{transition.target} [ label = \"#{label}\", dir = #{dir} ];"
