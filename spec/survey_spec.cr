@@ -256,24 +256,24 @@ describe ::MvamBot::Bot do
         it "should skip asking user for location if we already know it" do
           DB.cleanup
           bot = Bot.new
-          user = Factory::DB.user(conversation_step: "survey/ask_gender", location_lat: 10.0, location_lng: 20.0)
+          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0)
           user.conversation_session_id = "TEST_SESSION_ID"
 
-          messages = handle_message("I am a man!", user: user, bot: bot, messages: { "I am a man!" => response({"gender" => "male"}) })
+          messages = handle_message("Yeah", user: user, bot: bot, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
           messages.size.should eq(1)
-          user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+          user.conversation_step.not_nil!.should contain("survey/ask_age")
         end
 
         it "should store user location if we already know it" do
           DB.cleanup
           bot = Bot.new
-          user = Factory::DB.user(conversation_step: "survey/ask_gender", location_lat: 10.0, location_lng: 20.0)
+          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0)
           user.conversation_session_id = "TEST_SESSION_ID"
 
-          handle_message("I am a man!", user: user, bot: bot, messages: { "I am a man!" => response({"gender" => "male"}) })
+          handle_message("Yeah", user: user, bot: bot, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
 
           responses = MvamBot::SurveyResponse.for_user(user.id)
-          responses[0].data.should eq({"gender" => "male", "lat" => user.location_lat, "lng" => user.location_lng})
+          responses[0].data.should eq({"lat" => user.location_lat, "lng" => user.location_lng})
         end
       end
 
@@ -281,10 +281,10 @@ describe ::MvamBot::Bot do
         it "should ask for gps access" do
           DB.cleanup
           bot = Bot.new
-          user = Factory::DB.user(conversation_step: "survey/ask_gender")
+          user = Factory::DB.user(conversation_step: "survey/start")
           user.conversation_session_id = "TEST_SESSION_ID"
 
-          messages = handle_message("I am a man!", user: user, bot: bot, messages: { "I am a man!" => response({"gender" => "male"}) })
+          messages = handle_message("Yeah", user: user, bot: bot, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
           messages.size.should eq(1)
           reply_buttons(messages[0]).should eq(["Sure", "I'd rather not"])
           user.conversation_step.not_nil!.should contain("survey/ask_gps")
@@ -299,7 +299,7 @@ describe ::MvamBot::Bot do
 
             messages = handle_message("", user: user, bot: bot, location: {10.0, 20.0})
             messages.size.should eq(1)
-            user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+            user.conversation_step.not_nil!.should contain("survey/ask_age")
 
             responses = MvamBot::SurveyResponse.for_user(user.id)
             responses[0].data.should eq({"lat" => 10.0, "lng" => 20.0})
@@ -353,7 +353,7 @@ describe ::MvamBot::Bot do
                                         geocoding: { {"Buenos Aires", "Argentina"} => {"Buenos Aires, Argentina" => {10.0, 20.0}}})
 
               messages.size.should eq(1)
-              user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+              user.conversation_step.not_nil!.should contain("survey/ask_age")
 
               responses = MvamBot::SurveyResponse.for_user(user.id)
               responses[0].data.should eq({
@@ -379,7 +379,7 @@ describe ::MvamBot::Bot do
                                         messages: { "I live in Buenos Aires" => response({"location" => "Buenos Aires"}) })
 
               messages.size.should eq(1)
-              user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+              user.conversation_step.not_nil!.should contain("survey/ask_age")
 
               responses = MvamBot::SurveyResponse.for_user(user.id)
               responses[0].data.should eq({"location_name" => "Buenos Aires", "country_name" => "Argentina"})
@@ -429,7 +429,7 @@ describe ::MvamBot::Bot do
                                                        "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
                                         }})
 
-              user.conversation_step.not_nil!.should contain("survey/ask_enough_food")
+              user.conversation_step.not_nil!.should contain("survey/ask_age")
 
               responses = MvamBot::SurveyResponse.for_user(user.id)
               responses[0].data["lat"].should eq(10.0)

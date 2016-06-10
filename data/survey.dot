@@ -79,27 +79,27 @@ I am a WFP bo
 t assistant,
  for trac...
 ", shape = circle, style= solid ];
-	start -> ask_age [ label = "entity:yes_no", dir = forward ];
+	start -> geolocate_user [ label = "entity:yes_no", dir = forward ];
 	start -> check_availability [ label = "entity:yes_no", dir = forward ];
 	check_availability -> ask_availability [ label = "entity:yes_no", dir = forward ];
 	check_availability -> no_survey [ label = "entity:yes_no", dir = forward ];
 	check_availability -> reschedule_survey [ label = "entity:wit/datetime", dir = forward ];
 	ask_availability -> reschedule_survey [ label = "entity:wit/datetime", dir = forward ];
 	ask_age -> ask_gender [ label = "entity:number", dir = forward ];
-	ask_gender -> geolocate_user [ label = "entity:gender", dir = forward ];
-	geolocate_user -> ask_enough_food [ label = "method:store_user_location", dir = forward ];
+	ask_gender -> ask_enough_food [ label = "entity:gender", dir = forward ];
+	geolocate_user -> ask_age [ label = "method:store_user_location", dir = forward ];
 	geolocate_user -> ask_gps [ label = "otherwise", dir = forward ];
-	ask_gps -> ask_enough_food [ label = "location", dir = forward ];
+	ask_gps -> ask_age [ label = "location", dir = forward ];
 	ask_gps -> ask_country [ label = "otherwise", dir = forward ];
 	ask_country -> ask_location_name [ label = "", dir = forward ];
-	ask_country -> ask_enough_food [ label = "otherwise", dir = forward ];
+	ask_country -> ask_age [ label = "otherwise", dir = forward ];
 	ask_location_name -> geocode [ label = "entity:location", dir = forward ];
-	ask_location_name -> ask_enough_food [ label = "otherwise", dir = forward ];
-	geocode -> ask_enough_food [ label = "method:geocode_ok", dir = forward ];
+	ask_location_name -> ask_age [ label = "otherwise", dir = forward ];
+	geocode -> ask_age [ label = "method:geocode_ok", dir = forward ];
 	geocode -> ask_which_location [ label = "method:geocode_multiple_results", dir = forward ];
-	geocode -> ask_enough_food [ label = "otherwise", dir = forward ];
-	ask_which_location -> ask_enough_food [ label = "method:store_chosen_location_coordinates", dir = forward ];
-	ask_which_location -> ask_enough_food [ label = "otherwise", dir = forward ];
+	geocode -> ask_age [ label = "otherwise", dir = forward ];
+	ask_which_location -> ask_age [ label = "method:store_chosen_location_coordinates", dir = forward ];
+	ask_which_location -> ask_age [ label = "otherwise", dir = forward ];
 	ask_enough_food -> ask_roof_photo [ label = "", dir = forward ];
 	ask_enough_food -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "photo", dir = forward ];

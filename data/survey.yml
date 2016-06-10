@@ -22,7 +22,7 @@ states:
     transitions:
       - entity: yes_no
         value: Yes
-        target: ask_age
+        target: geolocate_user
       - entity: yes_no
         value: No
         target: check_availability
@@ -67,14 +67,14 @@ states:
     say: Are you a man or a woman?
     transitions:
       - entity: gender
-        target: geolocate_user
+        target: ask_enough_food
         store: gender
 
   geolocate_user:
     dummy: true
     transitions:
       - method: store_user_location
-        target: ask_enough_food
+        target: ask_age
       - default: true
         target: ask_gps
   
@@ -86,7 +86,7 @@ states:
       - text: I'd rather not
     transitions:
       - location: true
-        target: ask_enough_food
+        target: ask_age
       - default: true
         target: ask_country
 
@@ -98,7 +98,7 @@ states:
         store: country_name
         target: ask_location_name
       - default: true
-        target: ask_enough_food
+        target: ask_age
 
 
   ask_location_name:
@@ -108,26 +108,26 @@ states:
         store: location_name
         target: geocode
       - default: true
-        target: ask_enough_food
+        target: ask_age
 
   geocode:
     dummy: true
     transitions:
       - method: geocode_ok
-        target: ask_enough_food
+        target: ask_age
       - method: geocode_multiple_results
         target: ask_which_location
       - default: true
-        target: ask_enough_food
+        target: ask_age
 
   ask_which_location:
     say: I'm not sure I know that town... is it any of these?
     options_from: geocoding_result
     transitions:
       - method: store_chosen_location_coordinates
-        target: ask_enough_food
+        target: ask_age
       - default: true
-        target: ask_enough_food
+        target: ask_age
 
 
   ask_enough_food:
