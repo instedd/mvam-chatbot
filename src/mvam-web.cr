@@ -1,10 +1,4 @@
-require "./mvam-bot/models/*"
-require "./mvam-bot/wit/*"
-require "./mvam-bot/handlers/*"
-require "./mvam-bot/surveys/*"
-require "./mvam-bot/web/*"
-require "./mvam-bot/*"
-
+require "./mvam"
 require "kemal"
 
 include MvamBot::Web::Views
