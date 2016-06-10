@@ -242,27 +242,36 @@ describe ::MvamBot::Bot do
 
     describe "geolocation" do
       context "user with previously known lat/lng" do
-        it "should skip asking user for location if we already know it" do
+        it "should skip asking user for location if known position is recent enough" do
           DB.cleanup
           bot = Bot.new
-          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0)
+          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 10.minutes.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
 
           messages = handle_message("Yeah", user: user, bot: bot, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
           messages.size.should eq(1)
           user.conversation_step.not_nil!.should contain("survey/ask_age")
-        end
-
-        it "should store user location if we already know it" do
-          DB.cleanup
-          bot = Bot.new
-          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0)
-          user.conversation_session_id = "TEST_SESSION_ID"
-
-          handle_message("Yeah", user: user, bot: bot, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
 
           responses = MvamBot::SurveyResponse.for_user(user.id)
           responses[0].data.should eq({"lat" => user.location_lat, "lng" => user.location_lng})
+        end
+
+        it "should ask the user if his position has changed if known position is not recent enough" do
+          DB.cleanup
+          bot = Bot.new
+          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 2.days.ago)
+          user.conversation_session_id = "TEST_SESSION_ID"
+
+          geocoder = Geocoder.new
+          geocoder.expect_reverse_lookup(10.0, 20.0) { "Buenos Aires" }
+
+          messages = handle_message("Yeah", user: user, bot: bot, understand: response({"yes_no" => "Yes"}), geocoder: geocoder)
+          user.conversation_step.not_nil!.should contain("survey/ask_location_changed")
+
+          messages.size.should eq(1)
+          messages[0][:text].should eq("Are you still in Buenos Aires?")
+
+          responses = MvamBot::SurveyResponse.for_user(user.id)
         end
       end
 
@@ -335,11 +344,14 @@ describe ::MvamBot::Bot do
               user.conversation_session_id = "TEST_SESSION_ID"
               user.conversation_state["country_name"] = "Argentina"
 
+              geocoder = Geocoder.new
+              geocoder.expect_lookup("Buenos Aires", "Argentina") { {"Buenos Aires, Argentina" => {10.0, 20.0}} }
+
               messages = handle_message("I live in Buenos Aires",
                                         user: user,
                                         bot: bot,
-                                        messages: { "I live in Buenos Aires" => response({"location" => "Buenos Aires"}) },
-                                        geocoding: { {"Buenos Aires", "Argentina"} => {"Buenos Aires, Argentina" => {10.0, 20.0}}})
+                                        understand: response({"location" => "Buenos Aires"}),
+                                        geocoder: geocoder)
 
               messages.size.should eq(1)
               user.conversation_step.not_nil!.should contain("survey/ask_age")
@@ -384,14 +396,19 @@ describe ::MvamBot::Bot do
               user.conversation_session_id = "TEST_SESSION_ID"
               user.conversation_state["country_name"] = "Argentina"
 
+              geocoder = Geocoder.new
+              geocoder.expect_lookup("Buenos Aires", "Argentina") do
+                {
+                  "Ciudad de Buenos Aires, Argentina" => {10.0, 20.0},
+                  "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
+                }
+              end
+
               messages = handle_message("I live in Buenos Aires",
                                         user: user,
                                         bot: bot,
-                                        messages: { "I live in Buenos Aires" => response({"location" => "Buenos Aires"}) },
-                                        geocoding: { {"Buenos Aires", "Argentina"} => {
-                                                       "Ciudad de Buenos Aires, Argentina" => {10.0, 20.0},
-                                                       "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
-                                        }})
+                                        understand: response({"location" => "Buenos Aires"}),
+                                        geocoder: geocoder)
 
               user.conversation_step.not_nil!.should contain("survey/ask_which_location")
 
@@ -401,6 +418,9 @@ describe ::MvamBot::Bot do
                 "Provincia de Buenos Aires, Argentina",
                 "None of the above"
               ])
+
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses[0].data["location_name"].should eq("Buenos Aires")
             end
 
             it "stores position of selected geolocation result" do
@@ -409,14 +429,21 @@ describe ::MvamBot::Bot do
               user = Factory::DB.user(conversation_step: "survey/ask_which_location")
               user.conversation_session_id = "TEST_SESSION_ID"
               user.conversation_state["country_name"] = "Argentina"
+              user.conversation_state["location_name"] = "Buenos Aires"
+
+              # TODO: This second lookup could be avoided by persisting all results in conversation state
+              geocoder = Geocoder.new
+              geocoder.expect_lookup("Buenos Aires", "Argentina") do
+                {
+                  "Ciudad de Buenos Aires, Argentina" => {10.0, 20.0},
+                  "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
+                }
+              end
 
               messages = handle_message("Ciudad de Buenos Aires, Argentina",
                                         user: user,
                                         bot: bot,
-                                        geocoding: { {"Ciudad de Buenos Aires, Argentina", "Argentina"} => {
-                                                       "Ciudad de Buenos Aires, Argentina" => {10.0, 20.0},
-                                                       "Provincia de Buenos Aires, Argentina" => {15.0, 20.0}
-                                        }})
+                                        geocoder: geocoder)
 
               user.conversation_step.not_nil!.should contain("survey/ask_age")
 
