@@ -104,7 +104,7 @@ module MvamBot
 
     def handle_whois
       user.conversation_step = nil
-      answer "I am a chatbot, I work for WFP. You can ask me information on prices for local commodities. Send `/help` for more information."
+      answer "I am a chatbot, I work for WFP. You can ask me for information on prices for local commodities. Send `/help` for more information."
     end
 
     def handle_help
