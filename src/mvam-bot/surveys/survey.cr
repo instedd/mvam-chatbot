@@ -14,10 +14,9 @@ module MvamBot
       getter requestor
       getter state_id
 
-      # cache wit responses by message
-      # note that with dummy states a Survey instance can span more than one state transition
-      @wit_cache = {} of String => Wit::MessageResponse
-      @geocoding_results = {} of String => Hash(String, {Float64, Float64})
+      # Caches should be cleared after each transition.
+      @wit_response : Wit::MessageResponse?
+      @geocoding_result : Hash(String, {Float64, Float64})?
 
       def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler)
         if user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
@@ -47,7 +46,8 @@ module MvamBot
         user.conversation_step = nil
       end
 
-      def handle(message)
+      def handle(message, wit_response : Wit::MessageResponse? = nil)
+        @wit_response = wit_response if wit_response
         advance(message)
       end
 
@@ -72,7 +72,7 @@ module MvamBot
       end
 
       protected def wit_understand(message)
-        @wit_cache[message] ||= @requestor.wit_client.not_nil!.understand(message)
+        @wit_response ||= @requestor.wit_client.not_nil!.understand(message)
       end
 
       private def run(transition : FlowTransition)
@@ -100,6 +100,7 @@ module MvamBot
         if to_state.dummy
           @previous_state_id = state.id
           @state_id = to_state.id
+          clear_caches
           return advance
         end
 
@@ -346,11 +347,11 @@ module MvamBot
       end
 
       private def geocoding_result(query)
-        @geocoding_results[query] ||= @requestor.geocoder.lookup(query, reported_country_name)
+        @geocoding_result ||= @requestor.geocoder.lookup(query, reported_country_name)
       end
 
       private def options_from_geocoding_result
-        @geocoding_results.first[1].keys + ["None of the above"]
+        @geocoding_result.not_nil!.keys + ["None of the above"]
       end
 
       private def options_from_country_names
@@ -360,6 +361,11 @@ module MvamBot
       private def clear_states
         @state_id = nil
         @previous_state_id = nil
+      end
+
+      private def clear_caches
+        @wit_response = nil
+        @geocoding_result = nil
       end
 
     end

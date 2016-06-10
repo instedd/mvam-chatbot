@@ -1,4 +1,5 @@
 require "TelegramBot"
+require "process"
 
 module MvamBot
 
@@ -11,15 +12,19 @@ module MvamBot
     getter bot
     getter wit : Wit::MessageResponse?
 
+    include MvamBot::WitUtils
+
     def initialize(@message : TelegramBot::Message, @user : User, @bot : MvamBot::Bot)
     end
 
     def handle
-      return if message.text.nil? && message.location.nil? && message.photo.nil?
-      log = message.text || (message.photo ? "[photo]" : nil) || (message.location ? "[location]" : nil) || "empty"
+      return if message.text.nil? && message.location.nil? && message.photo.nil? && message.voice.nil?
+      log = message.text || (message.voice ? "voice://#{message.voice.not_nil!.file_id}" : nil) || (message.photo ? "[photo]" : nil) || ((location = message.location) ? "#{location.latitude}, #{location.longitude}" : nil) || "empty"
       MvamBot::Logs::Message.create(user.id, false, log, Time.utc_now)
 
-      if message.text =~ /^\/echo(.*)/
+      if message.voice
+        handle_voice
+      elsif message.text =~ /^\/echo(.*)/
         handle_echo($~[1])
       elsif message.text =~ /^\/help/
         handle_help
@@ -45,6 +50,8 @@ module MvamBot
 
       if MvamBot::Topics::Prices.handles? user, message, wit: wit_message
         prices.handle
+      elsif MvamBot::Surveys::Survey.handles? user, message
+        survey.handle message, wit_response: wit_message
       elsif intent == INTENT_SALUTATION
         survey.start
       elsif intent == INTENT_ASK_CAPABILITIES
@@ -58,31 +65,11 @@ module MvamBot
       end
     end
 
-    protected def wit_client
-      WitClient.new(MvamBot::Config.wit_access_token.not_nil!, user, self)
-    end
-
-    protected def geocoder
-      Geocoding.init
-    end
-
     def handle_not_understood
       strike = user.conversation_step =~ /^misunderstood\/(\d+)/ ? ($~[1].to_i + 1) : 1
       user.conversation_step = "misunderstood/#{strike}"
       extra = strike > 2 ? " Send `/help` if you want information on how I can be of assistance." : ""
       answer("Sorry, I did not understand what you just said.#{extra}")
-    end
-
-    def survey
-      MvamBot::Surveys::Survey.new(user, self)
-    end
-
-    def geolocation
-      MvamBot::Topics::Geolocation.new(user, self)
-    end
-
-    def prices
-      MvamBot::Topics::Prices.new(user, self)
     end
 
     def handle_echo(echo)
@@ -130,6 +117,59 @@ module MvamBot
 
         At any time, you can change your location by sending me the command `/location`.
         ANSWER
+    end
+
+    def handle_voice
+      voice = message.voice.not_nil!
+      file_id = voice.file_id
+      file = bot.get_file(file_id)
+      mime = voice.mime_type
+      raw = bot.download(file)
+
+      MvamBot.logger.debug("Downloaded voice #{file_id} for user #{user.id}")
+
+      # Convert to mp3
+      mp3 = MemoryIO.new
+      error = MemoryIO.new
+      status = Process.run("ffmpeg", {"-f", "ogg", "-i", "pipe:0", "-nostdin", "-ac", "1", "-f", "mp3", "-"}, input: MemoryIO.new(raw.to_slice), output: mp3, error: error)
+
+      # Save file locally in ogg if conversion failed and return
+      unless status.success?
+        MvamBot.logger.error("Error converting voice file: #{error.to_s}")
+        MvamBot::DataFile.create(id: file_id, user_id: user.id, extension: "ogg", data: raw.to_slice, kind: "voice")
+        return
+      end
+
+      # Save file locally as mp3
+      MvamBot::DataFile.create(id: file_id, user_id: user.id, extension: "mp3", data: mp3.to_slice, kind: "voice")
+
+      # Send to wit for processing
+      if wit = wit_client
+        wit_response = wit.speech(data: mp3.to_slice, content_type: "audio/mpeg3")
+        message.text = wit_response._text
+        @wit = wit_response
+        handle_wit_message
+      end
+    end
+
+    protected def wit_client
+      WitClient.new(MvamBot::Config.wit_access_token.not_nil!, user, self)
+    end
+
+    protected def geocoder
+      Geocoding.init
+    end
+
+    protected def survey
+      MvamBot::Surveys::Survey.new(user, self)
+    end
+
+    protected def geolocation
+      MvamBot::Topics::Geolocation.new(user, self)
+    end
+
+    protected def prices
+      MvamBot::Topics::Prices.new(user, self)
     end
 
     def answer_location_complete(location)
