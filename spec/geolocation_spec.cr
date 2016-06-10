@@ -3,7 +3,7 @@ require "./spec_helper"
 include MvamBot::Spec
 include MvamBot::Spec::Wit
 
-describe ::MvamBot::Geolocation do
+describe ::MvamBot::Topics::Geolocation do
   context "unknown gps position" do
     it "requests user GPS position" do
       DB.cleanup

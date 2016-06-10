@@ -54,7 +54,7 @@ module MvamBot
     end
 
     protected def search_radius_kilometers
-      MvamBot::Geolocation::GPS_MATCH_RADIUS
+      MvamBot::Topics::Geolocation::GPS_MATCH_RADIUS
     end
   end
 

@@ -27,7 +27,7 @@ module MvamBot
         handle_reset($~[1])
       elsif message.text == "/start"
         survey.start
-      elsif MvamBot::Geolocation.handles? user, message
+      elsif MvamBot::Topics::Geolocation.handles? user, message
         geolocation.handle
       elsif MvamBot::Topics::Prices.handles? user, message
         prices.handle
@@ -78,7 +78,7 @@ module MvamBot
     end
 
     def geolocation
-      MvamBot::Geolocation.new(user, self)
+      MvamBot::Topics::Geolocation.new(user, self)
     end
 
     def prices
