@@ -44,8 +44,7 @@ module MvamBot
     end
 
     protected def geocoder
-      mapquest_token = MvamBot::Config.mapquest_token
-      Geocoder.new(mapquest_token)
+      Geocoding.init
     end
 
     def handle_not_understood

@@ -1,18 +1,14 @@
 require "uri"
 require "http/client"
 
-module MvamBot
-  class Geocoder
+module MvamBot::Geocoding
+  class MapQuestGeocoder < Geocoder
 
-    def initialize(@token : String?)
-      if !@token
-        MvamBot.logger.warn "No MapQuest token was provided, geocoding service will not be available."
-      end
+    def initialize(@token : String)
+      MvamBot.logger.warn "No MapQuest token was provided, geocoding service will not be available."
     end
 
     def lookup(query : String, country = nil) : Hash(String, {Float64, Float64})
-      return {} of String => {Float64, Float64} unless @token
-
       begin
         json = make_request(query)
         return build_result(json.not_nil!, country)

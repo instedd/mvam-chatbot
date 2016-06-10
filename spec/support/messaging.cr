@@ -28,7 +28,7 @@ module MvamBot::Spec
     end
   end
 
-  class Geocoder < ::MvamBot::Geocoder
+  class Geocoder < ::MvamBot::Geocoding::Geocoder
     def initialize(@results : Hash({String, String}, Hash(String, {Float64, Float64})))
     end
 
@@ -42,7 +42,7 @@ module MvamBot::Spec
     @wit_client : ::MvamBot::WitClient?
 
     setter geocoder
-    @geocoder : ::MvamBot::Geocoder?
+    @geocoder : ::MvamBot::Geocoding::Geocoder?
 
     def initialize(*args)
       super(*args)
