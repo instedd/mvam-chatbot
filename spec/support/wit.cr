@@ -10,7 +10,7 @@ module MvamBot::Spec
       result
     end
 
-    def response(hash)
+    def response(hash = Hash(String, String).new)
       Wit::MessageResponse.from_json({msg_id: "MSG1", _text: "", entities: entities(hash)}.to_json)
     end
 

@@ -12,10 +12,7 @@ describe ::MvamBot::Bot do
       bot = Bot.new
       user = Factory::DB.user_with_location
 
-      messages = handle_message("/start", user: user, bot: bot) do |msg, sid, actions|
-        context = actions.merge(sid, user.conversation_state, entities({ "intent" => "Salutation"}), msg, 0.9)
-        actions.custom("start", sid, context, 0.9)
-      end
+      messages = handle_message("/start", user: user, bot: bot, understand: response({ "intent" => "Salutation" }))
 
       messages.size.should eq(1)
       messages[0][:text].should contain("I would like to ask you a few questions if you have a minute")
@@ -28,13 +25,9 @@ describe ::MvamBot::Bot do
       bot = Bot.new
       user = Factory::DB.user_with_location
 
-      handle_message("/start", user: user, bot: bot) do |msg, sid, actions|
-        context = actions.merge(sid, user.conversation_state, entities({ "intent" => "Salutation"}), msg, 0.9)
-        actions.custom("start", sid, context, 0.9)
-      end
-
-      handle_message("Why?", user: user, bot: bot, messages: { "Why?" => response({"intent" => "AskWhy"}) })
-      handle_message("Fine", user: user, bot: bot, messages: { "Fine" => response({"yes_no" => "Yes"}) })
+      handle_message("/start", user: user, bot: bot, understand: response({ "intent" => "Salutation" }))
+      handle_message("Why?", user: user, bot: bot, understand: response({"intent" => "AskWhy"}))
+      handle_message("Fine", user: user, bot: bot, understand: response({"yes_no" => "Yes"}))
 
       messages = bot.messages
       messages.size.should eq(3)
@@ -49,11 +42,7 @@ describe ::MvamBot::Bot do
       bot = Bot.new
       user = Factory::DB.user_with_location
 
-      handle_message("/start", user: user, bot: bot) do |msg, sid, actions|
-        context = actions.merge(sid, user.conversation_state, entities({ "intent" => "Salutation"}), msg, 0.9)
-        actions.custom("start", sid, context, 0.9)
-      end
-
+      handle_message("/start", user: user, bot: bot, understand: response({ "intent" => "Salutation" }))
       handle_message("No", user: user, bot: bot, messages: { "No" => response({"yes_no" => "No"}) })
       handle_message("No", user: user, bot: bot, messages: { "No" => response({"yes_no" => "No"}) })
 

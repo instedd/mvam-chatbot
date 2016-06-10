@@ -6,10 +6,9 @@ module MvamBot
     INTENT_SCHEDULE = "Schedule"
     INTENT_SALUTATION = "Salutation"
     INTENT_ASK_CAPABILITIES = "AskCapabilities"
-
-    # Context keys
-    STATE_QUERY_PRICE = "query_price"
-    STATE_SHOW_HELP = "show_help"
+    INTENT_ASK_WHO = "AskWho"
+    INTENT_ASK_WHY = "AskWhy"
+    INTENT_THANKS = "Thanks"
 
     def extract_value(entities, key)
       if entities[key]? && entities[key].size > 0 && entities[key][0]["value"]?

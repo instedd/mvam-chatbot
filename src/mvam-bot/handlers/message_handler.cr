@@ -4,6 +4,8 @@ module MvamBot
 
   class MessageHandler
 
+    include MvamBot::WitUtils
+
     getter message
     getter user
     getter bot
@@ -20,27 +22,24 @@ module MvamBot
         handle_price($~[1])
       elsif message.text =~ /^\/echo(.*)/
         handle_echo($~[1])
-      elsif message.text == "/help"
+      elsif message.text =~ /^\/help/
         handle_help
-      elsif MvamBot::Geolocation.handles? user, message
-        geolocation.handle
       elsif message.text =~ /^\/reset(.*)/
         handle_reset($~[1])
       elsif message.text == "/start"
         handle_start
+      elsif MvamBot::Geolocation.handles? user, message
+        geolocation.handle
       elsif user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
         handle_survey($~[1], $~[2]?)
-      elsif wit = wit_client
-        wit.converse(message.text.not_nil!) if message.text
-      else
-        handle_not_understood
+      elsif text = message.text
+        wit_message = wit_client.understand(text)
+        handle_wit_message(wit_message)
       end
     end
 
     protected def wit_client
-      if wit_token = MvamBot::Config.wit_access_token
-        WitClient.new(wit_token, user, self)
-      end
+      WitClient.new(MvamBot::Config.wit_access_token.not_nil!, user, self)
     end
 
     protected def geocoder
@@ -97,15 +96,16 @@ module MvamBot
     end
 
     def handle_price(query)
-      user.conversation_step = nil
-      return geolocation.start("Before we start, I need to know where you are. ") if user.location_adm0_id.nil?
+      user.conversation_step = "queryprice/#{query}"
+      return geolocation.start("Before I can provide prices information, I need to know where you are. ") if user.location_adm0_id.nil?
 
       # If the user sent no query, show usage with an example
       if query.strip.empty?
-        return answer("Send `/price FOOD` to get the prices of a food near you.#{sample_price_query}")
+        sample_text = (sample = sample_price) ? " For example, try sending `/price #{sample}`." : ""
+        return answer("Send `/price FOOD` to get the prices of a food near you." + sample_text)
       end
 
-      prices = Price.search_by_name(query.strip, limit: 50, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
+      prices = prices_for(query.strip)
 
       # If there are no results, ask the user to try another query
       if prices.empty?
@@ -122,11 +122,16 @@ module MvamBot
       end
     end
 
+    def handle_whois
+      user.conversation_step = nil
+      answer "I am a chatbot, I work for WFP. You can ask me information on prices for local commodities. Send `/help` for more information."
+    end
+
     def handle_help
       user.conversation_step = nil
-      sample = user.location_adm0_id ? sample_price_query : ""
+      sample_text = (sample = sample_price) ? " For example, `/price #{sample}`." : ""
       answer <<-ANSWER
-        You can ask for the price of a commodity in your location using the `/price` command.#{sample}
+        You can ask for the price of a commodity in your location using the `/price` command.#{sample_text}
 
         You can also ask for prices in any chat screen by mentioning me. Try typing `@#{MvamBot::Config.telegram_bot_name}` on any conversation with a friend.
 
@@ -134,9 +139,48 @@ module MvamBot
         ANSWER
     end
 
-    private def sample_price_query
+    def handle_wit_message(wit_message)
+      entities = wit_message.entities
+      intent = extract_value(entities, "intent")
+
+      if commodity = extract_value(entities, "commodity")
+        handle_price(commodity.to_s)
+      elsif intent == INTENT_QUERY_PRICE
+        user.conversation_step = "queryprice/"
+        if user.location_adm0_id.nil?
+          geolocation.start("Before I can provide prices information, I need to know where you are. ")
+        else
+          sample_text = (sample = sample_price) ? " For example, you can ask for `#{sample}`." : ""
+          answer("What do you want to know the price of?" + sample_text)
+        end
+      elsif user.conversation_step =~ /^queryprice/
+        if message.text && !prices_for(message.text.not_nil!.strip).empty?
+          handle_price(message.text.not_nil!)
+        else
+          sample_text = (sample = sample_price) ? " For example, you can ask for `#{sample}`." : ""
+          answer("Sorry, I did not understand which price you are looking for." + sample_text)
+        end
+      elsif intent == INTENT_SALUTATION
+        handle_start
+      elsif intent == INTENT_ASK_CAPABILITIES
+        handle_help
+      elsif intent == INTENT_ASK_WHO
+        handle_whois
+      elsif intent == INTENT_THANKS
+        answer "😀"
+      else
+        handle_not_understood
+      end
+    end
+
+    private def prices_for(query)
+      Price.search_by_name(query.strip, limit: 50, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
+    end
+
+    private def sample_price
+      return nil if user.location_adm0_id.nil?
       sample_prices = Price.search_by_commodity_id(nil, limit: 1, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
-      sample_prices.empty? ? "" : " For example, try sending `/price #{sample_prices[0].short_commodity_name.downcase}`."
+      sample_prices.empty? ? nil : sample_prices[0].short_commodity_name.downcase
     end
 
     def answer_location_complete(location)

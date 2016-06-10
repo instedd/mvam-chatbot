@@ -3,20 +3,9 @@ module MvamBot::Spec
   class WitClient < ::MvamBot::WitClient
     @runner : Proc(String, String, Wit::Actions, Wit::State)?
 
-    def initialize(user, requestor, messages : Hash(String, Wit::MessageResponse)? = nil)
+    def initialize(user, requestor, @messages : Hash(String, Wit::MessageResponse)? = nil, @understand : Wit::MessageResponse? = nil)
       super("", user, requestor)
-      @messages = messages || Hash(String, Wit::MessageResponse).new
-    end
-
-    def initialize(user, requestor, messages : Hash(String, Wit::MessageResponse)? = nil, &runner : (String, String, Wit::Actions -> Wit::State))
-      super("", user, requestor)
-      @messages = messages || Hash(String, Wit::MessageResponse).new
-      @runner = runner
-    end
-
-    protected def run_actions(message : String, session : String)
-      actions = @app.actions
-      @runner.not_nil!.call(message, session, actions)
+      @messages ||= Hash(String, Wit::MessageResponse).new
     end
 
     protected def understand(message : String)
@@ -24,7 +13,7 @@ module MvamBot::Spec
     end
 
     protected def get_message(message : String, session : String)
-      @messages.not_nil![message]
+      @messages.not_nil![message]? || @understand.not_nil!
     end
   end
 
@@ -73,17 +62,9 @@ module MvamBot::Spec
     MessageHandler.new(message, user, bot)
   end
 
-  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, geocoding = nil, photo : String? = nil, location : {Float64, Float64}? = nil)
+  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, geocoding = nil, understand = nil, photo : String? = nil, location : {Float64, Float64}? = nil)
     handler = message_handler(msg, user, bot, photo: photo, location: location)
-    handler.wit_client = WitClient.new(handler.user, handler, messages)
-    handler.geocoder = Geocoder.new(geocoding || {} of {String, String} => Hash(String, {Float64, Float64}))
-    handler.handle
-    handler.bot.as(Bot).messages
-  end
-
-  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, geocoding = nil, photo = nil, location : {Float64, Float64}? = nil, &wit : (String, String, Wit::Actions -> Wit::State))
-    handler = message_handler(msg, user, bot, photo: photo, location: location)
-    handler.wit_client = WitClient.new(handler.user, handler, messages, &wit)
+    handler.wit_client = WitClient.new(handler.user, handler, messages, understand)
     handler.geocoder = Geocoder.new(geocoding || {} of {String, String} => Hash(String, {Float64, Float64}))
     handler.handle
     handler.bot.as(Bot).messages
