@@ -56,7 +56,11 @@
     <% messages_by_day[date].reverse.each do |message| %>
       <li class="list-group-item">
         <span class="<%= log_icon(message.kind) %>" aria-hidden="true"></span>
+        <% if message.text =~ /(\w+):\/\/(.+)/ %>
+        <a href="/files/<%= $~[2] %>"><span class="glyphicon glyphicon-download-alt"></span><%= $~[1].capitalize %></a>
+        <% else %>
         <span><%= message.text %></span>
+        <% end %>
         <% if message.kind == MvamBot::Logs::QUERY && message.query_offset && message.query_offset.not_nil! > 0 %>
         <span>[offset <%= message.query_offset %>]</span>
         <% end %>

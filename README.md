@@ -9,6 +9,7 @@ WFP mVAM food prices Telegram bot.
 * A PostgreSQL database version `9.5`, which can be provisioned via micrate and seeded via `bin/load-prices`.
 * A Telegram bot, created by talking to [BotFather](https://telegram.me/BotFather)
 * A Wit.ai application
+* `ffmpeg` is needed for voice messages recognition (can be installed on Mac using Homebrew)
 
 ### Database setup
 
