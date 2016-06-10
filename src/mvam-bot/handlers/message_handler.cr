@@ -5,9 +5,12 @@ module MvamBot
 
   class MessageHandler
 
+    include MvamBot::WitUtils
+
     getter message
     getter user
     getter bot
+    getter wit : Wit::MessageResponse?
 
     include MvamBot::WitUtils
 
@@ -16,40 +19,50 @@ module MvamBot
 
     def handle
       return if message.text.nil? && message.location.nil? && message.photo.nil? && message.voice.nil?
-      log = message.text || (message.voice ? "voice://#{message.voice.not_nil!.file_id}" : nil) || (message.photo ? "[photo]" : nil) || (message.location ? "[location]" : nil) || "empty"
+      log = message.text || (message.voice ? "voice://#{message.voice.not_nil!.file_id}" : nil) || (message.photo ? "[photo]" : nil) || ((location = message.location) ? "#{location.latitude}, #{location.longitude}" : nil) || "empty"
       MvamBot::Logs::Message.create(user.id, false, log, Time.utc_now)
 
       if message.voice
         handle_voice
-      elsif message.text =~ /^\/price(.*)/
-        handle_price($~[1])
       elsif message.text =~ /^\/echo(.*)/
         handle_echo($~[1])
-      elsif message.text == "/help"
+      elsif message.text =~ /^\/help/
         handle_help
-      elsif MvamBot::Geolocation.handles? user, message
-        geolocation.handle
       elsif message.text =~ /^\/reset(.*)/
         handle_reset($~[1])
       elsif message.text == "/start"
-        handle_start
-      elsif user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
-        handle_survey($~[1], $~[2]?)
-      elsif wit = wit_client
-        wit.converse(message.text.not_nil!) if message.text
+        survey.start
+      elsif MvamBot::Topics::Geolocation.handles? user, message
+        geolocation.handle
+      elsif MvamBot::Topics::Prices.handles? user, message
+        prices.handle
+      elsif MvamBot::Surveys::Survey.handles? user, message
+        survey.handle message
+      elsif text = message.text
+        @wit = wit_client.understand(text)
+        handle_wit_message
+      end
+    end
+
+    def handle_wit_message
+      wit_message = @wit.not_nil!
+      intent = extract_value(wit_message.entities, "intent")
+
+      if MvamBot::Topics::Prices.handles? user, message, wit: wit_message
+        prices.handle
+      elsif MvamBot::Surveys::Survey.handles? user, message
+        survey.handle message, wit_response: wit_message
+      elsif intent == INTENT_SALUTATION
+        survey.start
+      elsif intent == INTENT_ASK_CAPABILITIES
+        handle_help
+      elsif intent == INTENT_ASK_WHO
+        handle_whois
+      elsif intent == INTENT_THANKS
+        answer "😀"
       else
         handle_not_understood
       end
-    end
-
-    protected def wit_client
-      if wit_token = MvamBot::Config.wit_access_token
-        WitClient.new(wit_token, user, self)
-      end
-    end
-
-    protected def geocoder
-      Geocoding.init
     end
 
     def handle_not_understood
@@ -59,22 +72,10 @@ module MvamBot
       answer("Sorry, I did not understand what you just said.#{extra}")
     end
 
-    def handle_survey(step, previous, wit_message = nil)
-      MvamBot::Surveys::Survey.new(user, self, state_id: step, previous_state_id: previous).handle(message, wit_response: wit_message)
-    end
-
-    def geolocation
-      MvamBot::Geolocation.new(user, self)
-    end
-
     def handle_echo(echo)
       echo = echo.strip
       msg = echo.empty? ? Time.utc_now.to_s : "#{echo} on #{Time.utc_now}"
       answer msg
-    end
-
-    def handle_start
-      MvamBot::Surveys::Survey.new(user, self).start
     end
 
     def handle_reset(what)
@@ -101,47 +102,21 @@ module MvamBot
       end
     end
 
-    def handle_price(query)
+    def handle_whois
       user.conversation_step = nil
-      return geolocation.start("Before we start, I need to know where you are. ") if user.location_adm0_id.nil?
-
-      # If the user sent no query, show usage with an example
-      if query.strip.empty?
-        return answer("Send `/price FOOD` to get the prices of a food near you.#{sample_price_query}")
-      end
-
-      prices = Price.search_by_name(query.strip, limit: 50, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
-
-      # If there are no results, ask the user to try another query
-      if prices.empty?
-        return answer("Sorry, I have no information on _#{query.strip}_ in #{Location::Adm0.find(user.location_adm0_id.not_nil!).name}.")
-
-      # If there is more than a single commodity that matches, display an inline keyboard to choose one
-      elsif prices.map(&.commodity_id).uniq.size > 1
-        options = prices.map{|p| {p.commodity_name, "commodity/#{p.commodity_id}"}}.uniq
-        return answer_with_inline("I have information on #{options.map{|opt| opt[0]}.join(", ")}; please choose one.", options)
-
-      # Otherwise, show a description of the prices
-      else
-        answer(Price.description(prices, user: user, format: :markdown))
-      end
+      answer "I am a chatbot, I work for WFP. You can ask me information on prices for local commodities. Send `/help` for more information."
     end
 
     def handle_help
       user.conversation_step = nil
-      sample = user.location_adm0_id ? sample_price_query : ""
+      sample_text = (sample = prices.sample_price) ? " For example, `/price #{sample}`." : ""
       answer <<-ANSWER
-        You can ask for the price of a commodity in your location using the `/price` command.#{sample}
+        You can ask for the price of a commodity in your location using the `/price` command.#{sample_text}
 
         You can also ask for prices in any chat screen by mentioning me. Try typing `@#{MvamBot::Config.telegram_bot_name}` on any conversation with a friend.
 
         At any time, you can change your location by sending me the command `/location`.
         ANSWER
-    end
-
-    private def sample_price_query
-      sample_prices = Price.search_by_commodity_id(nil, limit: 1, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
-      sample_prices.empty? ? "" : " For example, try sending `/price #{sample_prices[0].short_commodity_name.downcase}`."
     end
 
     def handle_voice
@@ -150,6 +125,7 @@ module MvamBot
       file = bot.get_file(file_id)
       mime = voice.mime_type
       raw = bot.download(file)
+
       MvamBot.logger.debug("Downloaded voice #{file_id} for user #{user.id}")
 
       # Convert to mp3
@@ -171,25 +147,29 @@ module MvamBot
       if wit = wit_client
         wit_response = wit.speech(data: mp3.to_slice, content_type: "audio/mpeg3")
         message.text = wit_response._text
-        handle_wit_message(wit_response)
+        @wit = wit_response
+        handle_wit_message
       end
     end
 
-    def handle_wit_message(wit_message)
-      entities = wit_message.entities
-      intent = extract_value(entities, "intent")
+    protected def wit_client
+      WitClient.new(MvamBot::Config.wit_access_token.not_nil!, user, self)
+    end
 
-      if user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
-        handle_survey($~[1], $~[2]?, wit_message: wit_message)
-      elsif commodity = extract_value(entities, "commodity")
-        handle_price(commodity.to_s)
-      elsif intent == INTENT_QUERY_PRICE
-        answer("What do you want to know the price of?")
-      elsif intent == INTENT_SALUTATION
-        handle_start
-      elsif intent == INTENT_ASK_CAPABILITIES
-        handle_help
-      end
+    protected def geocoder
+      Geocoding.init
+    end
+
+    protected def survey
+      MvamBot::Surveys::Survey.new(user, self)
+    end
+
+    protected def geolocation
+      MvamBot::Topics::Geolocation.new(user, self)
+    end
+
+    protected def prices
+      MvamBot::Topics::Prices.new(user, self)
     end
 
     def answer_location_complete(location)

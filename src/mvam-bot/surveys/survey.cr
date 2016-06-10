@@ -18,10 +18,22 @@ module MvamBot
       @wit_response : Wit::MessageResponse?
       @geocoding_result : Hash(String, {Float64, Float64})?
 
-      def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler, @state_id : String? = nil, @previous_state_id : String? = nil)
+      def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler)
+        if user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
+          @state_id = $~[1]
+          @previous_state_id = $~[2]?
+        end
+      end
+
+      def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler, @state_id : String?, @previous_state_id : String?)
+      end
+
+      def self.handles?(user, message)
+        return user.conversation_step =~ /^survey/
       end
 
       def start
+        clear_states
         run(flow.start, extra_text: "Hello! I'm a WFP bot assistant. ")
       end
 
@@ -344,6 +356,11 @@ module MvamBot
 
       private def options_from_country_names
         MvamBot::Country.all_names
+      end
+
+      private def clear_states
+        @state_id = nil
+        @previous_state_id = nil
       end
 
       private def clear_caches

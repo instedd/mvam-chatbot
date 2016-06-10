@@ -1,4 +1,4 @@
-module MvamBot
+module MvamBot::Topics
   class Geolocation
 
     GPS_MATCH_LIMIT = 5
@@ -7,7 +7,7 @@ module MvamBot
     getter user
     getter requestor
     getter message
-  
+
     @message : TelegramBot::Message
 
     def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler)

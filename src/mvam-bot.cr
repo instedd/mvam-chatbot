@@ -1,9 +1,4 @@
-require "./mvam-bot/models/*"
-require "./mvam-bot/wit/*"
-require "./mvam-bot/geocoding/*"
-require "./mvam-bot/handlers/*"
-require "./mvam-bot/surveys/*"
-require "./mvam-bot/*"
+require "./mvam"
 
 # Start the bot
 MvamBot::Bot.new(MvamBot::Config.telegram_token).run
