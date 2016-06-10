@@ -24,7 +24,7 @@ describe ::MvamBot::Bot do
     end
 
     describe "via wit" do
-      it "should return not understood when not-understood if fired from wit" do
+      it "should return not understood when message is not understood in wit" do
         DB.cleanup
         user = Factory::DB.user_with_location
 

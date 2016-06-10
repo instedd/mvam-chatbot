@@ -154,7 +154,7 @@ module MvamBot
           answer("What do you want to know the price of?" + sample_text)
         end
       elsif user.conversation_step =~ /^queryprice/
-        if message.text && !prices_for(message.text.not_nil!.strip).empty?
+        if message.text && commodity_names.any?{ |commodity| commodity.downcase.includes?(message.text.not_nil!.strip) }
           handle_price(message.text.not_nil!)
         else
           sample_text = (sample = sample_price) ? " For example, you can ask for `#{sample}`." : ""
@@ -181,6 +181,10 @@ module MvamBot
       return nil if user.location_adm0_id.nil?
       sample_prices = Price.search_by_commodity_id(nil, limit: 1, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
       sample_prices.empty? ? nil : sample_prices[0].short_commodity_name.downcase
+    end
+
+    private def commodity_names
+      Price.commodity_names
     end
 
     def answer_location_complete(location)
