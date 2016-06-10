@@ -46,12 +46,12 @@ module MvamBot
         user.clear_all_location_data
         user.conversation_step = "location/gps_request"
 
-        keyboard = TelegramBot::ReplyKeyboardMarkup.new([[
-          TelegramBot::KeyboardButton.new("Sure", request_location: true),
-          TelegramBot::KeyboardButton.new("Not really", request_location: false)
-        ]], one_time_keyboard: true)
+        keyboard = TelegramBot::ReplyKeyboardMarkup.new([
+          [TelegramBot::KeyboardButton.new("Sure", request_location: true)],
+          [TelegramBot::KeyboardButton.new("I'd rather not", request_location: false) ]
+        ], one_time_keyboard: true)
 
-        @requestor.answer("#{extra_text}Would you mind sharing your current position with us?", keyboard)
+        @requestor.answer("#{extra_text}Could you share your current position with us?", keyboard)
       end
     end
 

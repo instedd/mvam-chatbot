@@ -35,9 +35,9 @@ Are you a man
 	geolocate_user [ label = "geolocate_user
 ", shape = circle, style= dotted ];
 	ask_gps [ label = "ask_gps
-Would you min
-d sharing yo
-ur curren...
+Could you sha
+re your curr
+ent posit...
 ", shape = circle, style= solid ];
 	ask_country [ label = "ask_country
 What country 
@@ -45,15 +45,15 @@ do you live
 in?", shape = circle, style= solid ];
 	ask_location_name [ label = "ask_location_name
 What's the na
-me of your n
-earest ci...
-", shape = circle, style= solid ];
+me of your t
+own?", shape = circle, style= solid ];
 	geocode [ label = "geocode
 ", shape = circle, style= dotted ];
 	ask_which_location [ label = "ask_which_location
-Is any of the
-se places ne
-ar you?", shape = circle, style= solid ];
+I'm not sure 
+I know that 
+town... i...
+", shape = circle, style= solid ];
 	ask_enough_food [ label = "ask_enough_food
 In the past s
 even days, w

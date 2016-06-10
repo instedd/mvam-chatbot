@@ -79,11 +79,11 @@ states:
         target: ask_gps
   
   ask_gps:
-    say: Would you mind sharing your current position with us?
+    say: Could you share your current position with us?
     options:
       - text: Sure
         request_location: true
-      - text: Not really
+      - text: I'd rather not
     transitions:
       - location: true
         target: ask_enough_food
@@ -102,7 +102,7 @@ states:
 
 
   ask_location_name:
-    say: What's the name of your nearest city?
+    say: What's the name of your town?
     transitions:
       - entity: location
         store: location_name
@@ -121,7 +121,7 @@ states:
         target: ask_enough_food
 
   ask_which_location:
-    say: Is any of these places near you?
+    say: I'm not sure I know that town... is it any of these?
     options_from: geocoding_result
     transitions:
       - method: store_chosen_location_coordinates

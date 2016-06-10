@@ -11,8 +11,8 @@ describe ::MvamBot::Geolocation do
       messages = handle_message("/start location", user)
       messages.size.should eq(1)
 
-      messages[0][:text].should eq("Would you mind sharing your current position with us?")
-      reply_buttons(messages[0]).should eq(["Sure", "Not really"])
+      messages[0][:text].should eq("Could you share your current position with us?")
+      reply_buttons(messages[0]).should eq(["Sure", "I'd rather not"])
 
       user.conversation_step.should eq("location/gps_request")
     end
@@ -141,8 +141,8 @@ describe ::MvamBot::Geolocation do
         messages = handle_message("/start location", user)
         messages.size.should eq(1)
 
-        messages[0][:text].should eq("Would you mind sharing your current position with us?")
-        reply_buttons(messages[0]).should eq(["Sure", "Not really"])
+        messages[0][:text].should eq("Could you share your current position with us?")
+        reply_buttons(messages[0]).should eq(["Sure", "I'd rather not"])
 
         user.conversation_step.should eq("location/gps_request")
         user.location_lat.should eq(nil)

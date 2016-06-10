@@ -286,7 +286,7 @@ describe ::MvamBot::Bot do
 
           messages = handle_message("I am a man!", user: user, bot: bot, messages: { "I am a man!" => response({"gender" => "male"}) })
           messages.size.should eq(1)
-          reply_buttons(messages[0]).should eq(["Sure", "Not really"])
+          reply_buttons(messages[0]).should eq(["Sure", "I'd rather not"])
           user.conversation_step.not_nil!.should contain("survey/ask_gps")
         end
 
@@ -313,7 +313,7 @@ describe ::MvamBot::Bot do
             user = Factory::DB.user(conversation_step: "survey/ask_gps")
             user.conversation_session_id = "TEST_SESSION_ID"
 
-            messages = handle_message("Not really", user: user, bot: bot)
+            messages = handle_message("I'd rather not", user: user, bot: bot)
             messages.size.should eq(1)
             messages[0][:text].should eq("What country do you live in?")
             reply_buttons(messages[0]).should eq(MvamBot::Country.all_names)
@@ -330,7 +330,7 @@ describe ::MvamBot::Bot do
             selected_country = MvamBot::Country.all.first
 
             messages = handle_message(selected_country.name, user: user, bot: bot)
-            messages[0][:text].should eq("What's the name of your nearest city?")
+            messages[0][:text].should eq("What's the name of your town?")
 
             responses = MvamBot::SurveyResponse.for_user(user.id)
             responses[0].data.should eq({"country_name" => selected_country.name})
