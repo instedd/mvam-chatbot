@@ -82,7 +82,7 @@ describe ::MvamBot::Bot do
       DB.cleanup
       bot = Bot.new
 
-      user = Factory::DB.user_with_location(conversation_step: "survey/ask_enough_food")
+      user = Factory::DB.user_with_location(conversation_step: "survey/ask_not_enough_food")
       user.conversation_at = Time.utc_now
       user.conversation_session_id = "TEST_SESSION_ID"
 
@@ -93,14 +93,14 @@ describe ::MvamBot::Bot do
       responses.size.should eq(1)
       responses[0].user_id.should eq(user.id)
       responses[0].session_id.should eq(user.conversation_session_id)
-      responses[0].data.should eq({ "enough_food" => "Yes" })
+      responses[0].data.should eq({ "not_enough_food" => "Yes" })
     end
 
     it "should extract boolean answer from message" do
       DB.cleanup
       bot = Bot.new
 
-      user = Factory::DB.user_with_location(conversation_step: "survey/ask_enough_food")
+      user = Factory::DB.user_with_location(conversation_step: "survey/ask_not_enough_food")
       user.conversation_at = Time.utc_now
       user.conversation_session_id = "TEST_SESSION_ID"
 
@@ -111,7 +111,7 @@ describe ::MvamBot::Bot do
       responses.size.should eq(1)
       responses[0].user_id.should eq(user.id)
       responses[0].session_id.should eq(user.conversation_session_id)
-      responses[0].data.should eq({ "enough_food" => "Yes" })
+      responses[0].data.should eq({ "not_enough_food" => "Yes" })
     end
 
     it "should end the survey collecting all data" do
@@ -121,7 +121,7 @@ describe ::MvamBot::Bot do
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_roof_photo")
       user.conversation_state["age"] = 30i64
       user.conversation_state["gender"] = "male"
-      user.conversation_state["enough_food"] = "Yes"
+      user.conversation_state["not_enough_food"] = "Yes"
       user.conversation_session_id = "TEST_SESSION_ID"
       user.conversation_at = Time.utc_now
 
@@ -133,7 +133,7 @@ describe ::MvamBot::Bot do
 
       responses[0].user_id.should eq(user.id)
       responses[0].session_id.should eq("TEST_SESSION_ID")
-      responses[0].data.should eq({ "gender" => "male", "age" => 30, "enough_food" => "Yes" })
+      responses[0].data.should eq({ "gender" => "male", "age" => 30, "not_enough_food" => "Yes" })
       responses[0].completed.should eq(true)
     end
 

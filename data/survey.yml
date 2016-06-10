@@ -1,7 +1,7 @@
 survey_data:
   - age
   - gender
-  - enough_food
+  - not_enough_food
   - roof_photo
   - lat
   - lng
@@ -67,7 +67,7 @@ states:
     say: Are you a man or a woman?
     transitions:
       - entity: gender
-        target: ask_enough_food
+        target: ask_not_enough_food
         store: gender
 
   geolocate_user:
@@ -77,7 +77,7 @@ states:
         target: ask_age
       - default: true
         target: ask_gps
-  
+
   ask_gps:
     say: Could you share your current position with us?
     options:
@@ -130,7 +130,7 @@ states:
         target: ask_age
 
 
-  ask_enough_food:
+  ask_not_enough_food:
     say: In the past seven days, were there days in which you did not have enough food or money to buy food?
     options:
       - text: Yes
@@ -138,10 +138,10 @@ states:
     transitions:
       - target: ask_roof_photo
         message: ["Yes", "No"]
-        store: enough_food
+        store: not_enough_food
       - target: ask_roof_photo
         entity: yes_no
-        store: enough_food
+        store: not_enough_food
 
   ask_roof_photo:
     say: Would you please send me a picture of your roof?
