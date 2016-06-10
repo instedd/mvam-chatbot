@@ -115,7 +115,7 @@ module MvamBot
         if say = to_state.say
           text = extra_text + say
           if options = to_state.options
-            requestor.answer(text, build_keyboard(options), update_user: false)
+            requestor.answer_with_keyboard(text, options, update_user: false)
           elsif options_from = to_state.options_from
             options = case options_from
                       when "geocoding_result"
@@ -125,7 +125,7 @@ module MvamBot
                       else
                         raise "Unrecognised options #{options_from}"
                       end
-            requestor.answer(text, build_keyboard(options), update_user: false)
+            requestor.answer_with_keyboard(text, options, update_user: false)
           else
             requestor.answer(text, update_user: false)
           end
@@ -343,24 +343,6 @@ module MvamBot
 
       private def options_from_country_names
         MvamBot::Country.all_names
-      end
-
-      private def build_keyboard(options : Array(String))
-        buttons = options.map { |o| [TelegramBot::KeyboardButton.new(o)] }
-        build_keyboard(buttons)
-      end
-
-      private def build_keyboard(options : Array(MvamBot::Surveys::Option))
-        buttons = options.map { |o| [TelegramBot::KeyboardButton.new(o.text, request_location: o.request_location)] }
-        build_keyboard(buttons)
-      end
-
-      private def build_keyboard(buttons : Array(TelegramBot::KeyboardButton))
-        TelegramBot::ReplyKeyboardMarkup.new(buttons, one_time_keyboard: true)
-      end
-
-      private def build_keyboard(buttons)
-        TelegramBot::ReplyKeyboardMarkup.new(buttons, one_time_keyboard: true)
       end
 
     end
