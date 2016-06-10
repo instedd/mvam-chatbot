@@ -9,6 +9,7 @@ module MvamBot
     getter message
     getter user
     getter bot
+    getter wit : Wit::MessageResponse?
 
     def initialize(@message : TelegramBot::Message, @user : User, @bot : MvamBot::Bot)
     end
@@ -18,23 +19,42 @@ module MvamBot
       log = message.text || (message.photo ? "[photo]" : nil) || (message.location ? "[location]" : nil) || "empty"
       MvamBot::Logs::Message.create(user.id, false, log, Time.utc_now)
 
-      if message.text =~ /^\/price(.*)/
-        handle_price($~[1])
-      elsif message.text =~ /^\/echo(.*)/
+      if message.text =~ /^\/echo(.*)/
         handle_echo($~[1])
       elsif message.text =~ /^\/help/
         handle_help
       elsif message.text =~ /^\/reset(.*)/
         handle_reset($~[1])
       elsif message.text == "/start"
-        handle_start
+        survey.start
       elsif MvamBot::Geolocation.handles? user, message
         geolocation.handle
-      elsif user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
-        handle_survey($~[1], $~[2]?)
+      elsif MvamBot::Topics::Prices.handles? user, message
+        prices.handle
+      elsif MvamBot::Surveys::Survey.handles? user, message
+        survey.handle message
       elsif text = message.text
-        wit_message = wit_client.understand(text)
-        handle_wit_message(wit_message)
+        @wit = wit_client.understand(text)
+        handle_wit_message
+      end
+    end
+
+    def handle_wit_message
+      wit_message = @wit.not_nil!
+      intent = extract_value(wit_message.entities, "intent")
+
+      if MvamBot::Topics::Prices.handles? user, message, wit: wit_message
+        prices.handle
+      elsif intent == INTENT_SALUTATION
+        survey.start
+      elsif intent == INTENT_ASK_CAPABILITIES
+        handle_help
+      elsif intent == INTENT_ASK_WHO
+        handle_whois
+      elsif intent == INTENT_THANKS
+        answer "😀"
+      else
+        handle_not_understood
       end
     end
 
@@ -53,22 +73,22 @@ module MvamBot
       answer("Sorry, I did not understand what you just said.#{extra}")
     end
 
-    def handle_survey(step, previous)
-      MvamBot::Surveys::Survey.new(user, self, state_id: step, previous_state_id: previous).handle(message)
+    def survey
+      MvamBot::Surveys::Survey.new(user, self)
     end
 
     def geolocation
       MvamBot::Geolocation.new(user, self)
     end
 
+    def prices
+      MvamBot::Topics::Prices.new(user, self)
+    end
+
     def handle_echo(echo)
       echo = echo.strip
       msg = echo.empty? ? Time.utc_now.to_s : "#{echo} on #{Time.utc_now}"
       answer msg
-    end
-
-    def handle_start
-      MvamBot::Surveys::Survey.new(user, self).start
     end
 
     def handle_reset(what)
@@ -95,33 +115,6 @@ module MvamBot
       end
     end
 
-    def handle_price(query)
-      user.conversation_step = "queryprice/#{query}"
-      return geolocation.start("Before I can provide prices information, I need to know where you are. ") if user.location_adm0_id.nil?
-
-      # If the user sent no query, show usage with an example
-      if query.strip.empty?
-        sample_text = (sample = sample_price) ? " For example, try sending `/price #{sample}`." : ""
-        return answer("Send `/price FOOD` to get the prices of a food near you." + sample_text)
-      end
-
-      prices = prices_for(query.strip)
-
-      # If there are no results, ask the user to try another query
-      if prices.empty?
-        return answer("Sorry, I have no information on _#{query.strip}_ in #{Location::Adm0.find(user.location_adm0_id.not_nil!).name}.")
-
-      # If there is more than a single commodity that matches, display an inline keyboard to choose one
-      elsif prices.map(&.commodity_id).uniq.size > 1
-        options = prices.map{|p| {p.commodity_name, "commodity/#{p.commodity_id}"}}.uniq
-        return answer_with_inline("I have information on #{options.map{|opt| opt[0]}.join(", ")}; please choose one.", options)
-
-      # Otherwise, show a description of the prices
-      else
-        answer(Price.description(prices, user: user, format: :markdown))
-      end
-    end
-
     def handle_whois
       user.conversation_step = nil
       answer "I am a chatbot, I work for WFP. You can ask me information on prices for local commodities. Send `/help` for more information."
@@ -129,7 +122,7 @@ module MvamBot
 
     def handle_help
       user.conversation_step = nil
-      sample_text = (sample = sample_price) ? " For example, `/price #{sample}`." : ""
+      sample_text = (sample = prices.sample_price) ? " For example, `/price #{sample}`." : ""
       answer <<-ANSWER
         You can ask for the price of a commodity in your location using the `/price` command.#{sample_text}
 
@@ -137,54 +130,6 @@ module MvamBot
 
         At any time, you can change your location by sending me the command `/location`.
         ANSWER
-    end
-
-    def handle_wit_message(wit_message)
-      entities = wit_message.entities
-      intent = extract_value(entities, "intent")
-
-      if commodity = extract_value(entities, "commodity")
-        handle_price(commodity.to_s)
-      elsif intent == INTENT_QUERY_PRICE
-        user.conversation_step = "queryprice/"
-        if user.location_adm0_id.nil?
-          geolocation.start("Before I can provide prices information, I need to know where you are. ")
-        else
-          sample_text = (sample = sample_price) ? " For example, you can ask for `#{sample}`." : ""
-          answer("What do you want to know the price of?" + sample_text)
-        end
-      elsif user.conversation_step =~ /^queryprice/
-        if message.text && commodity_names.any?{ |commodity| commodity.downcase.includes?(message.text.not_nil!.strip) }
-          handle_price(message.text.not_nil!)
-        else
-          sample_text = (sample = sample_price) ? " For example, you can ask for `#{sample}`." : ""
-          answer("Sorry, I did not understand which price you are looking for." + sample_text)
-        end
-      elsif intent == INTENT_SALUTATION
-        handle_start
-      elsif intent == INTENT_ASK_CAPABILITIES
-        handle_help
-      elsif intent == INTENT_ASK_WHO
-        handle_whois
-      elsif intent == INTENT_THANKS
-        answer "😀"
-      else
-        handle_not_understood
-      end
-    end
-
-    private def prices_for(query)
-      Price.search_by_name(query.strip, limit: 50, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
-    end
-
-    private def sample_price
-      return nil if user.location_adm0_id.nil?
-      sample_prices = Price.search_by_commodity_id(nil, limit: 1, adm0_id: user.location_adm0_id, adm1_id: user.location_adm1_id, mkt_id: user.location_mkt_id)
-      sample_prices.empty? ? nil : sample_prices[0].short_commodity_name.downcase
-    end
-
-    private def commodity_names
-      Price.commodity_names
     end
 
     def answer_location_complete(location)

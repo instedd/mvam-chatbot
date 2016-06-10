@@ -1,4 +1,5 @@
 require "./mvam"
+require "./mvam-bot/web/*"
 require "kemal"
 
 include MvamBot::Web::Views
