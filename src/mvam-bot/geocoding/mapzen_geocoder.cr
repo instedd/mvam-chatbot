@@ -36,7 +36,7 @@ module MvamBot::Geocoding
         next if f["properties"]["confidence"].as_f < CONFIDENCE_THRESHOLD
 
         l = label(f)
-        lat, lng = f["geometry"]["coordinates"]
+        lng, lat = f["geometry"]["coordinates"]
 
         result[l] = {lat.as_f, lng.as_f} if l
       end
