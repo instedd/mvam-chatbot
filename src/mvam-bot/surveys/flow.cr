@@ -90,6 +90,27 @@ module MvamBot
         end
       end
 
+      def inspect
+        case kind
+        when :message
+          "{message, #{message}}"
+        when :message_from
+          "{message_from, #{message_from}}"
+        when :intent
+          "{intent, #{intent}}"
+        when :entity
+          "{entity, #{entity}}"
+        when :photo
+          "{photo, #{photo}}"
+        when :location
+          "{location, #{location}}"
+        when :method
+          "{method, #{method}}"
+        when :default
+          "{default}"
+        end
+      end
+
     end
 
     class Option

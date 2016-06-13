@@ -2,7 +2,7 @@ module MvamBot::Topics
   class Geolocation
 
     GPS_MATCH_LIMIT = 5
-    GPS_MATCH_RADIUS = 10
+    GPS_MATCH_RADIUS = 50
 
     getter user
     getter requestor
@@ -35,7 +35,7 @@ module MvamBot::Topics
     end
 
     def start(extra_text = nil)
-      if user.position_changed_recently?
+      if user.position_set_recently?
         if user.location_adm0_id
           user.clear_all_location_data
           request_location_adm0(extra_text)

@@ -116,8 +116,8 @@ module MvamBot
       @gps_timestamp = timestamp
     end
 
-    def position_changed_recently?
-      return @gps_timestamp && (Time.now - @gps_timestamp.not_nil!) < 20.minutes
+    def position_set_recently?(span = 20.minutes)
+      return @gps_timestamp && (Time.now - @gps_timestamp.not_nil!) < span
     end
 
     def clear_gps_data

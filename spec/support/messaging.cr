@@ -18,11 +18,29 @@ module MvamBot::Spec
   end
 
   class Geocoder < ::MvamBot::Geocoding::Geocoder
-    def initialize(@results : Hash({String, String}, Hash(String, {Float64, Float64})))
+
+    @lookup_results : Hash({String, String}, Hash(String, {Float64, Float64}))
+    @reverse_lookup_results : Hash({Float64, Float64}, String?)
+
+    def initialize
+      @lookup_results = {} of {String, String} => Hash(String, {Float64, Float64})
+      @reverse_lookup_results = {} of {Float64, Float64} => String?
     end
 
     def lookup(query, country)
-      @results.fetch({query, country}, {} of String => {Float64, Float64})
+      @lookup_results.fetch({query, country}, {} of String => {Float64, Float64})
+    end
+
+    def expect_lookup(query, country, &block : -> Hash(String, {Float64, Float64}))
+      @lookup_results[{query, country}] = block.call
+    end
+
+    def reverse(lat, lng)
+      @reverse_lookup_results[{lat, lng}]?
+    end
+
+    def expect_reverse_lookup(lat, lng, &block : -> String?)
+      @reverse_lookup_results[{lat, lng}] = block.call
     end
   end
 
@@ -62,10 +80,10 @@ module MvamBot::Spec
     MessageHandler.new(message, user, bot)
   end
 
-  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, geocoding = nil, understand = nil, photo : String? = nil, location : {Float64, Float64}? = nil)
+  def handle_message(msg = nil, user = nil, bot = nil, messages = nil, geocoder = nil, understand = nil, photo : String? = nil, location : {Float64, Float64}? = nil)
     handler = message_handler(msg, user, bot, photo: photo, location: location)
     handler.wit_client = WitClient.new(handler.user, handler, messages, understand)
-    handler.geocoder = Geocoder.new(geocoding || {} of {String, String} => Hash(String, {Float64, Float64}))
+    handler.geocoder = geocoder || Geocoder.new
     handler.handle
     handler.bot.as(Bot).messages
   end

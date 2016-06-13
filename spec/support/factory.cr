@@ -15,7 +15,7 @@ module MvamBot::Spec
         MvamBot::User.create(id, username, name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id, conversation_step: conversation_step)
       end
 
-      def self.user(*traits = (), id = 100000000, username = "jdoe", name = "John Doe", location_adm0_id = nil, location_adm1_id = nil, location_mkt_id = nil, conversation_step = nil, conversation_session_id = nil, conversation_at = nil, location_lat = nil, location_lng = nil)
+      def self.user(*traits = (), id = 100000001, username = "jdoe", name = "John Doe", location_adm0_id = nil, location_adm1_id = nil, location_mkt_id = nil, conversation_step = nil, conversation_session_id = nil, conversation_at = nil, location_lat = nil, location_lng = nil, gps_timestamp = nil)
         if traits.includes?(:with_location)
           location_adm0_id ||= 4
           location_adm1_id ||= 344
@@ -36,6 +36,7 @@ module MvamBot::Spec
           location_mkt_id: location_mkt_id,
           location_lat: location_lat,
           location_lng: location_lng,
+          gps_timestamp: gps_timestamp,
           conversation_step: conversation_step,
           conversation_session_id: conversation_session_id,
           conversation_at: conversation_at,
