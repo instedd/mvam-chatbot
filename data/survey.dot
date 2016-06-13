@@ -99,6 +99,7 @@ t assistant,
 	ask_location_changed -> ask_age [ label = "method:store_user_location", dir = forward ];
 	ask_location_changed -> ask_age [ label = "otherwise", dir = forward ];
 	ask_gps -> ask_age [ label = "location", dir = forward ];
+	ask_gps -> ask_location_name [ label = "method:store_known_user_country", dir = forward ];
 	ask_gps -> ask_country [ label = "otherwise", dir = forward ];
 	ask_country -> ask_location_name [ label = "", dir = forward ];
 	ask_country -> ask_age [ label = "otherwise", dir = forward ];

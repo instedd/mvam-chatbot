@@ -305,35 +305,54 @@ describe ::MvamBot::Bot do
         end
 
         context "if user refuses to share gps position" do
-          it "should ask the user to enter his location as text" do
-            DB.cleanup
-            bot = Bot.new
-            user = Factory::DB.user(conversation_step: "survey/ask_gps")
-            user.conversation_session_id = "TEST_SESSION_ID"
+          context "user's country is known" do
+            it "should ask for location name for geocoding" do
+              DB.cleanup
+              user = Factory::DB.user_with_location(conversation_step: "survey/ask_gps")
+              user.conversation_session_id = "TEST_SESSION_ID"
+              adm0_name = MvamBot::Location::Adm0.find(user.location_adm0_id.not_nil!).name
 
-            messages = handle_message("I'd rather not", user: user, bot: bot)
-            messages.size.should eq(1)
-            messages[0][:text].should eq("What country do you live in?")
-            reply_buttons(messages[0]).should eq(MvamBot::Country.all_names)
+              messages = handle_message("I'd rather not", user: user)
+              messages[0][:text].should eq("What's the name of your town?")
 
-            user.conversation_step.not_nil!.should contain("survey/ask_country")
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses[0].data.should eq({"country_name" => adm0_name})
+
+              user.conversation_step.not_nil!.should contain("survey/ask_location_name")
+            end
           end
 
-          it "should store selected country and ask for location name after country selection" do
-            DB.cleanup
-            bot = Bot.new
-            user = Factory::DB.user(conversation_step: "survey/ask_country")
-            user.conversation_session_id = "TEST_SESSION_ID"
+          context "user's country is not known" do
+            it "should ask the user to select his country if we don't know it yet" do
+              DB.cleanup
+              bot = Bot.new
+              user = Factory::DB.user(conversation_step: "survey/ask_gps")
+              user.conversation_session_id = "TEST_SESSION_ID"
 
-            selected_country = MvamBot::Country.all.first
+              messages = handle_message("I'd rather not", user: user, bot: bot)
+              messages.size.should eq(1)
+              messages[0][:text].should eq("What country do you live in?")
+              reply_buttons(messages[0]).should eq(MvamBot::Country.all_names)
 
-            messages = handle_message(selected_country.name, user: user, bot: bot)
-            messages[0][:text].should eq("What's the name of your town?")
+              user.conversation_step.not_nil!.should contain("survey/ask_country")
+            end
 
-            responses = MvamBot::SurveyResponse.for_user(user.id)
-            responses[0].data.should eq({"country_name" => selected_country.name})
+            it "should store selected country and ask for location name after country selection" do
+              DB.cleanup
+              bot = Bot.new
+              user = Factory::DB.user(conversation_step: "survey/ask_country")
+              user.conversation_session_id = "TEST_SESSION_ID"
 
-            user.conversation_step.not_nil!.should contain("survey/ask_location_name")
+              selected_country = MvamBot::Country.all.first
+
+              messages = handle_message(selected_country.name, user: user, bot: bot)
+              messages[0][:text].should eq("What's the name of your town?")
+
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses[0].data.should eq({"country_name" => selected_country.name})
+
+              user.conversation_step.not_nil!.should contain("survey/ask_location_name")
+            end
           end
 
           context "geolocation yields a single result" do

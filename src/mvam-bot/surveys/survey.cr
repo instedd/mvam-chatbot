@@ -291,6 +291,8 @@ module MvamBot
                   user_location_is_old
                 when "store_user_location"
                   store_user_location
+                when "store_known_user_country"
+                  store_known_user_country
                 when "geocode_ok"
                   geocode_ok
                 when "geocode_multiple_results"
@@ -337,6 +339,15 @@ module MvamBot
             user.conversation_state["lng"] = user.location_lng
             return true
           end
+        end
+        return false
+      end
+
+      private def store_known_user_country
+        if user.location_adm0_id
+          adm0 = Location::Adm0.find(user.location_adm0_id.not_nil!)
+          user.conversation_state["country_name"] = adm0.name
+          return true
         end
         return false
       end
