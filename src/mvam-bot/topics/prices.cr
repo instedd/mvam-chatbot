@@ -6,22 +6,21 @@ module MvamBot
       extend MvamBot::WitUtils
 
       getter user : MvamBot::User
-      getter requestor : MvamBot::MessageHandler
+      getter messenger : MvamBot::UserMessenger
       getter message : TelegramBot::Message
       getter wit : Wit::MessageResponse?
 
       @@commodity_names : Array(String)?
 
-      delegate answer, answer_with_inline, @requestor
+      delegate answer, answer_with_inline, @messenger
 
-      def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler)
-        @message = @requestor.message
-        @wit = @requestor.wit
+      def initialize(@messenger : MvamBot::UserMessenger, @message : TelegramBot::Message, @wit : Wit::MessageResponse? = nil)
+        @user = @messenger.user
       end
 
       def handle
         if user.location_adm0_id.nil?
-          requestor.geolocation.start(extra_text: "Before I can provide prices information, I need to know where you are. ")
+          geolocation.start(extra_text: "Before I can provide prices information, I need to know where you are. ")
         elsif message.text =~ /^\/price(.*)/
           handle_command($~[1])
         else
@@ -96,6 +95,10 @@ module MvamBot
 
       private def commodity_names
         self.class.commodity_names
+      end
+
+      private def geolocation
+        MvamBot::Topics::Geolocation.new(messenger, message)
       end
 
       def self.commodity_names

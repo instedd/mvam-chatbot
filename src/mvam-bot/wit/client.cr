@@ -6,8 +6,8 @@ module MvamBot
 
     getter user
 
-    def initialize(token : String, @user : User, @requestor : MessageHandler)
-      @app = Wit::App.new token, logger: MvamBot.logger
+    def initialize(@user : User, token = nil)
+      @app = Wit::App.new token || MvamBot::Config.wit_access_token.not_nil!, logger: MvamBot.logger
     end
 
     def understand(message : String)

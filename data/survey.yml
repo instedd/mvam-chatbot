@@ -13,6 +13,8 @@ common_transitions:
     target: why
   - intent: AskWho
     target: who
+  - timeout: 120
+    target: check_inactivity
 
 states:
 
@@ -224,7 +226,7 @@ states:
     transient: true
     transitions:
       - target: back
-        after: 5
+        timeout: 30
       - target: back
         default: true
 
@@ -233,6 +235,27 @@ states:
     transient: true
     transitions:
       - target: back
-        after: 5
+        timeout: 30
       - target: back
         default: true
+
+  check_inactivity:
+    say: Are you still there?
+    transient: true
+    transitions:
+      - target: timed_out
+        timeout: 300
+      - target: timed_out
+        entity: yes_no
+        value: No
+      - target: back
+        default: true
+
+  timed_out:
+    say: Let me know when you are ready to continue!
+    transient: true
+    transitions:
+      - target: back
+        default: true
+      - target: none
+        timeout: 0

@@ -2,7 +2,7 @@ require "uri"
 require "http/client"
 
 module MvamBot::Geocoding
-  class MapzenGeocoder
+  class MapzenGeocoder < Geocoder
 
     CONFIDENCE_THRESHOLD = 0.7
 
