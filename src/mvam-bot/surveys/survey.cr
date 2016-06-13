@@ -273,8 +273,7 @@ module MvamBot
 
       private def test_location_transition(transition, message)
         if loc = message.location
-          user.conversation_state["lat"] = loc.latitude
-          user.conversation_state["lng"] = loc.longitude
+          set_user_position(loc.latitude, loc.longitude)
           MvamBot.logger.debug("Transition to #{transition.target} matched on location")
           return true
         end
@@ -283,14 +282,14 @@ module MvamBot
 
       private def test_method_transition(transition, message)
         match = case transition.method
-                when "store_recent_user_location"
-                  store_recent_user_location
+                when "use_previous_recent_user_position"
+                  use_previous_recent_user_position
                 when "reverse_geocode_user_position"
                   reverse_geocode_user_position
                 when "user_location_is_old"
                   user_location_is_old
-                when "store_user_location"
-                  store_user_location
+                when "use_previous_user_position"
+                  use_previous_user_position
                 when "store_known_user_country"
                   store_known_user_country
                 when "geocode_ok"
@@ -312,8 +311,7 @@ module MvamBot
           selection = geocoding_result(reported_location_name)[message.text.not_nil!]?
           if selection
             lat, lng = selection
-            user.conversation_state["lat"] = lat
-            user.conversation_state["lng"] = lng
+            set_user_position(lat, lng)
             return true
           end
         end
@@ -328,11 +326,11 @@ module MvamBot
         return true
       end
 
-      private def store_recent_user_location
-        store_user_location(only_recent: true)
+      private def use_previous_recent_user_position
+        use_previous_user_position(only_recent: true)
       end
 
-      private def store_user_location(only_recent = false)
+      private def use_previous_user_position(only_recent = false)
         if user.location_lat && user.location_lng
           unless only_recent && user_location_is_old
             user.conversation_state["lat"] = user.location_lat
@@ -384,8 +382,7 @@ module MvamBot
         matches = geocoding_result(reported_location_name)
         if matches.size == 1
           lat, lng = matches.first[1]
-          user.conversation_state["lat"] = lat
-          user.conversation_state["lng"] = lng
+          set_user_position(lat, lng)
           return true
         else
           return false
@@ -417,6 +414,26 @@ module MvamBot
         @wit_response = nil
         @geocoding_result = nil
       end
+
+      private def set_user_position(lat, lng)
+        user.conversation_state["lat"] = lat
+        user.conversation_state["lng"] = lng
+
+        user.location_lat = lat
+        user.location_lng = lng
+
+        # store administrative location so we don't need to ask again in price queries
+        if !user.location_adm0_id
+          matching_mkts = Location::Mkt.around(lat, lng, kilometers: Topics::Geolocation::GPS_MATCH_RADIUS, count: 1)
+          if !matching_mkts.empty?
+            mkt, distance = matching_mkts[0]
+            user.location_adm0_id = mkt.adm0_id
+            user.location_adm1_id = mkt.adm1_id
+            user.location_mkt_id = mkt.id
+          end
+        end
+      end
+
 
     end
 

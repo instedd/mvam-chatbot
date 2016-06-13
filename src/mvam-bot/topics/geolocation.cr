@@ -2,7 +2,7 @@ module MvamBot::Topics
   class Geolocation
 
     GPS_MATCH_LIMIT = 5
-    GPS_MATCH_RADIUS = 10
+    GPS_MATCH_RADIUS = 50
 
     getter user
     getter requestor

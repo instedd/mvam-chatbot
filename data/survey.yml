@@ -73,7 +73,7 @@ states:
   geolocate_user:
     dummy: true
     transitions:
-      - method: store_recent_user_location
+      - method: use_previous_recent_user_position
         target: ask_age
       - method: reverse_geocode_user_position
         target: ask_location_changed
@@ -86,7 +86,7 @@ states:
       - entity: yes_no
         value: No
         target: ask_gps
-      - method: store_user_location
+      - method: use_previous_user_position
         target: ask_age
       - default: true
         target: ask_age

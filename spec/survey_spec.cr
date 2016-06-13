@@ -474,6 +474,24 @@ describe ::MvamBot::Bot do
         end
       end
     end
+
+    it "presets user administrative location when obtained lat/lng is close tu a known mkt" do
+      DB.cleanup
+      Location.create_test_locations
+
+      user = Factory::DB.user(conversation_step: "survey/ask_gps")
+      user.conversation_session_id = "TEST_SESSION_ID"
+      mkt = Location.vicente_lopez
+
+      messages = handle_message("", user: user, location: {mkt.lat.not_nil!, mkt.lng.not_nil!})
+
+      user.location_lat.should eq(mkt.lat)
+      user.location_lng.should eq(mkt.lng)
+
+      user.location_mkt_id.should eq(mkt.id)
+      user.location_adm1_id.should eq(mkt.adm1_id)
+      user.location_adm0_id.should eq(mkt.adm0_id)
+    end
   end
 
 end
