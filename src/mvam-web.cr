@@ -20,6 +20,34 @@ get "/users" do
   mvam_render "users"
 end
 
+get "/surveys" do
+  surveys = MvamBot::SurveyResponse.all
+  fields = MvamBot::Surveys::Survey.flow.data
+  users_by_id = MvamBot::User.all.index_by(&.id)
+  mvam_render "surveys"
+end
+
+get "/surveys.csv" do |env|
+  surveys = MvamBot::SurveyResponse.all
+  fields = MvamBot::Surveys::Survey.flow.data
+  users_by_id = MvamBot::User.all.index_by(&.id)
+  env.response.content_type = "text/csv"
+
+  CSV.build do |csv|
+    csv.row(["User ID", "User name", "Timestamp", "Completed"] + fields)
+    surveys.each do |survey|
+      user = users_by_id[survey.user_id]
+      row = [user.id, user.full_name, survey.timestamp, (survey.completed ? "Yes" : "No")]
+      row += fields.map do |field|
+        if value = survey.data[field]?
+          (value =~ /photo:\/\/(.+)/) ? "#{MvamBot::Config.web_url}files/#{$~[1]}" : value
+        end
+      end
+      csv.row(row)
+    end
+  end
+end
+
 get "/users/:id" do |env|
   user = MvamBot::User.find(env.params.url["id"].to_i)
   if user

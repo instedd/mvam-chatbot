@@ -1,0 +1,44 @@
+<h1>Surveys</h1>
+
+<p><a href="/surveys.csv"><span class="glyphicon glyphicon-download-alt"></span> Download all as CSV</a></p>
+
+<br/>
+
+<% if surveys.size == 0 %>
+<p>No surveys were run.</p>
+<% else %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Timestamp</th>
+      <th>Completed?</th>
+      <% fields.each do |field| %>
+        <th><%= field %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% surveys.each do |survey| %>
+      <tr>
+        <td>
+          <a href="/users/<%= survey.user_id %>"><%= users_by_id[survey.user_id].full_name %></a>
+        </td>
+        <td><%= survey.timestamp %></td>
+        <td><% if survey.completed %><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><% end %></td>
+        <% fields.each do |field| %>
+          <td>
+            <% if value = survey.data[field]? %>
+              <% if value =~ /photo:\/\/(.+)/ %>
+                <a class="glyphicon glyphicon-download-alt" href="/files/<%= $~[1] %>"></a>
+              <% else %>
+                <%= value %>
+              <% end %>
+            <% end %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
