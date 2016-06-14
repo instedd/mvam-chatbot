@@ -1,3 +1,4 @@
+require "http"
 require "file"
 
 module MvamBot
@@ -14,19 +15,28 @@ module MvamBot
       getter requestor
       getter state_id
 
+      MAX_RETRIES = 1
+
       # Caches should be cleared after each transition.
       @wit_response : Wit::MessageResponse?
       @reverse_geocoding_result : String?
       @geocoding_result : Hash(String, {Float64, Float64})?
 
-      def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler)
-        if user.conversation_step =~ /^survey\/([^\/?]+)(?:\?from=)?([^\/]+)?/
-          @state_id = $~[1]
-          @previous_state_id = $~[2]?
-        end
-      end
+      # Conversation state info
+      @state_id : String?
+      @previous_state_id : String?
+      @retries : Int32 = 0
 
-      def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler, @state_id : String?, @previous_state_id : String?)
+      def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler)
+        @retries = 0
+        if user.conversation_step =~ /^survey\/([^\/?]+)(?:\?(.+))?/
+          @state_id = $~[1]
+          if query = $~[2]?
+            params = HTTP::Params.parse(query)
+            @previous_state_id = params["from"]?
+            @retries = (params["retries"]?.try(&.to_i32) || 0)
+          end
+        end
       end
 
       def self.handles?(user, message)
@@ -54,6 +64,13 @@ module MvamBot
 
       def advance(message = nil)
         if transition = select_transition(message)
+          @retries = 0
+          run transition: transition
+        elsif @retries < MAX_RETRIES && state.clarification
+          @retries += 1
+          run to_state: state, with_clarification: true
+        elsif transition = state.transitions.find{ |t| t.kind == :failure }
+          @retries = 0
           run transition: transition
         else
           MvamBot.logger.warn("No transition matched #{message} at state #{state_id} for user #{user.id}") unless state.final
@@ -97,7 +114,7 @@ module MvamBot
         end
       end
 
-      private def run(to_state : FlowState, extra_text : String = "")
+      private def run(to_state : FlowState, extra_text : String = "", with_clarification = false)
         if to_state.dummy
           @previous_state_id = state.id
           @state_id = to_state.id
@@ -105,7 +122,8 @@ module MvamBot
           return advance
         end
 
-        talk_to_user(to_state, extra_text)
+        # Talk to the user with the default text or the clarification
+        talk_to_user(state: to_state, extra_text: extra_text, with_clarification: with_clarification)
 
         # Save survey data
         SurveyResponse.save_response(user_id: user.id, data: survey_data, session_id: user.ensure_session_id, completed: to_state.final) unless survey_data.empty?
@@ -116,33 +134,47 @@ module MvamBot
           user.conversation_state.clear
           MvamBot.logger.info("Survey completed at state #{to_state.id} for user #{user.id}")
         else
-          # Store current state and previous not-transient state
-          previous_id = (state_id && state.transient) ? @previous_state_id : state_id
-          query = previous_id ? "?from=#{previous_id}" : ""
-          user.conversation_step = "survey/#{to_state.id}#{query}"
+          # Store current state, previous not-transient state and retries
+          query = HTTP::Params.build do |params|
+            previous_id = (state_id && state.transient) ? @previous_state_id : state_id
+            params.add("from", previous_id) if previous_id
+            params.add("retries", @retries.to_s) if @retries > 0
+          end
+
+          user.conversation_step = "survey/#{to_state.id}?#{query}"
         end
 
         user.update
       end
 
-      private def talk_to_user(to_state, extra_text)
-        if msg_template = to_state.say
-          text = extra_text + hydrate(msg_template)
-          if options = to_state.options
-            requestor.answer_with_keyboard(text, options, update_user: false)
-          elsif options_from = to_state.options_from
-            options = case options_from
-                      when "geocoding_result"
-                        options_from_geocoding_result
-                      when "country_names"
-                        options_from_country_names
-                      else
-                        raise "Unrecognised options #{options_from}"
-                      end
-            requestor.answer_with_keyboard(text, options, update_user: false)
-          else
-            requestor.answer(text, update_user: false)
-          end
+      private def talk_to_user(state : FlowState, extra_text, with_clarification = false)
+        return if state.say.nil?
+        return talk_to_user(state.say.not_nil!, extra_text, state.options, state.options_from) if !with_clarification
+
+        clarification = state.clarification.not_nil!
+        say = clarification.say || "Sorry, I did not get that. #{state.say}"
+        options = clarification.options || state.options
+        options_from = clarification.options_from || state.options_from
+
+        talk_to_user(say, "", options, options_from)
+      end
+
+      private def talk_to_user(say : String, extra_text : String?, options = nil, options_from : String? = nil)
+        text = extra_text + hydrate(say)
+        if options
+          requestor.answer_with_keyboard(text, options, update_user: false)
+        elsif options_from
+          options = case options_from
+                    when "geocoding_result"
+                      options_from_geocoding_result
+                    when "country_names"
+                      options_from_country_names
+                    else
+                      raise "Unrecognised options #{options_from}"
+                    end
+          requestor.answer_with_keyboard(text, options, update_user: false)
+        else
+          requestor.answer(text, update_user: false)
         end
       end
 
@@ -161,7 +193,8 @@ module MvamBot
       end
 
       private def transitions_for(state)
-        state.final ? state.transitions : (state.transitions + flow.common_transitions)
+        non_defaults, defaults = state.transitions.partition{|t| t.kind != :default}
+        state.final ? state.transitions : (non_defaults + flow.common_transitions + defaults)
       end
 
       # Selects the transition we should use based on the current context.
@@ -353,7 +386,7 @@ module MvamBot
       private def user_location_is_old
         user.gps_timestamp && !user.position_set_recently?(1.day)
       end
-      
+
       private def reverse_geocode_user_position
         return false unless user.location_lat && user.location_lng
 

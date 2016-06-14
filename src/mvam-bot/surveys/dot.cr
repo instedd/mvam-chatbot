@@ -21,8 +21,6 @@ module MvamBot
         flow.states.each do |id, state|
           shape = if state.final
             "doublecircle"
-          elsif state.converse
-            "rectangle"
           else
             "circle"
           end
@@ -34,15 +32,12 @@ module MvamBot
             say.chars.each_with_index.map do |(c, i)|
               (i > 0 && i % 12 == 0) ? "#{c}\n" : c
             end.join("")
-          elsif state.converse
-            "wit.ai/converse"
           else
             ""
           end
           text = text.gsub("\"", "\\\"")
 
           write "#{id} [ label = \"#{id}\n#{text}\", shape = #{shape}, style= #{style} ];"
-          write "#{id} -> #{id} [ label = \"converse\" ]" if state.converse
         end
 
         flow.states.each do |id, state|
@@ -53,6 +48,8 @@ module MvamBot
                       "entity:#{transition.entity}"
                     when :intent
                       "intent:#{transition.intent}"
+                    when :message
+                      transition.message.not_nil!.join("/")
                     when :photo
                       "photo"
                     when :location
@@ -61,6 +58,8 @@ module MvamBot
                       "method:#{transition.method}"
                     when :default
                       "otherwise"
+                    when :failure
+                      "failure"
                     end
             dir = flow.states[transition.target].transitions.any? { |t| t.target == "back" } ? "both" : "forward"
 

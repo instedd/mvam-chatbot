@@ -16,7 +16,7 @@ describe ::MvamBot::Bot do
       messages.size.should eq(1)
       messages[0][:text].should contain("I would like to ask you a few questions if you have a minute")
 
-      user.conversation_step.should eq("survey/start")
+      user.conversation_step.not_nil!.should contain("survey/start")
     end
 
     it "should not greet the user again when returning from a clarification to the initial step" do
@@ -53,6 +53,55 @@ describe ::MvamBot::Bot do
 
       user.conversation_step.should eq(nil)
       MvamBot::SurveyResponse.for_user(user.id).size.should eq(0)
+    end
+
+    it "should show clarification if response was not understood" do
+      DB.cleanup
+      bot = Bot.new
+      user = Factory::DB.user_with_location
+
+      handle_message("/start", user: user, bot: bot, understand: response({ "intent" => "Salutation" }))
+      handle_message("eh?", user: user, bot: bot, understand: response())
+      handle_message("ok", user: user, bot: bot, understand: response({ "yes_no" => "Yes" }))
+
+      messages = bot.messages
+      messages.size.should eq(3)
+      messages[0][:text].should contain("I would like to ask you a few questions if you have a minute")
+      messages[1][:text].should eq("Sorry, I did not get that. Can I ask you a few questions now?")
+      messages[1][:reply_markup].as(TelegramBot::ReplyKeyboardMarkup).keyboard.flatten.size.should eq(2)
+      messages[2][:text].should contain("Could you share your current position with us?")
+
+      user.conversation_step.should eq("survey/ask_gps?from=geolocate_user")
+    end
+
+    it "should run failure if response was never understood" do
+      DB.cleanup
+      bot = Bot.new
+      user = Factory::DB.user_with_location
+
+      handle_message("/start", user: user, bot: bot, understand: response({ "intent" => "Salutation" }))
+      handle_message("eh?", user: user, bot: bot, understand: response())
+      handle_message("uh?", user: user, bot: bot, understand: response())
+
+      messages = bot.messages
+      messages.size.should eq(3)
+      messages[0][:text].should contain("I would like to ask you a few questions if you have a minute")
+      messages[1][:text].should eq("Sorry, I did not get that. Can I ask you a few questions now?")
+      messages[1][:reply_markup].as(TelegramBot::ReplyKeyboardMarkup).keyboard.flatten.size.should eq(2)
+      messages[2][:text].should contain("Got it, I won't be bothering you")
+
+      user.conversation_step.should eq(nil)
+    end
+
+    it "should show default clarification if new text is unspecified" do
+      DB.cleanup
+      bot = Bot.new
+      user = Factory::DB.user_with_location(conversation_step: "survey/ask_roof_photo")
+
+      messages = handle_message("eh?", user: user, bot: bot, understand: response())
+      messages[0][:text].should contain("Sorry, I did not get that. Would you please send me a picture of your roof?")
+
+      user.conversation_step.not_nil!.should match(/^survey\/ask_roof_photo\?.*retries=1/)
     end
 
     it "should move to the next step on an extracted entity" do

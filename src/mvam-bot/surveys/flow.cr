@@ -31,8 +31,18 @@ module MvamBot
 
     class FlowState
 
+      class Clarification
+        YAML.mapping({
+          say: { type: String, nilable: true },
+          options: { type: Array(Option), nilable: true },
+          options_from: { type: String, nilable: true },
+        }, strict: true)
+
+        def initialize
+        end
+      end
+
       YAML.mapping({
-        converse: { type: Bool, default: false },
         dummy: { type: Bool, nilable: true },
         say: { type: String, nilable: true },
         transitions: { type: Array(FlowTransition), default: Array(FlowTransition).new },
@@ -40,7 +50,8 @@ module MvamBot
         final: { type: Bool, default: false },
         options: { type: Array(Option), nilable: true },
         options_from: { type: String, nilable: true },
-        transient: { type: Bool, default: false }
+        transient: { type: Bool, default: false },
+        clarification: { type: Clarification, default: Clarification.new }
       }, strict: true)
 
       getter id
@@ -67,7 +78,8 @@ module MvamBot
         photo: { type: Bool, default: false },
         location: { type: Bool, default: false },
         method: { type: String, nilable: true },
-        say: { type: String, nilable: true }
+        say: { type: String, nilable: true },
+        failure: { type: Bool, default: false },
       }, strict: true)
 
       def kind
@@ -87,6 +99,8 @@ module MvamBot
           :method
         elsif default
           :default
+        elsif failure
+          :failure
         end
       end
 

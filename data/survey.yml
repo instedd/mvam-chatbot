@@ -19,6 +19,11 @@ states:
   start:
     initial: true
     say: I would like to ask you a few questions if you have a minute.
+    clarification:
+      say: Sorry, I did not get that. Can I ask you a few questions now?
+      options:
+        - text: Yes
+        - text: No
     transitions:
       - entity: yes_no
         value: Yes
@@ -26,9 +31,16 @@ states:
       - entity: yes_no
         value: No
         target: check_availability
+      - failure: true
+        target: no_survey
 
   check_availability:
     say: Would you be available later? It will take just a minute.
+    clarification:
+      say: Sorry, I did not get that. Would you be available later?
+      options:
+        - text: Yes
+        - text: No
     transitions:
       - entity: yes_no
         value: Yes
@@ -39,36 +51,61 @@ states:
       - entity: wit/datetime
         store: survey_at
         target: reschedule_survey
+      - failure: true
+        target: no_survey
 
   ask_availability:
     say: When would you be available?
+    clarification:
+      options:
+        - text: Tomorrow morning
+        - text: Tomorrow afternoon
+        - text: Next week
     transitions:
       - entity: wit/datetime
         store: survey_at
         target: reschedule_survey
+      - failure: true
+        target: no_survey
 
   reschedule_survey:
     say: Great, thanks! I'll talk to you then.
     final: true
 
   no_survey:
-    say: That's ok. Just say "hello" any time if you change your mind!
+    say: Got it, I won't be bothering you. Just say "hello" any time if you change your mind!
     final: true
 
   ask_age:
     initial: true
     say: How old are you?
+    clarification:
+      say: Sorry, I did not get that. Please answer with a number.
     transitions:
       - entity: number
         target: ask_gender
         store: age
+      - failure: true
+        say: Let's move on
+        target: ask_gender
 
   ask_gender:
     say: Are you a man or a woman?
+    clarification:
+      options:
+        - text: Man
+        - text: Woman
+        - text: Other
     transitions:
       - entity: gender
         target: ask_not_enough_food
         store: gender
+      - message: ["Man", "Woman", "Other"]
+        target: ask_not_enough_food
+        store: gender
+      - failure: true
+        say: Let's move on
+        target: ask_not_enough_food
 
   geolocate_user:
     dummy: true
@@ -90,7 +127,7 @@ states:
         target: ask_age
       - default: true
         target: ask_age
-  
+
   ask_gps:
     say: Could you share your current position with us?
     options:
@@ -102,6 +139,8 @@ states:
         target: ask_age
       - method: store_known_user_country
         target: ask_location_name
+      - message: ["I'd rather not"]
+        target: ask_country
       - default: true
         target: ask_country
 
@@ -114,7 +153,6 @@ states:
         target: ask_location_name
       - default: true
         target: ask_age
-
 
   ask_location_name:
     say: What's the name of your town?
@@ -157,6 +195,9 @@ states:
       - target: ask_roof_photo
         entity: yes_no
         store: not_enough_food
+      - failure: true
+        say: Let's move on
+        target: ask_roof_photo
 
   ask_roof_photo:
     say: Would you please send me a picture of your roof?
@@ -171,6 +212,8 @@ states:
       - target: none
         entity: yes_no
         value: Yes
+      - failure: true
+        target: thank_you
 
   thank_you:
     say: That would be all, thank you for your answers!
@@ -183,8 +226,7 @@ states:
       - target: back
         after: 5
       - target: back
-        entity: yes_no
-        value: Yes
+        default: true
 
   who:
     say: I am a WFP bot assistant, for tracking food security in your region.
@@ -193,5 +235,4 @@ states:
       - target: back
         after: 5
       - target: back
-        entity: yes_no
-        value: Yes
+        default: true
