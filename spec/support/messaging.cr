@@ -3,8 +3,8 @@ module MvamBot::Spec
   class WitClient < ::MvamBot::WitClient
     @runner : Proc(String, String, Wit::Actions, Wit::State)?
 
-    def initialize(user, requestor, @messages : Hash(String, Wit::MessageResponse)? = nil, @understand : Wit::MessageResponse? = nil)
-      super("", user, requestor)
+    def initialize(user, messenger, @messages : Hash(String, Wit::MessageResponse)? = nil, @understand : Wit::MessageResponse? = nil)
+      super(user, token: "")
       @messages ||= Hash(String, Wit::MessageResponse).new
     end
 
@@ -62,6 +62,10 @@ module MvamBot::Spec
     protected def geocoder
       @geocoder || super
     end
+
+    def messenger
+      super
+    end
   end
 
   def message_handler(msg, user = nil, bot = nil, photo = nil, location = nil)
@@ -82,7 +86,7 @@ module MvamBot::Spec
 
   def handle_message(msg = nil, user = nil, bot = nil, messages = nil, geocoder = nil, understand = nil, photo : String? = nil, location : {Float64, Float64}? = nil)
     handler = message_handler(msg, user, bot, photo: photo, location: location)
-    handler.wit_client = WitClient.new(handler.user, handler, messages, understand)
+    handler.wit_client = WitClient.new(handler.user, handler.messenger, messages, understand)
     handler.geocoder = geocoder || Geocoder.new
     handler.handle
     handler.bot.as(Bot).messages

@@ -66,7 +66,6 @@ module MvamBot
 
       YAML.mapping({
         target: { type: String },
-        after: { type: Int32, nilable: true },
         action: { type: String, nilable: true },
         entity: { type: String, nilable: true },
         value: { type: String, nilable: true },
@@ -80,6 +79,7 @@ module MvamBot
         method: { type: String, nilable: true },
         say: { type: String, nilable: true },
         failure: { type: Bool, default: false },
+        timeout: { type: Int32, nilable: true }
       }, strict: true)
 
       def kind
@@ -97,6 +97,8 @@ module MvamBot
           :location
         elsif method
           :method
+        elsif timeout
+          :timeout
         elsif default
           :default
         elsif failure

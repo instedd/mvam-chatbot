@@ -4,14 +4,12 @@ module MvamBot::Topics
     GPS_MATCH_LIMIT = 5
     GPS_MATCH_RADIUS = 50
 
-    getter user
-    getter requestor
+    getter user : MvamBot::User
+    getter messenger
     getter message
 
-    @message : TelegramBot::Message
-
-    def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler)
-      @message = @requestor.message
+    def initialize(@messenger : MvamBot::UserMessenger, @message : TelegramBot::Message)
+      @user = @messenger.user
     end
 
     def self.handles?(user, message)
@@ -51,7 +49,7 @@ module MvamBot::Topics
           [TelegramBot::KeyboardButton.new("I'd rather not", request_location: false) ]
         ], one_time_keyboard: true)
 
-        @requestor.answer("#{extra_text}Could you share your current position with us?", keyboard)
+        messenger.answer("#{extra_text}Could you share your current position with us?", keyboard)
       end
     end
 
@@ -80,7 +78,7 @@ module MvamBot::Topics
         user.location_adm0_id = location.id
         request_location_adm1(location)
       else
-        @requestor.answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a country from the list.", Location::Adm0.all.map(&.name).sort
+        messenger.answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a country from the list.", Location::Adm0.all.map(&.name).sort
       end
     end
 
@@ -89,7 +87,7 @@ module MvamBot::Topics
         user.location_adm1_id = location.id
         request_location_mkt(location)
       else
-        @requestor.answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a region from the list.", Location::Adm1.where_adm0_id(user.location_adm0_id.not_nil!).map(&.name).sort
+        messenger.answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a region from the list.", Location::Adm1.where_adm0_id(user.location_adm0_id.not_nil!).map(&.name).sort
       end
     end
 
@@ -97,9 +95,9 @@ module MvamBot::Topics
       if location = Location::Mkt.find_by_name(message.text, user.location_adm1_id.not_nil!)
         user.location_mkt_id = location.id
         user.conversation_step = nil
-        @requestor.answer_location_complete(location)
+        messenger.answer_location_complete(location)
       else
-        @requestor.answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a city from the list.", Location::Mkt.where_adm1_id(user.location_adm1_id.not_nil!).map(&.name).sort
+        messenger.answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a city from the list.", Location::Mkt.where_adm1_id(user.location_adm1_id.not_nil!).map(&.name).sort
       end
     end
 
@@ -110,7 +108,7 @@ module MvamBot::Topics
         request_location_adm0
       elsif matches.size > 1
         user.conversation_step = "location/gps_multiple_matches"
-        @requestor.answer_with_keyboard "Which city you like information from?", matches.map(&.first.name)
+        messenger.answer_with_keyboard "Which city you like information from?", matches.map(&.first.name)
       else
         mkt = matches[0][0]
         set_location_from_gps_match(mkt)
@@ -127,26 +125,26 @@ module MvamBot::Topics
       user.location_mkt_id = mkt.id
 
       user.conversation_step = nil
-      @requestor.answer_location_complete(mkt)
+      messenger.answer_location_complete(mkt)
     end
 
     def request_location_adm0(extra_text = nil)
       user.conversation_step = "location/adm0"
-      @requestor.answer_with_keyboard "#{extra_text}What country do you live in?", Location::Adm0.all.map(&.name).sort
+      messenger.answer_with_keyboard "#{extra_text}What country do you live in?", Location::Adm0.all.map(&.name).sort
     end
 
     def request_location_adm1(location_adm0)
       locations = Location::Adm1.where_adm0_id(location_adm0.id)
       if locations.size == 0
         user.conversation_step = nil
-        @requestor.answer_location_complete(location_adm0)
+        messenger.answer_location_complete(location_adm0)
       elsif locations.size == 1
         location_adm1 = locations.first
         user.location_adm1_id = location_adm1.id
         request_location_mkt(location_adm1)
       else
         user.conversation_step = "location/adm1"
-        @requestor.answer_with_keyboard "And where in #{location_adm0.name} are you?", locations.map(&.name).sort
+        messenger.answer_with_keyboard "And where in #{location_adm0.name} are you?", locations.map(&.name).sort
       end
     end
 
@@ -154,15 +152,15 @@ module MvamBot::Topics
       locations = Location::Mkt.where_adm1_id(location_adm1.id)
       if locations.size == 0
         user.conversation_step = nil
-        @requestor.answer_location_complete(location_adm1)
+        messenger.answer_location_complete(location_adm1)
       elsif locations.size == 1
         location_mkt = locations.first
         user.location_mkt_id = location_mkt.id
         user.conversation_step = nil
-        @requestor.answer_location_complete(location_mkt)
+        messenger.answer_location_complete(location_mkt)
       else
         user.conversation_step = "location/mkt"
-        @requestor.answer_with_keyboard "And which city in #{location_adm1.name} would you like information from?", locations.map(&.name).sort
+        messenger.answer_with_keyboard "And which city in #{location_adm1.name} would you like information from?", locations.map(&.name).sort
       end
     end
 

@@ -11,11 +11,16 @@ module MvamBot
 
       @@flow = Flow.from_yaml({{ `cat data/survey.yml`.stringify }})
 
-      getter user
-      getter requestor
-      getter state_id
+      getter messenger
+      getter! geocoder
+      getter! wit_client
 
       MAX_RETRIES = 1
+
+      getter user : MvamBot::User
+      getter message : TelegramBot::Message?
+      getter state_id : String?
+      getter previous_state_id : String?
 
       # Caches should be cleared after each transition.
       @wit_response : Wit::MessageResponse?
@@ -25,9 +30,13 @@ module MvamBot
       # Conversation state info
       @state_id : String?
       @previous_state_id : String?
-      @retries : Int32 = 0
+      @retries : Int32
+      @message : TelegramBot::Message?
 
-      def initialize(@user : MvamBot::User, @requestor : MvamBot::MessageHandler)
+      @@user_timeouts : Hash(Int32, Timeout) = Hash(Int32, Timeout).new
+
+      def initialize(@messenger : MvamBot::UserMessenger, @wit_client : MvamBot::WitClient? = nil, @geocoder : MvamBot::Geocoding::Geocoder? = nil)
+        @user = @messenger.user
         @retries = 0
         if user.conversation_step =~ /^survey\/([^\/?]+)(?:\?(.+))?/
           @state_id = $~[1]
@@ -43,64 +52,58 @@ module MvamBot
         return user.conversation_step =~ /^survey/
       end
 
-      def start
-        clear_states
-        run(flow.start, extra_text: "Hello! I'm a WFP bot assistant. ")
-      end
-
-      def reschedule(when)
-        # TODO: Reschedule poll for specified datetime
-        user.conversation_step = nil
-      end
-
-      def cancel
-        user.conversation_step = nil
-      end
-
-      def handle(message, wit_response : Wit::MessageResponse? = nil)
-        @wit_response = wit_response if wit_response
-        advance(message)
-      end
-
-      def advance(message = nil)
-        if transition = select_transition(message)
-          @retries = 0
-          run transition: transition
-        elsif @retries < MAX_RETRIES && state.clarification
-          @retries += 1
-          run to_state: state, with_clarification: true
-        elsif transition = state.transitions.find{ |t| t.kind == :failure }
-          @retries = 0
-          run transition: transition
-        else
-          MvamBot.logger.warn("No transition matched #{message} at state #{state_id} for user #{user.id}") unless state.final
-        end
-      end
-
-      def flow
-        @@flow
-      end
-
       def self.flow
         @@flow
       end
 
-      protected def state
+      def start
+        clear_states
+        clear_user_timeout
+        run(flow.start, extra_text: "Hello! I'm a WFP bot assistant. ")
+      end
+
+      def handle(message, wit_response : Wit::MessageResponse? = nil)
+        @message = message
+        @wit_response = wit_response if wit_response
+        advance
+      end
+
+      private def advance
+        clear_user_timeout
+        if transition = select_transition(message)
+          @retries = 0
+          run transition: transition
+        elsif @retries < MAX_RETRIES && current_state.clarification
+          @retries += 1
+          run to_state: current_state, with_clarification: true
+        elsif transition = current_state.transitions.find{ |t| t.kind == :failure }
+          @retries = 0
+          run transition: transition
+        else
+          MvamBot.logger.warn("No transition matched #{message} at state #{state_id} for user #{user.id}") unless current_state.final
+        end
+      end
+
+      private def flow
+        @@flow
+      end
+
+      protected def current_state
         flow.states[state_id]
       end
 
       protected def wit_understand(message)
-        @wit_response ||= @requestor.wit_client.not_nil!.understand(message)
+        @wit_response ||= wit_client.understand(message)
       end
 
       private def run(transition : FlowTransition)
         if say = transition.say
-          @requestor.answer(say, update_user: false)
+          messenger.answer(say, update_user: false)
         end
         run transition.target
       end
 
-      private def run(state : String)
+      def run(state : String)
         if state == "back"
           if @previous_state_id
             run flow.states[@previous_state_id]
@@ -108,7 +111,7 @@ module MvamBot
             MvamBot.logger.error("Cannot transition to unset previous state from #{state_id} for user #{user.id}")
           end
         elsif state == "none"
-          # Do nothing, and stay on the current state
+          set_user_timeout flow.states[state_id]?
         else
           run flow.states[state]
         end
@@ -116,7 +119,7 @@ module MvamBot
 
       private def run(to_state : FlowState, extra_text : String = "", with_clarification = false)
         if to_state.dummy
-          @previous_state_id = state.id
+          @previous_state_id = state_id
           @state_id = to_state.id
           clear_caches
           return advance
@@ -136,11 +139,12 @@ module MvamBot
         else
           # Store current state, previous not-transient state and retries
           query = HTTP::Params.build do |params|
-            previous_id = (state_id && state.transient) ? @previous_state_id : state_id
+            previous_id = (state_id && current_state.transient) ? @previous_state_id : state_id
             params.add("from", previous_id) if previous_id
             params.add("retries", @retries.to_s) if @retries > 0
           end
 
+          set_user_timeout(to_state)
           user.conversation_step = "survey/#{to_state.id}?#{query}"
         end
 
@@ -162,7 +166,7 @@ module MvamBot
       private def talk_to_user(say : String, extra_text : String?, options = nil, options_from : String? = nil)
         text = extra_text + hydrate(say)
         if options
-          requestor.answer_with_keyboard(text, options, update_user: false)
+          messenger.answer_with_keyboard(text, options, update_user: false)
         elsif options_from
           options = case options_from
                     when "geocoding_result"
@@ -172,9 +176,9 @@ module MvamBot
                     else
                       raise "Unrecognised options #{options_from}"
                     end
-          requestor.answer_with_keyboard(text, options, update_user: false)
+          messenger.answer_with_keyboard(text, options, update_user: false)
         else
-          requestor.answer(text, update_user: false)
+          messenger.answer(text, update_user: false)
         end
       end
 
@@ -202,7 +206,7 @@ module MvamBot
       # Transitions are tested in order, each of them will examine the information
       # available and determine if it is possible to go to their target state.
       private def select_transition(message)
-        transitions_for(state).find do |t|
+        transitions_for(current_state).find do |t|
           MvamBot.logger.debug("Testing transition #{t.inspect}")
           test_transition(t, message)
         end
@@ -297,7 +301,7 @@ module MvamBot
         if (transition_photo = transition.photo) && photos && photos.size > 0
           MvamBot.logger.debug("Transition to #{transition.target} matched on photo")
           telegram_file_id = (photos.find {|p| p.width >= 800} || photos.last).file_id
-          file_id = requestor.download_photo(telegram_file_id, user_id: user.id)
+          file_id = messenger.download_photo(telegram_file_id)
           user.conversation_state[transition.store.not_nil!] = "photo://#{file_id}" if transition.store
           return true
         end
@@ -390,7 +394,7 @@ module MvamBot
       private def reverse_geocode_user_position
         return false unless user.location_lat && user.location_lng
 
-        @reverse_geocoding_result = @requestor.geocoder.reverse(user.location_lat, user.location_lng)
+        @reverse_geocoding_result = geocoder.reverse(user.location_lat, user.location_lng)
         if @reverse_geocoding_result
           return true
         else
@@ -427,7 +431,7 @@ module MvamBot
       end
 
       private def geocoding_result(query)
-        @geocoding_result ||= @requestor.geocoder.lookup(query, reported_country_name)
+        @geocoding_result ||= geocoder.lookup(query, reported_country_name)
       end
 
       private def options_from_geocoding_result
@@ -467,6 +471,26 @@ module MvamBot
         end
       end
 
+      # Exposed for testing purposes exclusively
+      def self.user_timeouts
+        @@user_timeouts
+      end
+
+      private def clear_user_timeout
+        if ping = @@user_timeouts.delete(user.id)
+          ping.cancel
+        end
+      end
+
+      private def set_user_timeout(state)
+        clear_user_timeout
+        return if state.nil?
+        if transition = transitions_for(state).find {|t| t.kind == :timeout}
+          if transition.timeout.not_nil! > 0 && transition.target != "none"
+            @@user_timeouts[user.id] = Timeout.new(messenger, transition.target).schedule(transition.timeout.not_nil!)
+          end
+        end
+      end
 
     end
 

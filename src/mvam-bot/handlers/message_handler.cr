@@ -14,6 +14,8 @@ module MvamBot
 
     include MvamBot::WitUtils
 
+    delegate answer, messenger
+
     def initialize(@message : TelegramBot::Message, @user : User, @bot : MvamBot::Bot)
     end
 
@@ -153,7 +155,7 @@ module MvamBot
     end
 
     protected def wit_client
-      WitClient.new(MvamBot::Config.wit_access_token.not_nil!, user, self)
+      WitClient.new(user)
     end
 
     protected def geocoder
@@ -161,68 +163,19 @@ module MvamBot
     end
 
     protected def survey
-      MvamBot::Surveys::Survey.new(user, self)
+      MvamBot::Surveys::Survey.new(messenger, wit_client, geocoder)
     end
 
     protected def geolocation
-      MvamBot::Topics::Geolocation.new(user, self)
+      MvamBot::Topics::Geolocation.new(messenger, message)
     end
 
     protected def prices
-      MvamBot::Topics::Prices.new(user, self)
+      MvamBot::Topics::Prices.new(messenger, message, wit)
     end
 
-    def answer_location_complete(location)
-      answer "Got it, I will send you food prices from #{location.name}. If you want to change it at anytime, just send `/location`."
-    end
-
-    def answer_with_keyboard(text : String, options : Array(String) | Array(Surveys::Option), update_user = true, layout = :vertical)
-      answer(text, build_keyboard(options, layout), update_user)
-    end
-
-    def answer_with_inline(text : String, buttons : Array(Tuple(String, String)))
-      keyboard = TelegramBot::InlineKeyboardMarkup.new(buttons.map {|b| TelegramBot::InlineKeyboardButton.new(text: b[0], callback_data: b[1])})
-      answer(text, keyboard)
-    end
-
-    def answer(text : String, keyboard : TelegramBot::ReplyKeyboardMarkup | TelegramBot::InlineKeyboardMarkup | Nil = nil, update_user : Bool = true)
-      keyboard ||= TelegramBot::ReplyKeyboardHide.new
-
-      MvamBot.logger.debug "< SendMessage #{message.chat.id}, #{text}, keyboard: #{keyboard.inspect}"
-      MvamBot::Logs::Message.create(user.id, true, text, Time.utc_now)
-
-      bot.send_message message.chat.id, text, reply_markup: keyboard, parse_mode: "Markdown"
-      user.conversation_at = Time.utc_now
-      user.update if update_user
-    end
-
-    def build_keyboard(options, layout = :vertical)
-      grid = layout == :vertical ? options.map { |o| [o] } : [options]
-
-      buttons = grid.map do |row|
-        row.map { |o| button(o) }
-      end
-
-      TelegramBot::ReplyKeyboardMarkup.new(buttons, one_time_keyboard: true)
-    end
-
-    def button(option : String)
-      TelegramBot::KeyboardButton.new(option)
-    end
-
-    def button(option : Surveys::Option)
-      TelegramBot::KeyboardButton.new(option.text, request_location: option.request_location)
-    end
-
-    def download_photo(file_id : String, user_id : Int32? = nil)
-      # TODO: Download photo in a separate fiber to avoid blocking; check for issues with accessing the DB connection from there
-      file = bot.get_file(file_id)
-      raw = bot.download(file)
-      MvamBot.logger.debug("Downloaded photo #{file_id} for user #{user_id || "NULL"}")
-
-      # Use the telegram unique identifier as our own id
-      MvamBot::DataFile.create(id: file_id, user_id: user_id, extension: "jpg", data: raw.to_slice, kind: "image")
-      return file_id
+    protected def messenger
+      UserMessenger.new(user, message.chat.id, bot)
     end
 
   end
