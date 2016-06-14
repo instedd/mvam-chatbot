@@ -20,6 +20,13 @@ get "/users" do
   mvam_render "users"
 end
 
+get "/surveys" do
+  surveys = MvamBot::SurveyResponse.all
+  fields = MvamBot::Surveys::Survey.flow.data
+  users_by_id = MvamBot::User.all.index_by(&.id)
+  mvam_render "surveys"
+end
+
 get "/users/:id" do |env|
   user = MvamBot::User.find(env.params.url["id"].to_i)
   if user

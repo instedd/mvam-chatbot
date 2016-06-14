@@ -49,7 +49,11 @@ module MvamBot
     end
 
     def self.for_user(user_id)
-      DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM survey_responses WHERE user_id = $1 ORDER BY timestamp ASC", [user_id]).rows.map{|r| self.new(*r)}
+      DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM survey_responses WHERE user_id = $1 ORDER BY timestamp DESC", [user_id]).rows.map{|r| self.new(*r)}
+    end
+
+    def self.all
+      DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM survey_responses ORDER BY timestamp DESC").rows.map{|r| self.new(*r)}
     end
 
   end
