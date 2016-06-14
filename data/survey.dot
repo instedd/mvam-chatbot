@@ -21,9 +21,9 @@ Great, thanks
 to you th...
 ", shape = doublecircle, style= solid ];
 	no_survey [ label = "no_survey
-That's ok. Ju
-st say \"hell
-o\" any ti...
+Got it, I won
+'t be bother
+ing you. ...
 ", shape = doublecircle, style= solid ];
 	ask_age [ label = "ask_age
 How old are y
@@ -86,12 +86,18 @@ t assistant,
 ", shape = circle, style= solid ];
 	start -> geolocate_user [ label = "entity:yes_no", dir = forward ];
 	start -> check_availability [ label = "entity:yes_no", dir = forward ];
+	start -> no_survey [ label = "failure", dir = forward ];
 	check_availability -> ask_availability [ label = "entity:yes_no", dir = forward ];
 	check_availability -> no_survey [ label = "entity:yes_no", dir = forward ];
 	check_availability -> reschedule_survey [ label = "entity:wit/datetime", dir = forward ];
+	check_availability -> no_survey [ label = "failure", dir = forward ];
 	ask_availability -> reschedule_survey [ label = "entity:wit/datetime", dir = forward ];
+	ask_availability -> no_survey [ label = "failure", dir = forward ];
 	ask_age -> ask_gender [ label = "entity:number", dir = forward ];
+	ask_age -> ask_gender [ label = "failure", dir = forward ];
 	ask_gender -> ask_not_enough_food [ label = "entity:gender", dir = forward ];
+	ask_gender -> ask_not_enough_food [ label = "Man/Woman/Other", dir = forward ];
+	ask_gender -> ask_not_enough_food [ label = "failure", dir = forward ];
 	geolocate_user -> ask_age [ label = "method:use_previous_recent_user_position", dir = forward ];
 	geolocate_user -> ask_location_changed [ label = "method:reverse_geocode_user_position", dir = forward ];
 	geolocate_user -> ask_gps [ label = "otherwise", dir = forward ];
@@ -100,6 +106,7 @@ t assistant,
 	ask_location_changed -> ask_age [ label = "otherwise", dir = forward ];
 	ask_gps -> ask_age [ label = "location", dir = forward ];
 	ask_gps -> ask_location_name [ label = "method:store_known_user_country", dir = forward ];
+	ask_gps -> ask_country [ label = "I'd rather not", dir = forward ];
 	ask_gps -> ask_country [ label = "otherwise", dir = forward ];
 	ask_country -> ask_location_name [ label = "", dir = forward ];
 	ask_country -> ask_age [ label = "otherwise", dir = forward ];
@@ -110,8 +117,10 @@ t assistant,
 	geocode -> ask_age [ label = "otherwise", dir = forward ];
 	ask_which_location -> ask_age [ label = "method:store_chosen_location_coordinates", dir = forward ];
 	ask_which_location -> ask_age [ label = "otherwise", dir = forward ];
-	ask_not_enough_food -> ask_roof_photo [ label = "", dir = forward ];
+	ask_not_enough_food -> ask_roof_photo [ label = "Yes/No", dir = forward ];
 	ask_not_enough_food -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
+	ask_not_enough_food -> ask_roof_photo [ label = "failure", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "photo", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "entity:yes_no", dir = forward ];
+	ask_roof_photo -> thank_you [ label = "failure", dir = forward ];
 }
