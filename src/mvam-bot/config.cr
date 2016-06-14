@@ -70,5 +70,9 @@ module MvamBot
     def self.web_bind_port : Int32
       ENV["WEB_BIND_PORT"]?.try(&.to_i) || 3000
     end
+
+    def self.web_url : String
+      ENV["WEB_URL"]? || "http://mvam-bot.instedd.org/"
+    end
   end
 end

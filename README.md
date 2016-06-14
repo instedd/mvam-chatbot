@@ -76,7 +76,7 @@ To run the web application:
 * `WEB_PASSWORD`: pass for basic-auth access
 * `WEB_BIND_ADDRESS`: address for binding the web app
 * `WEB_BIND_PORT`:  port for binding the web app
-
+* `WEB_URL`: public address where the web app is accessible
 
 To forward all not-understood messages to wit.ai:
 
