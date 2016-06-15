@@ -2,6 +2,12 @@ module MvamBot
 
   module Location
 
+    def self.clear_cache
+      Adm0.clear_cache
+      Adm1.clear_cache
+      Mkt.clear_cache
+    end
+
     # Returns the name of the deepest location found
     def self.short_description(adm0_id, adm1_id, mkt_id)
       if mkt_id
@@ -39,6 +45,10 @@ module MvamBot
     record Adm0, id : Int32, name : String do
       @@cache : Hash(Int32, Adm0)?
 
+      def self.clear_cache
+        @@cache = nil
+      end
+
       def self.cache
         @@cache ||= self.all.index_by(&.id)
       end
@@ -64,10 +74,18 @@ module MvamBot
       def self.select(condition = nil, params = Array(PG::PGValue).new(0))
         DB.exec({Int32, String}, "SELECT id, name FROM locations_adm0 #{condition}", params).rows.map{ |row| self.new(*row) }
       end
+
+      def description
+        @name
+      end
     end
 
     record Adm1, id : Int32, name : String, adm0_id : Int32 do
       @@cache : Hash(Int32, Adm1)?
+
+      def self.clear_cache
+        @@cache = nil
+      end
 
       def self.cache
         @@cache ||= self.all.index_by(&.id)
@@ -98,10 +116,18 @@ module MvamBot
       def self.select(condition = nil, params = Array(PG::PGValue).new(0))
         DB.exec({Int32, String, Int32}, "SELECT id, name, location_adm0_id FROM locations_adm1 #{condition}", params).rows.map{ |row| self.new(*row) }
       end
+
+      def description
+        "#{name} (#{Adm0.find(adm0_id).name})"
+      end
     end
 
     record Mkt, id : Int32, name : String, adm1_id : Int32, adm0_id : Int32, lat : Float64?, lng : Float64? do
       @@cache : Hash(Int32, Mkt)?
+
+      def self.clear_cache
+        @@cache = nil
+      end
 
       def self.cache
         @@cache ||= self.all.index_by(&.id)
@@ -152,6 +178,10 @@ module MvamBot
 
       def self.set_position(id : String, lat : Float64, lng : Float64)
         DB.exec("UPDATE locations_mkt SET position = ST_GeomFromText('SRID=4326;POINT(' || $1 || ' ' || $2 || ')') WHERE id = $3", [lng, lat, id])
+      end
+
+      def description
+        "#{name} (#{Adm1.find(adm1_id).name}, #{Adm0.find(adm0_id).name})"
       end
 
     end

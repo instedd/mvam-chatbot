@@ -39,7 +39,7 @@ describe ::MvamBot::Topics::Geolocation do
 
         messages = handle_message("", user, location: {lat, lng})
         messages.size.should eq(1)
-        messages[0][:text].should match(/I will send you food prices from Esquel/)
+        messages[0][:text].not_nil!.should contain("I will send you food prices from Esquel (Chubut, Argentina)")
 
         user.conversation_step.should eq(nil)
 

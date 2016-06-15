@@ -12,12 +12,16 @@ module MvamBot::Spec
       ::MvamBot::Location::Mkt.create(10000000, "Vicente Lopez", buenos_aires.id, argentina.id, {-34.528304, -58.473009})
       ::MvamBot::Location::Mkt.create(10000001, "Olivos", buenos_aires.id, argentina.id, {-34.510636, -58.496459})
       ::MvamBot::Location::Mkt.create(10000002, "Esquel", chubut.id, argentina.id, {-42.909863, -71.314188})
+
+      ::MvamBot::Location.clear_cache
     end
 
     def self.delete_test_locations
       ::MvamBot::DB.exec("DELETE FROM locations_mkt WHERE id >= 10000000")
       ::MvamBot::DB.exec("DELETE FROM locations_adm1 WHERE id >= 10000000")
       ::MvamBot::DB.exec("DELETE FROM locations_adm0 WHERE id >= 10000000")
+
+      ::MvamBot::Location.clear_cache
     end
 
     def self.argentina : ::MvamBot::Location::Adm0
@@ -43,4 +47,3 @@ module MvamBot::Spec
 
 
 end
-

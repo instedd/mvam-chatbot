@@ -14,7 +14,7 @@ module MvamBot
     end
 
     def answer_location_complete(location)
-      answer "Got it, I will send you food prices from #{location.name}. If you want to change it at anytime, just send `/location`."
+      answer "Got it, I will send you food prices from #{location.description}. If you want to change it at anytime, just send `/location`."
     end
 
     def answer_with_keyboard(text : String, options : Array(String) | Array(Surveys::Option), update_user = true, layout = :vertical)
