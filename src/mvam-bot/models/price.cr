@@ -53,6 +53,11 @@ module MvamBot
         self.new(*sample_row)
       end
 
+      def self.sample
+        sample_row = DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM prices TABLESAMPLE SYSTEM(10) LIMIT 1").rows.sample
+        self.new(*sample_row)
+      end
+
       def self.commodity_names
         DB.exec({String}, "SELECT DISTINCT(commodity_name) FROM prices;").rows.map(&.first)
       end

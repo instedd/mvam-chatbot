@@ -7,8 +7,8 @@ survey_data:
   - lng
   - location_name
   - country_name
-  - asked_price_commodity
-  - asked_price_currency
+  - asked_price_commodity_id
+  - asked_price_currency_code
   - asked_price_answer
 
 common_transitions:
@@ -232,10 +232,14 @@ states:
 
   ask_local_price:
     say: Currently, how much does $some_product cost in your community? Reply with the price of 1 $some_product_price_unit in $user_currency_label.
+    clarification:
+      say: Sorry, I did not get that. Please answer with a number.
     transitions:
-      - method: store_price_answer
+      - entity: number
+        store: asked_price_answer
         target: ask_roof_photo
-      - default: true
+      - failure: true
+        say: Let's move on
         target: ask_roof_photo
 
   ask_roof_photo:
