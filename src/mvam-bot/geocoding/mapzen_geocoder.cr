@@ -5,7 +5,6 @@ module MvamBot::Geocoding
   class MapzenGeocoder < Geocoder
 
     CONFIDENCE_THRESHOLD = 0.7
-    NAME_MAPPINGS_FILE   = "data/mapzen-mappings.csv"
 
     @country_name_mappings : Hash(String, String)
 
@@ -13,12 +12,10 @@ module MvamBot::Geocoding
       @country_name_mappings = {} of String => String
 
       # return country names that match our adm0 table when possible
-      File.open(NAME_MAPPINGS_FILE, "r") do |file|
-        CSV.new(file, headers: true) do |row|
-          mapzen_name, adm0_id = row
-          adm0_name = MvamBot::Location::Adm0.find(adm0_id.to_i).name
-          @country_name_mappings.not_nil![mapzen_name] = adm0_name
-        end
+      CSV.new({{ `cat data/mapzen-mappings.csv`.stringify }}, headers: true) do |row|
+        mapzen_name, adm0_id = row
+        adm0_name = MvamBot::Location::Adm0.find(adm0_id.to_i).name
+        @country_name_mappings.not_nil![mapzen_name] = adm0_name
       end
     end
 

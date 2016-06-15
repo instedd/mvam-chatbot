@@ -22,15 +22,13 @@ module MvamBot
       @@currencies_by_code = {} of String => Currency
       @@currencies_by_country = {} of Country => Currency
 
-      File.open("data/countries.csv") do |file|
-        CSV.new(file, headers: true) do |row|
-          country_name,_,code,name = row
-          country = Country.find_by_name(country_name)
+      CSV.new({{ `cat data/countries.csv`.stringify }}, headers: true) do |row|
+        country_name,_,code,name = row
+        country = Country.find_by_name(country_name)
 
-          currency = Currency.new(code, name, country)
-          @@currencies_by_code.not_nil![code] = currency
-          @@currencies_by_country.not_nil![country] = currency
-        end
+        currency = Currency.new(code, name, country)
+        @@currencies_by_code.not_nil![code] = currency
+        @@currencies_by_country.not_nil![country] = currency
       end
     end
 

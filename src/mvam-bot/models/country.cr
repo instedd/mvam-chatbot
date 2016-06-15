@@ -24,11 +24,9 @@ module MvamBot
     def self.load
       result = {} of String => Country
 
-      File.open("data/countries.csv", "r") do |file|
-        CSV.new(file, headers: true) do |row|
-          name,iso_code,currency_code,_ = row
-          result[name] = Country.new(name, iso_code, currency_code)
-        end
+      CSV.new({{ `cat data/countries.csv`.stringify }}, headers: true) do |row|
+        name,iso_code,currency_code,_ = row
+        result[name] = Country.new(name, iso_code, currency_code)
       end
       result
     end
