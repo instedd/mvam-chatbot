@@ -12,6 +12,9 @@ db_migrate:
 db_drop:
 	@dropdb --if-exists $(DEV_DB)
 
+db_test_migrate:
+	@PG_URL="postgres://`whoami`@localhost/$(TEST_DB)" bin/micrate up
+
 db_test_prepare:
 	@dropdb --if-exists $(TEST_DB)
 	@createdb -E utf8 -O `whoami` $(TEST_DB)
