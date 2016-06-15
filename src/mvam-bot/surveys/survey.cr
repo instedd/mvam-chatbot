@@ -423,8 +423,6 @@ module MvamBot
                   geocode_multiple_results
                 when "store_chosen_location_coordinates"
                   store_chosen_location_coordinates(message)
-                when "store_price_answer"
-                  store_price_answer(message)
                 when "can_ask_local_price"
                   can_ask_local_price
                 else
@@ -456,10 +454,6 @@ module MvamBot
         else
           return false
         end
-      end
-
-      private def store_price_answer(message)
-        return false
       end
 
       private def test_default_transition(transition, message)

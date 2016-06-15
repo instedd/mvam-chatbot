@@ -4,7 +4,7 @@ module MvamBot
     @@currencies_by_code : Hash(String, Currency)?
     @@currencies_by_country : Hash(Country, Currency)?
 
-    foo
+    load_from_csv
 
     def self.all
       @@currencies_by_code.not_nil!.values
@@ -18,7 +18,7 @@ module MvamBot
       @@currencies_by_country.not_nil![country]
     end
 
-    def self.foo
+    def self.load_from_csv
       @@currencies_by_code = {} of String => Currency
       @@currencies_by_country = {} of Country => Currency
 
