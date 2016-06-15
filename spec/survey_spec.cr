@@ -659,6 +659,16 @@ describe ::MvamBot::Bot do
         responses.size.should eq(1)
         responses[0].data["asked_price_answer"].should eq(15)
       end
+
+      it "moves to next step if user responds in a negative way" do
+        DB.cleanup
+
+        user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
+        user.conversation_state["country_name"] = "Afghanistan"
+
+        handle_message("We don't have that in my town", user: user, understand: response({"yes_no" => "No"}))
+        user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+      end
     end
   end
 

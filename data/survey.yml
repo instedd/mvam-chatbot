@@ -238,6 +238,9 @@ states:
       - entity: number
         store: asked_price_answer
         target: ask_roof_photo
+      - entity: yes_no
+        value: No
+        target: ask_roof_photo
       - failure: true
         say: Let's move on
         target: ask_roof_photo
