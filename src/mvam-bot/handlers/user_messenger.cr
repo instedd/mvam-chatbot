@@ -6,6 +6,10 @@ module MvamBot
     getter chat_id
     getter bot
 
+    def initialize(@user : MvamBot::User, @bot : TelegramBot::Bot)
+      @chat_id = @user.id
+    end
+
     def initialize(@user : MvamBot::User, @chat_id : Int32, @bot : TelegramBot::Bot)
     end
 
