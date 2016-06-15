@@ -171,6 +171,7 @@ describe ::MvamBot::Bot do
 
       messages = handle_message("No", user: user, messages: { "No" => response({"yes_no" => "No"}) })
       messages.last[:text].downcase.should contain("thank you for your answers")
+      messages.last[:text].downcase.should contain("remember you can send `/price`")
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
       responses.size.should eq(1)

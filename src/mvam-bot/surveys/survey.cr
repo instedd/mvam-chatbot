@@ -167,8 +167,12 @@ module MvamBot
       end
 
       private def talk_to_user(state : FlowState, extra_text, with_clarification = false)
-        return if state.say.nil?
-        return talk_to_user(state.say.not_nil!, extra_text, state.options, state.options_from) if !with_clarification
+        return unless say = state.say
+
+        if !with_clarification
+          say = "#{say}\n\nRemember you can send `/price` anytime to ask for prices in your region." if state.final
+          return talk_to_user(say, extra_text, state.options, state.options_from)
+        end
 
         clarification = state.clarification.not_nil!
         say = clarification.say || "Sorry, I did not get that. #{state.say}"
