@@ -43,11 +43,11 @@ states:
     options:
       - text: In two hours
       - text: In six hours
-      - text: Tomorrow at this time
+      - text: Tomorrow
       - text: "I will let you know"
       - text: Not really
     transitions:
-      - message: ["In two hours", "In six hours", "Tomorrow at this time"]
+      - message: ["In two hours", "In six hours", "Tomorrow"]
         target: reschedule_survey
         store: survey_at
       - message: ["I will let you know"]
@@ -69,10 +69,10 @@ states:
       options:
         - text: In two hours
         - text: In six hours
-        - text: Tomorrow at this time
+        - text: Tomorrow
         - text: I will let you know
     transitions:
-      - message: ["In two hours", "In six hours", "Tomorrow at this time"]
+      - message: ["In two hours", "In six hours", "Tomorrow"]
         target: reschedule_survey
         store: survey_at
       - message: ["I will let you know"]

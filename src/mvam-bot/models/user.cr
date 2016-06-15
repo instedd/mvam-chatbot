@@ -38,7 +38,7 @@ module MvamBot
                    @conversation_at : Time? = nil,
                    @conversation_session_id : String? = nil,
                    conversation_state_json : String? = nil,
-                   survey_at : Time? = nil)
+                   @survey_at : Time? = nil)
        @conversation_state = ConversationState.new.tap do |state|
          if json = conversation_state_json
            JSON.parse(json).as_h.each do |key, value|
@@ -67,6 +67,10 @@ module MvamBot
         FROM users WHERE id = $1", [id])
       return nil if result.rows.size == 0
       User.new(*(result.rows[0]))
+    end
+
+    def self.find!(id : Int32)
+      find(id).not_nil!
     end
 
     def self.create(id : Int32, username : String? = nil, name : String? = nil, location_adm0_id : Int32? = nil, location_adm1_id : Int32? = nil, location_mkt_id : Int32? = nil, location_lat : Float64? = nil, location_lng : Float64? = nil, gps_timestamp : Time? = nil, conversation_step : String? = nil, conversation_at : Time? = nil, conversation_session_id : String? = nil, conversation_state : ConversationState = ConversationState.new, survey_at : Time? = nil)

@@ -23,6 +23,21 @@ bot:
     TELEGRAM_WEBHOOK_URL: https://mvam-bot.instedd.org:443/
     TELEGRAM_CERTIFICATE:
 
+cron:
+  image: manastech/mvam-chatbot:latest
+  command: /bin/sh -c "sleep 1 && ./mvam-cron"
+  autorestart: always
+  autoredeploy: true
+  environment:
+    VIRTUAL_HOST: https://mvam-bot.instedd.org
+    SSL_CERT:
+    PG_URL: postgres://mvambot:POSTGRES_PASSWORD@db/mvambot
+    TELEGRAM_TOKEN:
+    TELEGRAM_BIND_ADDRESS: 0.0.0.0
+    TELEGRAM_BIND_PORT: 8080
+    TELEGRAM_WEBHOOK_URL: https://mvam-bot.instedd.org:443/
+    TELEGRAM_CERTIFICATE:
+
 web:
   image: manastech/mvam-chatbot:latest
   command: /bin/sh -c "sleep 1 && ./mvam-web"

@@ -259,7 +259,7 @@ module MvamBot
         text = message.text.not_nil!
 
         if transition_messages
-          if transition_messages.includes?(text)
+          if transition_messages.map(&.downcase).includes?(text.downcase)
             MvamBot.logger.debug("Transition to #{transition.target} matched on message #{text}")
             user.conversation_state[transition.store.not_nil!] = text if transition.store
             return true
@@ -278,7 +278,7 @@ module MvamBot
                   end
         text = message.text.not_nil!
 
-        if options.includes?(text)
+        if options.map(&.downcase).includes?(text.downcase)
           MvamBot.logger.debug("Transition to #{transition.target} matched on message #{text}")
           user.conversation_state[transition.store.not_nil!] = text if transition.store
           return true
@@ -460,10 +460,10 @@ module MvamBot
       end
 
       private def set_survey_at
-        user.survey_at = Time.utc_now + case user.conversation_state["survey_at"]?
-        when "In two hours" then 2.hours
-        when "In six hours" then 6.hours
-        when "Tomorrow" then 24.hours
+        user.survey_at = Time.utc_now + case user.conversation_state["survey_at"]?.try(&.to_s.downcase)
+        when "in two hours" then 2.hours
+        when "in six hours" then 6.hours
+        when "tomorrow" then 24.hours
         else raise "Unexpected value for survey reschedule for user #{user.id}: #{ user.conversation_state["survey_at"]? }"
         end
       end
