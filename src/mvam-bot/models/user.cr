@@ -20,9 +20,10 @@ module MvamBot
     property conversation_at : Time?
     property conversation_session_id : String?
     property conversation_state : ConversationState
+    property survey_at : Time?
 
-    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float64|Nil, Float64|Nil, Time|Nil, String|Nil, Time|Nil, String|Nil, String|Nil }
-    FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng gps_timestamp conversation_step conversation_at conversation_session_id conversation_state}
+    FIELD_TYPES = { Int32, String|Nil, String|Nil, Int32|Nil, Int32|Nil, Int32|Nil, Float64|Nil, Float64|Nil, Time|Nil, String|Nil, Time|Nil, String|Nil, String|Nil, Time|Nil }
+    FIELD_NAMES = %w{id username name location_adm0_id location_adm1_id location_mkt_id location_lat location_lng gps_timestamp conversation_step conversation_at conversation_session_id conversation_state survey_at}
 
     def initialize(@id : Int32,
                    @username : String? = nil,
@@ -36,7 +37,8 @@ module MvamBot
                    @conversation_step : String? = nil,
                    @conversation_at : Time? = nil,
                    @conversation_session_id : String? = nil,
-                   conversation_state_json : String? = nil)
+                   conversation_state_json : String? = nil,
+                   survey_at : Time? = nil)
        @conversation_state = ConversationState.new.tap do |state|
          if json = conversation_state_json
            JSON.parse(json).as_h.each do |key, value|
@@ -55,6 +57,10 @@ module MvamBot
       DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM users").rows.map { |row| User.new(*row) }
     end
 
+    def self.to_survey(timestamp = Time.utc_now)
+      DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM users WHERE survey_at <= $1", [timestamp]).rows.map { |row| User.new(*row) }
+    end
+
     def self.find(id : Int32)
       result = DB.exec(FIELD_TYPES,
         "SELECT #{FIELD_NAMES.join(", ")}
@@ -63,22 +69,23 @@ module MvamBot
       User.new(*(result.rows[0]))
     end
 
-    def self.create(id : Int32, username : String? = nil, name : String? = nil, location_adm0_id : Int32? = nil, location_adm1_id : Int32? = nil, location_mkt_id : Int32? = nil, location_lat : Float64? = nil, location_lng : Float64? = nil, gps_timestamp : Time? = nil, conversation_step : String? = nil, conversation_at : Time? = nil, conversation_session_id : String? = nil, conversation_state : ConversationState = ConversationState.new)
+    def self.create(id : Int32, username : String? = nil, name : String? = nil, location_adm0_id : Int32? = nil, location_adm1_id : Int32? = nil, location_mkt_id : Int32? = nil, location_lat : Float64? = nil, location_lng : Float64? = nil, gps_timestamp : Time? = nil, conversation_step : String? = nil, conversation_at : Time? = nil, conversation_session_id : String? = nil, conversation_state : ConversationState = ConversationState.new, survey_at : Time? = nil)
       DB.exec(
         "INSERT INTO users (#{FIELD_NAMES.join(", ")})
         VALUES (#{FIELD_NAMES.size.times.map {|i| "$#{i+1}"}.join(", ")})",
-        [id, username, name, location_adm0_id, location_adm1_id, location_mkt_id, location_lat, location_lng, gps_timestamp, conversation_step, conversation_at, conversation_session_id, conversation_state.to_json])
-      User.new(id: id, username: username, name: name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id, location_lat: location_lat, location_lng: location_lng, gps_timestamp: gps_timestamp, conversation_step: conversation_step, conversation_at: conversation_at, conversation_session_id: conversation_session_id, conversation_state_json: conversation_state.to_json)
+        [id, username, name, location_adm0_id, location_adm1_id, location_mkt_id, location_lat, location_lng, gps_timestamp, conversation_step, conversation_at, conversation_session_id, conversation_state.to_json, survey_at])
+      User.new(id: id, username: username, name: name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id, location_lat: location_lat, location_lng: location_lng, gps_timestamp: gps_timestamp, conversation_step: conversation_step, conversation_at: conversation_at, conversation_session_id: conversation_session_id, conversation_state_json: conversation_state.to_json, survey_at: survey_at)
     end
 
     def update
       DB.exec("UPDATE users SET username = $1, name = $2, location_adm0_id = $3,
                location_adm1_id = $4, location_mkt_id = $5, location_lat = $6,
                location_lng = $7, gps_timestamp = $8, conversation_step = $9, conversation_at = $10,
-               conversation_session_id = $11, conversation_state = $12
-               WHERE id = $13",
+               conversation_session_id = $11, conversation_state = $12, survey_at = $13
+               WHERE id = $14",
                [@username, @name, @location_adm0_id, @location_adm1_id, @location_mkt_id,
-                @location_lat, @location_lng, @gps_timestamp, @conversation_step, @conversation_at, @conversation_session_id, conversation_state_json, @id])
+                @location_lat, @location_lng, @gps_timestamp, @conversation_step, @conversation_at,
+                @conversation_session_id, conversation_state_json, @survey_at, @id])
     end
 
     def full_name

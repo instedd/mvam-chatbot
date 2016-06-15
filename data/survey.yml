@@ -40,19 +40,26 @@ states:
     say: Would you be available later? It will take just a minute.
     clarification:
       say: Sorry, I did not get that. Would you be available later?
-      options:
-        - text: Yes
-        - text: No
+    options:
+      - text: In two hours
+      - text: In six hours
+      - text: Tomorrow at this time
+      - text: "I will let you know"
+      - text: Not really
     transitions:
+      - message: ["In two hours", "In six hours", "Tomorrow at this time"]
+        target: reschedule_survey
+        store: survey_at
+      - message: ["I will let you know"]
+        target: wait_survey
+      - message: ["Not really"]
+        target: no_survey
       - entity: yes_no
         value: Yes
         target: ask_availability
       - entity: yes_no
         value: No
         target: no_survey
-      - entity: wit/datetime
-        store: survey_at
-        target: reschedule_survey
       - failure: true
         target: no_survey
 
@@ -60,22 +67,33 @@ states:
     say: When would you be available?
     clarification:
       options:
-        - text: Tomorrow morning
-        - text: Tomorrow afternoon
-        - text: Next week
+        - text: In two hours
+        - text: In six hours
+        - text: Tomorrow at this time
+        - text: I will let you know
     transitions:
-      - entity: wit/datetime
-        store: survey_at
+      - message: ["In two hours", "In six hours", "Tomorrow at this time"]
         target: reschedule_survey
+        store: survey_at
+      - message: ["I will let you know"]
+        target: wait_survey
+      - entity: yes_no
+        value: No
+        target: no_survey
       - failure: true
         target: no_survey
 
   reschedule_survey:
-    say: Great, thanks! I'll talk to you then.
+    say: Great, thanks! I'll talk to you $survey_at.
+    method: set_survey_at
     final: true
 
   no_survey:
     say: Got it, I won't be bothering you. Just say "hello" any time if you change your mind!
+    final: true
+
+  wait_survey:
+    say: Got it, I'll wait for you to let me know when you are available. Just say "hello" when you are ready!
     final: true
 
   ask_age:
@@ -99,10 +117,10 @@ states:
         - text: Woman
         - text: Other
     transitions:
-      - entity: gender
+      - message: ["Man", "Woman", "Other"]
         target: ask_not_enough_food
         store: gender
-      - message: ["Man", "Woman", "Other"]
+      - entity: gender
         target: ask_not_enough_food
         store: gender
       - failure: true

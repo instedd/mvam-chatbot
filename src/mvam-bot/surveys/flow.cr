@@ -52,6 +52,7 @@ module MvamBot
         options_from: { type: String, nilable: true },
         transient: { type: Bool, default: false },
         clarification: { type: Clarification, default: Clarification.new }
+        method: { type: String, nilable: true }
       }, strict: true)
 
       getter id
@@ -122,8 +123,14 @@ module MvamBot
           "{location, #{location}}"
         when :method
           "{method, #{method}}"
+        when :timeout
+          "{timeout, #{timeout}}"
         when :default
           "{default}"
+        when :failure
+          "{failure}"
+        else
+          "{unknown}"
         end
       end
 
