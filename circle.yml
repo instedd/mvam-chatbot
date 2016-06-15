@@ -29,3 +29,5 @@ test:
     - ./bin/load-positions
   override:
     - crystal spec
+  post:
+    - ./bin/draw-survey && mv ./data/survey.png $CIRCLE_ARTIFACTS
