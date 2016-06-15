@@ -7,6 +7,9 @@ survey_data:
   - lng
   - location_name
   - country_name
+  - asked_price_commodity
+  - asked_price_currency
+  - asked_price_answer
 
 common_transitions:
   - intent: AskWhy
@@ -228,7 +231,7 @@ states:
         target: ask_roof_photo
 
   ask_local_price:
-    say: Currently, how much does $some_product cost in your community? Reply with the price of 1 $some_product_price_unit in $user_currency.
+    say: Currently, how much does $some_product cost in your community? Reply with the price of 1 $some_product_price_unit in $user_currency_label.
     transitions:
       - method: store_price_answer
         target: ask_roof_photo

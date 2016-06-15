@@ -208,7 +208,7 @@ module MvamBot
                 .gsub "$survey_at" { survey_at_description }
                 .gsub "$some_product_price_unit" { some_product_price_unit }
                 .gsub "$some_product" { some_product }
-                .gsub "$user_currency" { user_currency }
+                .gsub "$user_currency_label" { user_currency_label }
       end
 
       private def some_product
@@ -237,8 +237,11 @@ module MvamBot
       end
 
       private def user_currency
-        currency_name = Currency.find_by_country(user_country).name
-        return pluralize(currency_name.downcase)
+        Currency.find_by_country(user_country)
+      end
+
+      private def user_currency_label
+        pluralize(user_currency.name.downcase)
       end
 
       private def pluralize(s : String)
@@ -442,7 +445,13 @@ module MvamBot
 
       private def can_ask_local_price
         has_position = user.conversation_state["lat"]? && user.conversation_state["lng"]?
-        return has_position && !user_country.nil?
+        if has_position && !user_country.nil?
+          user.conversation_state["asked_price_currency_code"] = user_currency.code
+          user.conversation_state["asked_price_commodity_id"] = reference_price.not_nil!.commodity_id.to_i64
+          return true
+        else
+          return false
+        end
       end
 
       private def store_price_answer(message)

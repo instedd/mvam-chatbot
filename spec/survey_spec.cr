@@ -616,6 +616,22 @@ describe ::MvamBot::Bot do
           end
         end
       end
+      
+      it "stores requested commodity and currency after asking" do
+        DB.cleanup
+        Location.create_test_locations
+
+        # mkt with single price
+        user = user_near mkt_id: 496
+        user.conversation_state["country_name"] = "Afghanistan"
+
+        handle_message("Yes", user: user)
+        user.conversation_step.not_nil!.should contain("survey/ask_local_price")
+
+        reference_price = MvamBot::Price.sample_in_mkt(496)
+        user.conversation_state["asked_price_currency_code"].should eq("AFN")
+        user.conversation_state["asked_price_commodity_id"].should eq(reference_price.commodity_id)
+      end
     end
   end
 
@@ -633,7 +649,14 @@ def user_near(mkt_id : Int32)
   user
 end
 
+def asked_commodity(message)
+  /how much does (.*) cost/.match(message[:text]).not_nil![1]
+end
+
+def asked_currency(message)
+  /Reply with the price of 1 .* in (.*)\./.match(message[:text]).not_nil![1]
+end
+
 def verify_asked_commodity(message, accepted_commodities)
-  asked_commodity = /how much does (.*) cost/.match(message[:text]).not_nil![1]
-  accepted_commodities.includes?(asked_commodity).should be_true
+  accepted_commodities.includes?(asked_commodity(message)).should be_true
 end
