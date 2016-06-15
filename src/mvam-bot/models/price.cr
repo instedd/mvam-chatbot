@@ -70,13 +70,14 @@ module MvamBot
 
         # If the results are for the same adm1 location, return those
         elsif prices[0].location_adm1_id && prices[0].location_adm1_id == user.location_adm1_id
-          descriptions = prices.select{|p| p.location_adm1_id}.map{|p| p.short_description(format)}
-          return "Prices for #{prices[0].commodity_name} are #{descriptions.join(", ")}."
+          adm1_id = prices[0].location_adm1_id.not_nil!
+          descriptions = prices.select{|p| p.location_adm1_id}.first(5).map{|p| p.short_description(format: format)}
+          return "Prices for #{prices[0].commodity_name} in #{Location::Adm1.find(adm1_id).name} are #{descriptions.join(", ")}."
 
         # Otherwise, send some country-wide prices
         else
-          descriptions = prices.first(5).map{|p| p.short_description(format)}
-          return "Prices for #{prices[0].commodity_name} are #{descriptions.join(", ")}."
+          descriptions = prices.first(5).map{|p| p.short_description(format: format, location_level: 1)}
+          return "Prices for #{prices[0].commodity_name} in #{Location::Adm0.find(prices[0].location_adm0_id).name} are #{descriptions.join(", ")}."
         end
       end
 
@@ -107,15 +108,15 @@ module MvamBot
         Price.trend_description(history, format)
       end
 
-      def long_description(format = nil, include_trend = false)
-        location = Location.short_description(location_adm0_id, location_adm1_id, location_mkt_id)
+      def long_description(format = nil, include_trend = false, location_level = 2)
+        location = Location.description(location_adm0_id, location_adm1_id, location_mkt_id, highest_level: location_level)
         trend = include_trend ? trend_description(format) : nil
         trend = trend ? "\n\n#{trend}" : ""
         "#{commodity_name} is #{price_description(format)} in #{location} as of #{time_description}.#{trend}"
       end
 
-      def short_description(format = nil)
-        location = Location.short_description(location_adm0_id, location_adm1_id, location_mkt_id)
+      def short_description(format = nil, location_level = 2)
+        location = Location.description(location_adm0_id, location_adm1_id, location_mkt_id, highest_level: location_level)
         "#{price_description(format)} in #{location}"
       end
 

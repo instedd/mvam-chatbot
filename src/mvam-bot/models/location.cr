@@ -2,6 +2,7 @@ module MvamBot
 
   module Location
 
+    # Returns the name of the deepest location found
     def self.short_description(adm0_id, adm1_id, mkt_id)
       if mkt_id
         return Mkt.find(mkt_id).name
@@ -12,10 +13,27 @@ module MvamBot
       end
     end
 
+    # Returns the concatenation of names for the ids
+    # Example: "Viedma, Rio Negro, Argentina"
     def self.long_description(adm0_id, adm1_id, mkt_id)
       [adm0_id ? Adm0.find(adm0_id).name : nil,
        adm1_id ? Adm1.find(adm1_id).name : nil,
        mkt_id ? Mkt.find(mkt_id).name : nil].compact.reverse.join(", ")
+    end
+
+    # Returns the name of the specified location with a clarification based on the specified level
+    # Example: "Viedma (Rio Negro, Argentina)"
+    def self.description(adm0_id, adm1_id, mkt_id, highest_level = 2)
+      names = [(adm0_id && highest_level == 0) ? Adm0.find(adm0_id).name : nil,
+               (adm1_id && highest_level <= 1) ? Adm1.find(adm1_id).name : nil,
+               mkt_id ? Mkt.find(mkt_id).name : nil].compact.reverse
+
+      case names.size
+      when 0 then short_description(adm0_id, adm1_id, mkt_id)
+      when 1 then names[0]
+      when 2 then "#{names[0]} (#{names[1]})"
+      when 3 then "#{names[0]} (#{names[1]}, #{names[2]})"
+      end
     end
 
     record Adm0, id : Int32, name : String do

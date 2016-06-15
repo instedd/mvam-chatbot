@@ -135,4 +135,46 @@ describe ::MvamBot::Topics::Prices do
 
   end
 
+  describe "descriptions" do
+
+    # User is in Ethiopia (79), Amhara (1229), Abomsa (467)
+
+    it "should return nothing if there are no prices" do
+      DB.cleanup
+      description = MvamBot::Price.description(Array(MvamBot::Price).new, Factory::DB.user)
+      description.should eq("")
+    end
+
+    it "should return price of user's marketplace" do
+      DB.cleanup
+      user = Factory::DB.user(location_adm0_id: 79, location_adm1_id: 1229, location_mkt_id: 467)
+      description = MvamBot::Price.description([467, 489, 482, 469, 503, 510, 504].map do |mkt_id|
+        Factory.price(commodity_id: 1, commodity_name: "Bread", unit_name: "KG", currency_name: "USD", month: 1, year: Time.utc_now.year, price: 10.0, location_adm0_id: 79, location_adm1_id: 1229, location_mkt_id: mkt_id)
+      end, user)
+
+      description.should contain("Bread is 10.0 USD per KG in Abomsa as of January.")
+    end
+
+    it "should return prices in user's region" do
+      DB.cleanup
+      user = Factory::DB.user(location_adm0_id: 79, location_adm1_id: 1229, location_mkt_id: 467)
+      description = MvamBot::Price.description([489, 482, 469, 503, 510, 504].map do |mkt_id|
+        Factory.price(commodity_id: 1, commodity_name: "Bread", unit_name: "KG", currency_name: "USD", month: 1, year: Time.utc_now.year, price: 10.0, location_adm0_id: 79, location_adm1_id: 1229, location_mkt_id: mkt_id)
+      end, user)
+
+      description.should contain("Prices for Bread in Amhara are 10.0 USD per KG in Ajeber, 10.0 USD per KG in Baher Dar, 10.0 USD per KG in Bati, 10.0 USD per KG in Bure, 10.0 USD per KG in Debark.")
+    end
+
+    it "should return prices in user's country" do
+      DB.cleanup
+      user = Factory::DB.user(location_adm0_id: 79, location_adm1_id: 1229, location_mkt_id: 467)
+      description = MvamBot::Price.description([506, 517].map do |mkt_id|
+        Factory.price(commodity_id: 1, commodity_name: "Bread", unit_name: "KG", currency_name: "USD", month: 1, year: Time.utc_now.year, price: 10.0, location_adm0_id: 79, location_adm1_id: 1232, location_mkt_id: mkt_id)
+      end, user)
+
+      description.should contain("Prices for Bread in Ethiopia are 10.0 USD per KG in Gambela (Gambela), 10.0 USD per KG in Meti (Gambela).")
+    end
+
+  end
+
 end
