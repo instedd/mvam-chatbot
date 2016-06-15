@@ -18,12 +18,17 @@ le?", shape = circle, style= solid ];
 	reschedule_survey [ label = "reschedule_survey
 Great, thanks
 ! I'll talk 
-to you th...
+to you $s...
 ", shape = doublecircle, style= solid ];
 	no_survey [ label = "no_survey
 Got it, I won
 't be bother
 ing you. ...
+", shape = doublecircle, style= solid ];
+	wait_survey [ label = "wait_survey
+Got it, I'll 
+wait for you
+ to let m...
 ", shape = doublecircle, style= solid ];
 	ask_age [ label = "ask_age
 How old are y
@@ -84,19 +89,31 @@ I am a WFP bo
 t assistant,
  for trac...
 ", shape = circle, style= solid ];
+	check_inactivity [ label = "check_inactivity
+Are you still
+ there?", shape = circle, style= solid ];
+	timed_out [ label = "timed_out
+Let me know w
+hen you are 
+ready to ...
+", shape = circle, style= solid ];
 	start -> geolocate_user [ label = "entity:yes_no", dir = forward ];
 	start -> check_availability [ label = "entity:yes_no", dir = forward ];
 	start -> no_survey [ label = "failure", dir = forward ];
+	check_availability -> reschedule_survey [ label = "In two hours/In six hours/Tomorrow", dir = forward ];
+	check_availability -> wait_survey [ label = "I will let you know", dir = forward ];
+	check_availability -> no_survey [ label = "Not really", dir = forward ];
 	check_availability -> ask_availability [ label = "entity:yes_no", dir = forward ];
 	check_availability -> no_survey [ label = "entity:yes_no", dir = forward ];
-	check_availability -> reschedule_survey [ label = "entity:wit/datetime", dir = forward ];
 	check_availability -> no_survey [ label = "failure", dir = forward ];
-	ask_availability -> reschedule_survey [ label = "entity:wit/datetime", dir = forward ];
+	ask_availability -> reschedule_survey [ label = "In two hours/In six hours/Tomorrow", dir = forward ];
+	ask_availability -> wait_survey [ label = "I will let you know", dir = forward ];
+	ask_availability -> no_survey [ label = "entity:yes_no", dir = forward ];
 	ask_availability -> no_survey [ label = "failure", dir = forward ];
 	ask_age -> ask_gender [ label = "entity:number", dir = forward ];
 	ask_age -> ask_gender [ label = "failure", dir = forward ];
-	ask_gender -> ask_not_enough_food [ label = "entity:gender", dir = forward ];
 	ask_gender -> ask_not_enough_food [ label = "Man/Woman/Other", dir = forward ];
+	ask_gender -> ask_not_enough_food [ label = "entity:gender", dir = forward ];
 	ask_gender -> ask_not_enough_food [ label = "failure", dir = forward ];
 	geolocate_user -> ask_age [ label = "method:use_previous_recent_user_position", dir = forward ];
 	geolocate_user -> ask_location_changed [ label = "method:reverse_geocode_user_position", dir = forward ];
@@ -123,4 +140,6 @@ t assistant,
 	ask_roof_photo -> thank_you [ label = "photo", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "entity:yes_no", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "failure", dir = forward ];
+	check_inactivity -> timed_out [ label = "", dir = both ];
+	check_inactivity -> timed_out [ label = "entity:yes_no", dir = both ];
 }

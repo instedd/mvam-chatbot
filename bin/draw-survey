@@ -4,8 +4,7 @@ set -o errexit
 
 crystal eval <<CRYSTAL > data/survey.dot
   require "file"
-  require "./src/mvam-bot/wit/*"
-  require "./src/mvam-bot/surveys/*"
+  require "./src/mvam"
   MvamBot::Surveys::DotGenerator.draw("data/survey.yml")
 CRYSTAL
 
