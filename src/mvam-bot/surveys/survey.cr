@@ -273,7 +273,13 @@ module MvamBot
 
       private def transitions_for(state)
         non_defaults, defaults = state.transitions.partition{|t| t.kind != :default}
-        state.final ? state.transitions : (non_defaults + flow.common_transitions + defaults)
+        if state.final
+          state.transitions
+        elsif state.dummy
+          non_defaults + defaults
+        else
+          non_defaults + flow.common_transitions + defaults
+        end
       end
 
       # Selects the transition we should use based on the current context.
