@@ -69,6 +69,13 @@ In the past s
 even days, w
 ere there...
 ", shape = circle, style= solid ];
+	pre_ask_local_price [ label = "pre_ask_local_price
+", shape = circle, style= dotted ];
+	ask_local_price [ label = "ask_local_price
+Currently, ho
+w much does 
+$some_pro...
+", shape = circle, style= solid ];
 	ask_roof_photo [ label = "ask_roof_photo
 Would you ple
 ase send me 
@@ -134,9 +141,13 @@ ready to ...
 	geocode -> ask_age [ label = "otherwise", dir = forward ];
 	ask_which_location -> ask_age [ label = "method:store_chosen_location_coordinates", dir = forward ];
 	ask_which_location -> ask_age [ label = "otherwise", dir = forward ];
-	ask_not_enough_food -> ask_roof_photo [ label = "Yes/No", dir = forward ];
-	ask_not_enough_food -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
-	ask_not_enough_food -> ask_roof_photo [ label = "failure", dir = forward ];
+	ask_not_enough_food -> pre_ask_local_price [ label = "Yes/No", dir = forward ];
+	ask_not_enough_food -> pre_ask_local_price [ label = "entity:yes_no", dir = forward ];
+	ask_not_enough_food -> pre_ask_local_price [ label = "failure", dir = forward ];
+	pre_ask_local_price -> ask_local_price [ label = "method:can_ask_local_price", dir = forward ];
+	pre_ask_local_price -> ask_roof_photo [ label = "otherwise", dir = forward ];
+	ask_local_price -> ask_roof_photo [ label = "entity:number", dir = forward ];
+	ask_local_price -> ask_roof_photo [ label = "failure", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "photo", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "entity:yes_no", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "failure", dir = forward ];

@@ -24,8 +24,10 @@ module MvamBot
 
       # Caches should be cleared after each transition.
       @wit_response : Wit::MessageResponse?
-      @reverse_geocoding_result : String?
+      @reverse_geocoding_result : Geocoding::ReverseGeocodingResult
       @geocoding_result : Hash(String, {Float64, Float64})?
+      @user_country : MvamBot::Country?
+      @reference_price : MvamBot::Price?
 
       # Conversation state info
       @state_id : String?
@@ -202,9 +204,68 @@ module MvamBot
       end
 
       private def hydrate(template)
-        template
-          .gsub "$reverse_geocoding_result" { reverse_geocoding_result }
-          .gsub "$survey_at" { survey_at_description }
+        template.gsub "$reverse_geocoding_result_label" { reverse_geocoding_result_label }
+                .gsub "$survey_at" { survey_at_description }
+                .gsub "$some_product_price_unit" { some_product_price_unit }
+                .gsub "$some_product" { some_product }
+                .gsub "$user_currency_label" { user_currency_label }
+      end
+
+      private def some_product
+        reference_price.not_nil!.commodity_name.downcase
+      end
+
+      private def some_product_price_unit
+        reference_price.not_nil!.unit_name
+      end
+
+      private def user_country
+        if !@user_country
+          country_name = if user.conversation_state["country_name"]?
+                           reported_country_name.not_nil!
+                         else
+                           lat = user.conversation_state["lat"].not_nil!.as(Float64)
+                           lng = user.conversation_state["lng"].not_nil!.as(Float64)
+                           location = geocoder.reverse(lat, lng)
+                           !location.nil? && location[:country_name]
+                         end
+
+          return nil unless country_name && Country.exists? country_name
+          @user_country = Country.find_by_name(country_name)
+        end
+        @user_country
+      end
+
+      private def user_currency
+        Currency.find_by_country(user_country)
+      end
+
+      private def user_currency_label
+        pluralize(user_currency.name.downcase)
+      end
+
+      private def pluralize(s : String)
+        s.downcase.ends_with?("y") ? "#{s[0..-2]}ies" : "#{s[0..-1]}s"
+      end
+
+      private def reference_price
+        unless @reference_price
+          lat = user.conversation_state["lat"].not_nil!.as(Float64)
+          lng = user.conversation_state["lng"].not_nil!.as(Float64)
+
+          # search for mkts with a wide radius. this is probably better
+          # than just picking a random from anywhere in the world.
+          nearest_mkts = Location::Mkt.around(lat, lng, kilometers: 2000, count: 1)
+          @reference_price = if nearest_mkts.size > 0
+                               mkt, distance = nearest_mkts[0]
+                               Price.sample_in_mkt(mkt.id)
+                             elsif adm0 = Location::Adm0.find_by_name(user_country.not_nil!.name)
+                               Price.sample_in_adm0(adm0.id)
+                             else
+                               Price.sample
+                             end
+        end
+        @reference_price
       end
 
       private def survey_data
@@ -219,7 +280,13 @@ module MvamBot
 
       private def transitions_for(state)
         non_defaults, defaults = state.transitions.partition{|t| t.kind != :default}
-        state.final ? state.transitions : (non_defaults + flow.common_transitions + defaults)
+        if state.final
+          state.transitions
+        elsif state.dummy
+          non_defaults + defaults
+        else
+          non_defaults + flow.common_transitions + defaults
+        end
       end
 
       # Selects the transition we should use based on the current context.
@@ -356,6 +423,8 @@ module MvamBot
                   geocode_multiple_results
                 when "store_chosen_location_coordinates"
                   store_chosen_location_coordinates(message)
+                when "can_ask_local_price"
+                  can_ask_local_price
                 else
                   raise "unknown transition method: #{transition.method}"
                 end
@@ -374,6 +443,17 @@ module MvamBot
           end
         end
         return false
+      end
+
+      private def can_ask_local_price
+        has_position = user.conversation_state["lat"]? && user.conversation_state["lng"]?
+        if has_position && !user_country.nil?
+          user.conversation_state["asked_price_currency_code"] = user_currency.code
+          user.conversation_state["asked_price_commodity_id"] = reference_price.not_nil!.commodity_id.to_i64
+          return true
+        else
+          return false
+        end
       end
 
       private def test_default_transition(transition, message)
@@ -424,8 +504,8 @@ module MvamBot
         end
       end
 
-      private def reverse_geocoding_result
-        @reverse_geocoding_result
+      private def reverse_geocoding_result_label
+        @reverse_geocoding_result.not_nil![:label]
       end
 
       private def reported_country_name

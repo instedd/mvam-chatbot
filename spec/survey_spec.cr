@@ -304,7 +304,7 @@ describe ::MvamBot::Bot do
           user.conversation_session_id = "TEST_SESSION_ID"
 
           geocoder = Geocoder.new
-          geocoder.expect_reverse_lookup(10.0, 20.0) { "Buenos Aires" }
+          geocoder.expect_reverse_lookup(10.0, 20.0) { {country_name: "Argentina", label: "Buenos Aires"} }
 
           messages = handle_message("Yeah", user: user, understand: response({"yes_no" => "Yes"}), geocoder: geocoder)
           user.conversation_step.not_nil!.should contain("survey/ask_location_changed")
@@ -489,9 +489,7 @@ describe ::MvamBot::Bot do
                 }
               end
 
-              messages = handle_message("Ciudad de Buenos Aires, Argentina",
-                                        user: user,
-                                        geocoder: geocoder)
+              handle_message("Ciudad de Buenos Aires, Argentina", user: user, geocoder: geocoder)
 
               user.conversation_step.not_nil!.should contain("survey/ask_age")
 
@@ -512,7 +510,7 @@ describe ::MvamBot::Bot do
       user.conversation_session_id = "TEST_SESSION_ID"
       mkt = Location.vicente_lopez
 
-      messages = handle_message("", user: user, location: {mkt.lat.not_nil!, mkt.lng.not_nil!})
+      handle_message("", user: user, location: {mkt.lat.not_nil!, mkt.lng.not_nil!})
 
       user.location_lat.should eq(mkt.lat)
       user.location_lng.should eq(mkt.lng)
@@ -521,6 +519,181 @@ describe ::MvamBot::Bot do
       user.location_adm1_id.should eq(mkt.adm1_id)
       user.location_adm0_id.should eq(mkt.adm0_id)
     end
+
+    describe "asking for local prices" do
+      context "user lat/lng not available" do
+        it "skips asking for a local price if there is no position available" do
+          DB.cleanup
+          user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
+          user.conversation_session_id = "TEST_SESSION_ID"
+
+          handle_message("Yes", user: user)
+          user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+        end
+      end
+
+      describe "determining requested currency" do
+        it "infers currency from reported country name if available" do
+          DB.cleanup
+
+          user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
+          user.conversation_state["country_name"] = "Ethiopia"
+
+          messages = handle_message("Yes", user: user)
+          messages.size.should eq(1)
+          messages[0][:text].should contain("Reply with the price of 1 KG in ethiopian birrs")
+        end
+
+        it "reverse geocodes lat/lng if necessary to obtain country" do
+          DB.cleanup
+          user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
+
+          geocoder = Geocoder.new
+          geocoder.expect_user_position_lookup(user) { {country_name: "Ethiopia", label: "Addis Ababa"} }
+
+          messages = handle_message("Yes", user: user, geocoder: geocoder)
+          messages.size.should eq(1)
+          messages[0][:text].should contain("Reply with the price of 1 KG in ethiopian birrs")
+        end
+
+        it "skips asking if currency could not be determined due to unknown country name" do
+          DB.cleanup
+          user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
+          user.conversation_state["country_name"] = "foo bar"
+
+          handle_message("Yes", user: user)
+          user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+        end
+
+        it "skips asking if currency could not be determined due to failed reverse geocoding" do
+          DB.cleanup
+          user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
+
+          geocoder = Geocoder.new
+          geocoder.expect_user_position_lookup(user) { nil }
+
+          handle_message("Yes", user: user)
+          user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+        end
+      end
+
+      describe "determining requested commodity" do
+        context "user is located near to a known mkt" do
+          it "asks for any commodity of that mkt" do
+            DB.cleanup
+
+            # mkt with multiple products
+            user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
+            user.conversation_state["country_name"] = "Afghanistan"
+
+            messages = handle_message("Yes", user: user)
+            verify_asked_commodity(messages[0], ["wheat", "rice (low quality)"])
+          end
+        end
+
+        context "user is not located near a known mkt" do
+          it "asks for any commodity in the user's country when it matches a known Adm0" do
+            DB.cleanup
+
+            user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
+            user.conversation_session_id = "TEST_SESSION_ID"
+
+            # middle of the atlantic
+            user.conversation_state["lat"] = -19.469574
+            user.conversation_state["lng"] = -17.046498
+            user.conversation_state["country_name"] = "Afghanistan"
+
+            messages = handle_message("Yes", user: user)
+
+            country_commodities = MvamBot::DB.exec({String}, "SELECT DISTINCT(commodity_name) FROM prices WHERE location_adm0_id = 1")
+                                             .rows
+                                             .map(&.first.downcase)
+
+            verify_asked_commodity(messages[0], country_commodities)
+          end
+
+          it "asks for a random commodity when user's country does not match a known Adm0" do
+            DB.cleanup
+            user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
+            user.conversation_session_id = "TEST_SESSION_ID"
+            user.conversation_state["lat"] = -15.583478
+            user.conversation_state["lng"] = -41.307781
+            user.conversation_state["country_name"] = "Brazil"
+
+            messages = handle_message("Yes", user: user)
+
+            messages[0][:text].should match(/how much does .* cost/)
+            asked_currency(messages[0]).should eq("brazilian reals")
+          end
+        end
+      end
+      
+      it "stores requested commodity and currency after asking" do
+        DB.cleanup
+
+        # mkt with single price
+        user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
+        user.conversation_state["country_name"] = "Afghanistan"
+
+        handle_message("Yes", user: user)
+        user.conversation_step.not_nil!.should contain("survey/ask_local_price")
+
+        reference_price = MvamBot::Price.sample_in_mkt(496)
+        responses = MvamBot::SurveyResponse.for_user(user.id)
+        responses.size.should eq(1)
+        responses[0].data["asked_price_currency_code"].should eq("AFN")
+        responses[0].data["asked_price_commodity_id"].should eq(reference_price.commodity_id)
+      end
+
+      it "stores user answer" do
+        DB.cleanup
+
+        user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
+        user.conversation_state["country_name"] = "Afghanistan"
+
+        handle_message("About 15 AFN", user: user, understand: response({"number" => 15}))
+
+        user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+
+        responses = MvamBot::SurveyResponse.for_user(user.id)
+        responses.size.should eq(1)
+        responses[0].data["asked_price_answer"].should eq(15)
+      end
+
+      it "moves to next step if user responds in a negative way" do
+        DB.cleanup
+
+        user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
+        user.conversation_state["country_name"] = "Afghanistan"
+
+        handle_message("We don't have that in my town", user: user, understand: response({"yes_no" => "No"}))
+        user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+      end
+    end
   end
 
+end
+
+def user_near(mkt_id : Int32, conversation_step : String)
+  user = Factory::DB.user(conversation_step: conversation_step)
+  user.conversation_session_id = "TEST_SESSION_ID"
+  mkt = MvamBot::Location::Mkt.find(mkt_id)
+
+  # set user position near a known market
+  lat, lng = { (mkt.lat.not_nil! + 0.01), (mkt.lng.not_nil! - 0.01) }
+  user.conversation_state["lat"] = lat
+  user.conversation_state["lng"] = lng
+  user
+end
+
+def asked_commodity(message)
+  /how much does (.*) cost/.match(message[:text]).not_nil![1]
+end
+
+def asked_currency(message)
+  /Reply with the price of 1 .* in (.*)\./.match(message[:text]).not_nil![1]
+end
+
+def verify_asked_commodity(message, accepted_commodities)
+  accepted_commodities.includes?(asked_commodity(message)).should be_true
 end

@@ -43,6 +43,21 @@ module MvamBot
         search_on_locations("commodity_id = $1", commodity_id, adm0_id, adm1_id, mkt_id, filter_level, limit, offset)
       end
 
+      def self.sample_in_mkt(mkt_id : Int32)
+        sample_row = DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM prices WHERE location_mkt_id = $1", [mkt_id]).rows.sample
+        self.new(*sample_row)
+      end
+
+      def self.sample_in_adm0(adm0_id : Int32)
+        sample_row = DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM prices WHERE location_adm0_id = $1", [adm0_id]).rows.sample
+        self.new(*sample_row)
+      end
+
+      def self.sample
+        sample_row = DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM prices TABLESAMPLE SYSTEM(10) LIMIT 1").rows.sample
+        self.new(*sample_row)
+      end
+
       def self.commodity_names
         DB.exec({String}, "SELECT DISTINCT(commodity_name) FROM prices;").rows.map(&.first)
       end
