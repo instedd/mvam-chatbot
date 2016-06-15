@@ -9,4 +9,3 @@ crystal eval <<CRYSTAL > data/survey.dot
 CRYSTAL
 
 dot -Tpng -odata/survey.png data/survey.dot
-open data/survey.png
