@@ -121,4 +121,18 @@ describe ::MvamBot::Topics::Prices do
 
   end
 
+  describe "data" do
+
+    {% for commodity in ["Exchange rate",
+                         "Wage (non-qualified labour)",
+                         "Wage (non-qualified labour, agricultural)",
+                         "Wage (non-qualified labour, non-agricultural)",
+                         "Wage (qualified labour)"] %}
+    it "should not import {{ commodity.id }}" do
+      MvamBot::Price.commodity_names.should_not contain({{ commodity }})
+    end
+    {% end %}
+
+  end
+
 end
