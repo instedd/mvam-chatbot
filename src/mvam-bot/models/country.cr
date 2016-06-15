@@ -1,7 +1,7 @@
 require "csv"
 
 module MvamBot
-  record Country, name : String, iso_code : String, currency : String do
+  record Country, name : String, iso_code : String, currency_code : String do
 
     @@countries : Hash(String, Country) = load
 
@@ -17,13 +17,17 @@ module MvamBot
       @@countries[country_name]
     end
 
+    def self.exists?(country_name)
+      !@@countries[country_name]?.nil?
+    end
+
     def self.load
       result = {} of String => Country
 
-      File.open("data/country-codes.csv", "r") do |file|
+      File.open("data/countries.csv", "r") do |file|
         CSV.new(file, headers: true) do |row|
-          name,_,_,iso_code,_,_,_,_,_,_,_,_,_,_,_,_,_,_,currency_name,_,_ = row
-          result[name] = Country.new(name, iso_code, currency_name)
+          name,iso_code,currency_code,_ = row
+          result[name] = Country.new(name, iso_code, currency_code)
         end
       end
       result

@@ -1,8 +1,10 @@
 module MvamBot
   module Geocoding
+    alias ReverseGeocodingResult = NamedTuple(country_name: String, label: String) | Nil
+
     abstract class Geocoder
       abstract def lookup(query : String, country_code : String?) : Hash(String, {Float64, Float64})
-      abstract def reverse(lat : Float64, lng : Float64) : String?
+      abstract def reverse(lat : Float64, lng : Float64) : ReverseGeocodingResult
     end
 
     def self.init

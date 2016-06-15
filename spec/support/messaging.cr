@@ -20,11 +20,11 @@ module MvamBot::Spec
   class Geocoder < ::MvamBot::Geocoding::Geocoder
 
     @lookup_results : Hash({String, String}, Hash(String, {Float64, Float64}))
-    @reverse_lookup_results : Hash({Float64, Float64}, String?)
+    @reverse_lookup_results : Hash({Float64, Float64}, MvamBot::Geocoding::ReverseGeocodingResult)
 
     def initialize
       @lookup_results = {} of {String, String} => Hash(String, {Float64, Float64})
-      @reverse_lookup_results = {} of {Float64, Float64} => String?
+      @reverse_lookup_results = {} of {Float64, Float64} => MvamBot::Geocoding::ReverseGeocodingResult
     end
 
     def lookup(query, country)
@@ -39,8 +39,14 @@ module MvamBot::Spec
       @reverse_lookup_results[{lat, lng}]?
     end
 
-    def expect_reverse_lookup(lat, lng, &block : -> String?)
+    def expect_reverse_lookup(lat, lng, &block : -> MvamBot::Geocoding::ReverseGeocodingResult)
       @reverse_lookup_results[{lat, lng}] = block.call
+    end
+
+    def expect_user_position_lookup(user, &block : -> MvamBot::Geocoding::ReverseGeocodingResult)
+      lat = user.conversation_state["lat"].not_nil!.as(Float64)
+      lng = user.conversation_state["lng"].not_nil!.as(Float64)
+      expect_reverse_lookup(lat, lng, &block)
     end
   end
 

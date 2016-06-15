@@ -138,7 +138,7 @@ states:
         target: ask_gps
 
   ask_location_changed:
-    say: Are you still in $reverse_geocoding_result?
+    say: Are you still in $reverse_geocoding_result_label?
     transitions:
       - entity: yes_no
         value: No
@@ -209,14 +209,30 @@ states:
       - text: Yes
       - text: No
     transitions:
-      - target: ask_roof_photo
+      - target: pre_ask_local_price
         message: ["Yes", "No"]
         store: not_enough_food
-      - target: ask_roof_photo
+      - target: pre_ask_local_price
         entity: yes_no
         store: not_enough_food
       - failure: true
         say: Let's move on
+        target: pre_ask_local_price
+
+  pre_ask_local_price:
+    dummy: true
+    transitions:
+      - method: can_ask_local_price
+        target: ask_local_price
+      - default: true
+        target: ask_roof_photo
+
+  ask_local_price:
+    say: Currently, how much does $some_product cost in your community? Reply with the price of 1 $some_product_price_unit in $user_currency.
+    transitions:
+      - method: store_price_answer
+        target: ask_roof_photo
+      - default: true
         target: ask_roof_photo
 
   ask_roof_photo:
