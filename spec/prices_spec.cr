@@ -54,7 +54,7 @@ describe ::MvamBot::Topics::Prices do
         user = Factory::DB.user
         user.location_lat = -19.469574
         user.location_lng = -17.046498
-        user.gps_timestamp = Time.now - 15.minutes
+        user.gps_timestamp = Time.now - 1.day
 
         messages = handle_message("/price rice", user)
         messages.size.should eq(1)

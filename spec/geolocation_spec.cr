@@ -92,7 +92,7 @@ describe ::MvamBot::Topics::Geolocation do
           DB.cleanup
           Location.create_test_locations
 
-          user = user_near_location(Location.vicente_lopez, Time.now - 1.minute)
+          user = user_near_location(Location.vicente_lopez, Time.now - 1.day)
 
           messages = handle_message("/start location", user)
           messages.size.should eq(1)
@@ -110,7 +110,7 @@ describe ::MvamBot::Topics::Geolocation do
           DB.cleanup
           Location.create_test_locations
 
-          user = user_near_location(Location.esquel, Time.now - 1.minute)
+          user = user_near_location(Location.esquel, Time.now - 1.day)
           user.location_adm0_id = Location.argentina.id
           user.location_adm1_id = Location.chubut.id
           user.location_mkt_id = Location.esquel.id

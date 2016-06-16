@@ -127,7 +127,7 @@ module MvamBot
       @gps_timestamp = timestamp
     end
 
-    def position_set_recently?(span = 20.minutes)
+    def position_set_recently?(span = 4.days)
       return @gps_timestamp && (Time.now - @gps_timestamp.not_nil!) < span
     end
 

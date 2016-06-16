@@ -287,7 +287,7 @@ describe ::MvamBot::Bot do
       context "user with previously known lat/lng" do
         it "should skip asking user for location if known position is recent enough" do
           DB.cleanup
-          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 10.minutes.ago)
+          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.day.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
 
           messages = handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
@@ -300,7 +300,7 @@ describe ::MvamBot::Bot do
 
         it "should ask the user if his position has changed if known position is not recent enough" do
           DB.cleanup
-          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 2.days.ago)
+          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.week.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
 
           geocoder = Geocoder.new

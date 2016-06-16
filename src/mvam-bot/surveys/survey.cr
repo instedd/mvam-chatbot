@@ -489,7 +489,7 @@ module MvamBot
       end
 
       private def user_location_is_old
-        user.gps_timestamp && !user.position_set_recently?(1.day)
+        user.gps_timestamp && !user.position_set_recently?
       end
 
       private def reverse_geocode_user_position
