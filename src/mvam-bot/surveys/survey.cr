@@ -35,8 +35,6 @@ module MvamBot
       @retries : Int32
       @message : TelegramBot::Message?
 
-      @@user_timeouts : Hash(Int32, Timeout) = Hash(Int32, Timeout).new
-
       def initialize(@messenger : MvamBot::UserMessenger, @wit_client : MvamBot::WitClient? = nil, @geocoder : MvamBot::Geocoding::Geocoder? = nil)
         @user = @messenger.user
         @retries = 0
@@ -584,15 +582,8 @@ module MvamBot
         end
       end
 
-      # Exposed for testing purposes exclusively
-      def self.user_timeouts
-        @@user_timeouts
-      end
-
       private def clear_user_timeout
-        if ping = @@user_timeouts.delete(user.id)
-          ping.cancel
-        end
+        MvamBot::Scheduler.cancel("survey/#{user.id}")
       end
 
       private def set_user_timeout(state)
@@ -600,7 +591,11 @@ module MvamBot
         return if state.nil?
         if transition = transitions_for(state).find {|t| t.kind == :timeout}
           if transition.timeout.not_nil! > 0 && transition.target != "none"
-            @@user_timeouts[user.id] = Timeout.new(messenger, transition.target).schedule(transition.timeout.not_nil!)
+            target = transition.target
+            MvamBot::Scheduler.schedule("survey/#{user.id}", transition.timeout.not_nil!) do
+              MvamBot.logger.info("Executing timeout to transition #{target} for user #{messenger.user.id}")
+              Survey.new(messenger).run target
+            end
           end
         end
       end

@@ -15,7 +15,7 @@ describe ::MvamBot::Bot do
 
       handle_message("/start", bot: bot, user: user, understand: response({ "intent" => "Salutation" }))
 
-      timeout = MvamBot::Surveys::Survey.user_timeouts[user.id]?
+      timeout = scheduled_task(user)
       timeout.should_not eq(nil)
       timeout.not_nil!.run # Are you still there?
 
@@ -31,7 +31,7 @@ describe ::MvamBot::Bot do
       bot = Bot.new
 
       handle_message("/start", bot: bot, user: user, understand: response({ "intent" => "Salutation" }))
-      MvamBot::Surveys::Survey.user_timeouts[user.id].run # Are you still there?
+      scheduled_task(user).not_nil!.run # Are you still there?
 
       handle_message("Yeah", bot: bot, user: user, understand: response({ "yes_no" => "Yes" }))
 
@@ -47,14 +47,14 @@ describe ::MvamBot::Bot do
       bot = Bot.new
 
       handle_message("/start", bot: bot, user: user, understand: response({ "intent" => "Salutation" }))
-      MvamBot::Surveys::Survey.user_timeouts[user.id].run # Are you still there?
-      MvamBot::Surveys::Survey.user_timeouts[user.id].run # Let me know when ready
+      scheduled_task(user).not_nil!.run # Are you still there?
+      scheduled_task(user).not_nil!.run # Let me know when ready
 
       messages = bot.messages
       messages.size.should eq(3)
       messages.last[:text].should contain("Let me know when you are ready")
 
-      MvamBot::Surveys::Survey.user_timeouts[user.id]?.should eq(nil)
+      scheduled_task(user)
     end
 
     it "should go back to previous question when user returns" do
@@ -64,8 +64,8 @@ describe ::MvamBot::Bot do
       bot = Bot.new
 
       handle_message("/start", bot: bot, user: user, understand: response({ "intent" => "Salutation" }))
-      MvamBot::Surveys::Survey.user_timeouts[user.id].run # Are you still there?
-      MvamBot::Surveys::Survey.user_timeouts[user.id].run # Let me know when ready
+      scheduled_task(user).not_nil!.run # Are you still there?
+      scheduled_task(user).not_nil!.run # Let me know when ready
 
       handle_message("Yeah", bot: bot, user: user, understand: response({ "yes_no" => "Yes" }))
 
@@ -81,8 +81,8 @@ describe ::MvamBot::Bot do
       bot = Bot.new
 
       handle_message("/start", bot: bot, user: user, understand: response({ "intent" => "Salutation" }))
-      MvamBot::Surveys::Survey.user_timeouts[user.id].run # Are you still there?
-      MvamBot::Surveys::Survey.user_timeouts[user.id].run # Let me know when ready
+      scheduled_task(user).not_nil!.run # Are you still there?
+      scheduled_task(user).not_nil!.run # Let me know when ready
 
       handle_message("Yeah", bot: bot, user: user, understand: response({ "yes_no" => "Yes" }))
 
@@ -96,10 +96,14 @@ describe ::MvamBot::Bot do
       user = Factory::DB.user(:with_location, conversation_step: "survey/ask_roof_photo", conversation_session_id: "SESSION_ID")
 
       handle_message("No", user: user, understand: response({ "yes_no" => "No" }))
-      MvamBot::Surveys::Survey.user_timeouts[user.id]?.should eq(nil)
+      scheduled_task(user)
     end
 
 
   end
 
+end
+
+def scheduled_task(user)
+  MvamBot::Scheduler.find_task("survey/#{user.id}")
 end
