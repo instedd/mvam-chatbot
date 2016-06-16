@@ -1,10 +1,17 @@
 #! /bin/bash
 
-WFP_LOCAL_FILE=`basename $WFP_DATA_URL`
+# Allow to override location of prices file (CI)
+if [ -z $WFP_LOCAL_FILE ]
+then
+  WFP_LOCAL_FILE=`basename $WFP_DATA_URL`
+fi
 
 if [ ! -f "$WFP_LOCAL_FILE" ]
 then
   curl -X GET -o $WFP_LOCAL_FILE $WFP_DATA_URL
 fi
 
-cat $WFP_LOCAL_FILE
+# Use '-s' flag if only download is needed without printing the file to stdout.
+if [ "$1" != "-s" ]; then
+  cat $WFP_LOCAL_FILE
+fi
