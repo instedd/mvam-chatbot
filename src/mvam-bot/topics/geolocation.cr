@@ -108,7 +108,7 @@ module MvamBot::Topics
         request_location_adm0
       elsif matches.size > 1
         user.conversation_step = "location/gps_multiple_matches"
-        messenger.answer_with_keyboard "Which city you like information from?", matches.map(&.first.name)
+        messenger.answer_with_keyboard "Which city would you like information from?", matches.map(&.first.name)
       else
         mkt = matches[0][0]
         set_location_from_gps_match(mkt)

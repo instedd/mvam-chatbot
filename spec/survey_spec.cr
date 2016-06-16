@@ -514,6 +514,7 @@ describe ::MvamBot::Bot do
 
       user.location_lat.should eq(mkt.lat)
       user.location_lng.should eq(mkt.lng)
+      user.gps_timestamp.should_not be_nil
 
       user.location_mkt_id.should eq(mkt.id)
       user.location_adm1_id.should eq(mkt.adm1_id)

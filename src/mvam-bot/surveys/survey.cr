@@ -570,8 +570,7 @@ module MvamBot
         user.conversation_state["lat"] = lat
         user.conversation_state["lng"] = lng
 
-        user.location_lat = lat
-        user.location_lng = lng
+        user.set_gps_position(lat, lng)
 
         # store administrative location so we don't need to ask again in price queries
         if !user.location_adm0_id

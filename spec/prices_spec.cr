@@ -48,6 +48,31 @@ describe ::MvamBot::Topics::Prices do
       messages[0][:text].not_nil!.should contain("Before I can provide prices information, I need to know where you are.")
     end
 
+    context "user with gps data" do
+      it "should ask user to reset location if gps data was provided recently but no near mkt matches" do
+        DB.cleanup
+        user = Factory::DB.user
+        user.location_lat = -19.469574
+        user.location_lng = -17.046498
+        user.gps_timestamp = Time.now - 15.minutes
+
+        messages = handle_message("/price rice", user)
+        messages.size.should eq(1)
+        messages[0][:text].not_nil!.should contain("I could not find any marketplace near your location. Please use /location to select another one.")
+      end
+
+      it "should request location directly if gps record is old enough" do
+        DB.cleanup
+        user = Factory::DB.user
+        user.location_lat = -19.469574
+        user.location_lng = -17.046498
+        user.gps_timestamp = Time.now - 1.week
+
+        messages = handle_message("/price rice", user)
+        messages.size.should eq(1)
+        messages[0][:text].not_nil!.should contain("Before I can provide prices information, I need to know where you are.")
+      end
+    end
   end
 
   describe "via text" do

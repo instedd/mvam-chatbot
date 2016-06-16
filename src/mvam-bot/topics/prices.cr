@@ -20,7 +20,11 @@ module MvamBot
 
       def handle
         if user.location_adm0_id.nil?
-          geolocation.start(extra_text: "Before I can provide prices information, I need to know where you are. ")
+          if user.position_set_recently?
+            answer("I could not find any marketplace near your location. Please use /location to select another one.")
+          else
+            geolocation.start(extra_text: "Before I can provide prices information, I need to know where you are. ")
+          end
         elsif message.text =~ /^\/price(.*)/
           handle_command($~[1])
         else

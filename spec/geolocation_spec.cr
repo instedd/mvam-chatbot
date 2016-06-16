@@ -61,7 +61,7 @@ describe ::MvamBot::Topics::Geolocation do
 
         messages = handle_message("", user, location: {lat, lng})
         messages.size.should eq(1)
-        messages[0][:text].should eq("Which city you like information from?")
+        messages[0][:text].should eq("Which city would you like information from?")
         reply_buttons(messages[0]).should eq(["Vicente Lopez", "Olivos"])
 
         user.conversation_step.should eq("location/gps_multiple_matches")
@@ -96,7 +96,7 @@ describe ::MvamBot::Topics::Geolocation do
 
           messages = handle_message("/start location", user)
           messages.size.should eq(1)
-          messages[0][:text].should eq("Which city you like information from?")
+          messages[0][:text].should eq("Which city would you like information from?")
           reply_buttons(messages[0]).should eq(["Vicente Lopez", "Olivos"])
 
           user.conversation_step.should eq("location/gps_multiple_matches")
