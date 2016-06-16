@@ -17,6 +17,24 @@ describe ::MvamBot::Topics::Geolocation do
       user.conversation_step.should eq("location/gps_request")
     end
 
+    # see issue #65
+    it "should ping user after inactivity when asking for gps" do
+      DB.cleanup
+      bot = Bot.new
+      user = Factory::DB.user
+      handle_message("/start location", bot: bot, user: user)
+
+      # retrieve scheduled ping and execute it
+      ping = MvamBot::Scheduler.find_task("geolocation/#{user.id}")
+      ping.should_not eq(nil)
+      ping.not_nil!.run
+
+      messages = bot.messages
+      messages.size.should eq(2)
+      messages.last[:text].should eq("Sorry, I didn't get anything. Let's try again...")
+      reply_buttons(messages.last).should eq(["Share my position", "Skip this and continue"])
+    end
+
     context "user accepts to share position" do
       it "starts step by step selection if there is no close match" do
         DB.cleanup
