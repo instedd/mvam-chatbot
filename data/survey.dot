@@ -147,6 +147,7 @@ ready to ...
 	pre_ask_local_price -> ask_local_price [ label = "method:can_ask_local_price", dir = forward ];
 	pre_ask_local_price -> ask_roof_photo [ label = "otherwise", dir = forward ];
 	ask_local_price -> ask_roof_photo [ label = "entity:number", dir = forward ];
+	ask_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
 	ask_local_price -> ask_roof_photo [ label = "failure", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "photo", dir = forward ];
 	ask_roof_photo -> thank_you [ label = "entity:yes_no", dir = forward ];
