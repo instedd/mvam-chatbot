@@ -49,6 +49,11 @@ Could you sha
 re your curr
 ent posit...
 ", shape = circle, style= solid ];
+	ask_gps_ping [ label = "ask_gps_ping
+Sorry, I didn
+'t get anyth
+ing. Let'...
+", shape = circle, style= solid ];
 	ask_country [ label = "ask_country
 What country 
 do you live 
@@ -132,6 +137,11 @@ ready to ...
 	ask_gps -> ask_location_name [ label = "method:store_known_user_country", dir = forward ];
 	ask_gps -> ask_country [ label = "I'd rather not", dir = forward ];
 	ask_gps -> ask_country [ label = "otherwise", dir = forward ];
+	ask_gps -> ask_gps_ping [ label = "", dir = forward ];
+	ask_gps_ping -> ask_age [ label = "location", dir = forward ];
+	ask_gps_ping -> ask_location_name [ label = "method:store_known_user_country", dir = forward ];
+	ask_gps_ping -> ask_country [ label = "otherwise", dir = forward ];
+	ask_gps_ping -> ask_country [ label = "", dir = forward ];
 	ask_country -> ask_location_name [ label = "", dir = forward ];
 	ask_country -> ask_age [ label = "otherwise", dir = forward ];
 	ask_location_name -> geocode [ label = "entity:location", dir = forward ];

@@ -17,6 +17,7 @@ module MvamBot::Topics
     end
 
     def handle
+      MvamBot::Scheduler.cancel("geolocation/#{user.id}")
       if message.text == "/start location" || message.text == "/location"
         start
       elsif user.conversation_step == "location/gps_request"
@@ -50,6 +51,19 @@ module MvamBot::Topics
         ], one_time_keyboard: true)
 
         messenger.answer("#{extra_text}Could you share your current position with us?", keyboard)
+
+        schedule_retry_ask_gps
+      end
+    end
+
+    def schedule_retry_ask_gps
+      MvamBot::Scheduler.schedule("geolocation/#{user.id}", 30) do
+        keyboard = TelegramBot::ReplyKeyboardMarkup.new([
+          [TelegramBot::KeyboardButton.new("Share my position", request_location: true)],
+          [TelegramBot::KeyboardButton.new("Skip this and continue", request_location: false) ]
+        ], one_time_keyboard: true)
+
+        messenger.answer("Sorry, I didn't get anything. Let's try again...", keyboard)
       end
     end
 
