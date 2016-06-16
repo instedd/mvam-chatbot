@@ -166,6 +166,24 @@ states:
         target: ask_country
       - default: true
         target: ask_country
+      - timeout: 30
+        target: ask_gps_ping
+
+  ask_gps_ping:
+    say: Sorry, I didn't get anything. Let's try again...
+    options:
+      - text: Share my position
+        request_location: true
+      - text: Skip this and continue
+    transitions:
+      - location: true
+        target: ask_age
+      - method: store_known_user_country
+        target: ask_location_name
+      - default: true
+        target: ask_country
+      - timeout: 90
+        target: ask_country
 
   ask_country:
     say: What country do you live in?
