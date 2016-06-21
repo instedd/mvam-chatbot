@@ -14,6 +14,6 @@ dependencies:
     version: 1.3.0
   micrate:
     github: juanedi/micrate
-    branch: master
+    version: 0.2.0
   kemal:
     github: sdogruyol/kemal

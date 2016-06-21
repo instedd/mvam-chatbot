@@ -14,7 +14,7 @@ shards:
 
   micrate:
     github: juanedi/micrate
-    commit: 8a7db21ae9f0f1d37781d55f6962c37dadfb0693
+    version: 0.2.0
 
   pg:
     github: will/crystal-pg
@@ -31,3 +31,4 @@ shards:
   wit:
     github: spalladino/wit-crystal
     version: 1.3.0
+
