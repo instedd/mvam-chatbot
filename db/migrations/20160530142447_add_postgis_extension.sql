@@ -1,6 +1,6 @@
 -- +micrate Up
 -- SQL in section 'Up' is executed when this migration is applied
-CREATE EXTENSION postgis;
+CREATE EXTENSION IF NOT EXISTS postgis;
 
 
 -- +micrate Down
