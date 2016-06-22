@@ -91,6 +91,12 @@ module MvamBot
         user.conversation_step = nil
         user.conversation_session_id = nil
         user.conversation_state.clear
+
+        # HACK: we should at least do something like this to avoid hardocoding the patterns
+        # Survey.reset_user_timers
+        # Prices.reset_user_timers
+        MvamBot::Scheduler.cancel_matching(/(survey|geolocation).#{user.id}/)
+
         return answer("Your session has been reset.")
       when "location"
         user.clear_all_location_data
