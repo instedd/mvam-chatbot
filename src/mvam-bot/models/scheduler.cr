@@ -23,10 +23,13 @@ module MvamBot
       @@tasks[ref]?
     end
 
-    def self.cancel_matching(pattern)
-      matches = @@tasks.keys
-                       .select { |ref| pattern.match(ref) }
-                       .each   { |task| cancel(task) }
+    # TODO: HACK!
+    # Find a way to avoid knowing the patterns defined in scheduler's clients here.
+    def self.cancel_user_tasks(user_id)
+      pattern = /(survey|geolocation)\/#{user_id}/
+      @@tasks.keys
+             .select { |ref| pattern.match(ref) }
+             .each   { |task| cancel(task) }
     end
 
     class Task
