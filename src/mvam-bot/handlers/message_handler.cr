@@ -91,6 +91,8 @@ module MvamBot
         user.conversation_step = nil
         user.conversation_session_id = nil
         user.conversation_state.clear
+        MvamBot::Scheduler.cancel_user_tasks(user.id)
+
         return answer("Your session has been reset.")
       when "location"
         user.clear_all_location_data
