@@ -523,7 +523,7 @@ describe ::MvamBot::Bot do
 
     describe "asking for local prices" do
       context "user lat/lng not available" do
-        it "skips asking for a local price if there is no position available" do
+        it "proceeds to next step if there is no position available" do
           DB.cleanup
           user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
           user.conversation_session_id = "TEST_SESSION_ID"
@@ -579,7 +579,7 @@ describe ::MvamBot::Bot do
       end
 
       describe "determining requested commodity" do
-        context "user is located near to a known mkt" do
+        context "user is located near a known mkt" do
           it "asks for any commodity of that mkt" do
             DB.cleanup
 
@@ -646,20 +646,131 @@ describe ::MvamBot::Bot do
         responses[0].data["asked_price_commodity_id"].should eq(reference_price.commodity_id)
       end
 
-      it "stores user answer" do
-        DB.cleanup
+      describe "processing answer" do
+        context "answer is close tu reference price" do
+          it "stores user answer" do
+            DB.cleanup
 
-        user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
-        user.conversation_state["country_name"] = "Afghanistan"
+            user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
+            user.conversation_state["country_name"] = "Afghanistan"
 
-        handle_message("About 15 AFN", user: user, understand: response({"number" => 15}))
+            reference_price = MvamBot::Price.sample_in_mkt(496)
+            answer = reference_price.price * 1.5
+            handle_message("About #{answer} AFN", user: user, understand: response({"number" => answer}))
 
-        user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+            user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
 
-        responses = MvamBot::SurveyResponse.for_user(user.id)
-        responses.size.should eq(1)
-        responses[0].data["asked_price_answer"].should eq(15)
+            responses = MvamBot::SurveyResponse.for_user(user.id)
+            responses.size.should eq(1)
+            responses[0].data["asked_price_answer"].should eq(answer)
+            responses[0].data["price_certainty"].should eq("unconfirmed")
+          end
+        end
+
+        context "answer is considerably different from reference price" do
+          context "user currency matches reference price" do
+            it "confirms reported price with the user" do
+              DB.cleanup
+
+              user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
+              user.conversation_state["country_name"] = "Ethiopia"
+
+              reference_price = MvamBot::Price.sample_in_mkt(496)
+              answer = reference_price.price * 5
+
+              messages = handle_message("About #{answer} AFN", user: user, understand: response({"number" => answer}))
+
+              user.conversation_step.not_nil!.should contain("survey/confirm_local_price")
+              messages[0][:text].should contain("are you sure")
+
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses.size.should eq(1)
+              responses[0].data["asked_price_answer"].should eq(answer)
+            end
+
+            it "overrides original answer if user responds with a different amount after confirmation" do
+              DB.cleanup
+
+              user = user_near mkt_id: 496, conversation_step: "survey/confirm_local_price"
+              user.conversation_state["asked_price_answer"] = 300.to_i64
+
+              handle_message("Oops! Typo! It's actually 30.", user: user, understand: response({"number" => 30}))
+              user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses.size.should eq(1)
+              responses[0].data["asked_price_answer"].should eq(30)
+              responses[0].data["price_certainty"].should eq("confirmed")
+            end
+
+            it "continues to next step and leaves original value if user responds he is sure" do
+              DB.cleanup
+
+              user = user_near mkt_id: 496, conversation_step: "survey/confirm_local_price"
+              user.conversation_state["asked_price_answer"] = 300.to_i64
+
+              handle_message("No", user: user, understand: response({"yes_no" => "Yes"}))
+              user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses.size.should eq(1)
+              responses[0].data["asked_price_answer"].should eq(300)
+              responses[0].data["price_certainty"].should eq("confirmed")
+            end
+
+            it "continues to next step and leaves original value if user responds he is not sure" do
+              DB.cleanup
+
+              user = user_near mkt_id: 496, conversation_step: "survey/confirm_local_price"
+              user.conversation_state["asked_price_answer"] = 300.to_i64
+
+              messages = handle_message("No", user: user, understand: response({"yes_no" => "No"}))
+              user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses.size.should eq(1)
+              responses[0].data["asked_price_answer"].should eq(300)
+              responses[0].data["price_certainty"].should eq("not_sure")
+            end
+          end
+
+          context "user currency differs from reference price" do
+            it "continues to next step even reference price is not in the same currency as user" do
+              DB.cleanup
+
+              # nearby market in Ethiopia but user currency is from Somalia
+              user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
+              user.conversation_state["country_name"] = "Somalia"
+
+              reference_price = MvamBot::Price.sample_in_mkt(496)
+
+              messages = handle_message("About #{10000000} AFN", user: user, understand: response({"number" => 10000000}))
+
+              user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+
+              responses = MvamBot::SurveyResponse.for_user(user.id)
+              responses.size.should eq(1)
+              responses[0].data["asked_price_answer"].should eq(10000000)
+            end
+          end
+
+          # JSON from Wit could return both integer and floats for number entities, we should support both
+          it "supports integer responses" do
+            DB.cleanup
+
+            user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
+            user.conversation_state["country_name"] = "Afghanistan"
+
+            reference_price = MvamBot::Price.sample_in_mkt(496)
+            answer = reference_price.price.to_i
+
+            handle_message("About #{answer} AFN", user: user, understand: response({"number" => answer}))
+
+            user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+          end
+        end
       end
+
 
       it "moves to next step if user responds in a negative way" do
         DB.cleanup

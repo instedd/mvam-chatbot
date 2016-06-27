@@ -65,6 +65,13 @@ module MvamBot
 
     class FlowTransition
 
+      class Set
+        YAML.mapping({
+          key: { type: String, nilable: false },
+          value: { type: String, nilable: false },
+        })
+      end
+
       YAML.mapping({
         target: { type: String },
         action: { type: String, nilable: true },
@@ -79,6 +86,7 @@ module MvamBot
         location: { type: Bool, default: false },
         method: { type: String, nilable: true },
         say: { type: String, nilable: true },
+        set: { type: Set, nilable: true },
         failure: { type: Bool, default: false },
         timeout: { type: Int32, nilable: true }
       }, strict: true)

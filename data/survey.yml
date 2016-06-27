@@ -10,6 +10,7 @@ survey_data:
   - asked_price_commodity_id
   - asked_price_currency_code
   - asked_price_answer
+  - price_certainty
 
 common_transitions:
   - intent: AskWhy
@@ -255,12 +256,46 @@ states:
     transitions:
       - entity: number
         store: asked_price_answer
-        target: ask_roof_photo
+        set:
+          key: price_certainty
+          value: unconfirmed
+        target: validate_local_price
       - entity: yes_no
         value: No
         target: ask_roof_photo
       - failure: true
         say: Let's move on
+        target: ask_roof_photo
+
+  validate_local_price:
+    dummy: true
+    transitions:
+      - method: local_price_ok
+        target: ask_roof_photo
+      - default: true
+        target: confirm_local_price
+
+  confirm_local_price:
+    say: Sorry, are you sure $asked_price_answer_label $user_currency_label is the correct price for 1 $some_product_price_unit of $some_product?
+    transitions:
+      - entity: number
+        store: asked_price_answer
+        set:
+          key: price_certainty
+          value: confirmed
+        target: ask_roof_photo
+      - entity: yes_no
+        value: Yes
+        set:
+          key: price_certainty
+          value: confirmed
+        target: ask_roof_photo
+      - entity: yes_no
+        value: No
+        set:
+          key: price_certainty
+          value: not_sure
+        say: That's fine, thanks!
         target: ask_roof_photo
 
   ask_roof_photo:
