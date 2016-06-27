@@ -162,7 +162,7 @@ describe ::MvamBot::Bot do
     it "should end the survey collecting all data" do
       DB.cleanup
 
-      user = Factory::DB.user_with_location(conversation_step: "survey/ask_roof_photo")
+      user = Factory::DB.user_with_location(conversation_step: "survey/offer_local_news")
       user.conversation_state["age"] = 30i64
       user.conversation_state["gender"] = "male"
       user.conversation_state["not_enough_food"] = "Yes"
@@ -224,15 +224,16 @@ describe ::MvamBot::Bot do
       DB.cleanup
 
       user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+      user.conversation_state["country_name"] = "Algeria"
       messages = handle_message(photo: "myphoto", user: user)
 
       messages.size.should eq(1)
-      messages[0][:text].downcase.should contain("thank you for your answers")
+      messages[0][:text].downcase.should contain("would you like to receive food-related news")
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
       responses.size.should eq(1)
       responses[0].user_id.should eq(user.id)
-      responses[0].data.should eq({ "roof_photo" => "photo://myphoto" })
+      responses[0].data.should eq({"country_name" => "Algeria", "roof_photo" => "photo://myphoto"})
 
       file = MvamBot::DataFile.find("myphoto").not_nil!
       file.id.should eq("myphoto")
@@ -246,17 +247,18 @@ describe ::MvamBot::Bot do
       DB.cleanup
 
       user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+      user.conversation_state["country_name"] = "Algeria"
       user.conversation_state["gender"] = "male"
 
       messages = handle_message("no", user: user, messages: { "no" => response({"yes_no" => "No"}) })
 
       messages.size.should eq(2)
       messages[0][:text].should contain("No problem")
-      messages[1][:text].downcase.should contain("thank you for your answers")
+      messages[1][:text].downcase.should contain("would you like to receive food-related news")
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
       responses.size.should eq(1)
-      responses[0].data.should eq({"gender" => "male"})
+      responses[0].data.should eq({"country_name" => "Algeria", "gender" => "male"})
     end
 
     it "should support a picture upload after a confirmation" do
@@ -264,16 +266,17 @@ describe ::MvamBot::Bot do
       bot = Bot.new
 
       user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+      user.conversation_state["country_name"] = "Algeria"
       handle_message("sure", user: user, bot: bot, messages: { "sure" => response({"yes_no" => "Yes"}) })
       messages = handle_message(photo: "myphoto", user: user, bot: bot)
 
       messages.size.should eq(1)
-      messages[0][:text].downcase.should contain("thank you for your answers")
+      messages[0][:text].downcase.should contain("would you like to receive food-related news")
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
       responses.size.should eq(1)
       responses[0].user_id.should eq(user.id)
-      responses[0].data.should eq({ "roof_photo" => "photo://myphoto" })
+      responses[0].data.should eq({ "country_name" => "Algeria", "roof_photo" => "photo://myphoto" })
 
       file = MvamBot::DataFile.find("myphoto").not_nil!
       file.id.should eq("myphoto")
@@ -281,6 +284,33 @@ describe ::MvamBot::Bot do
       file.kind.should eq("image")
       file.extension.should eq("jpg")
       file.data.should_not eq(nil)
+    end
+
+    describe "local news" do
+      it "should offer news for user's country" do
+        DB.cleanup
+
+        user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+        user.conversation_state["country_name"] = "Algeria"
+        messages = handle_message(photo: "myphoto", user: user)
+
+        user.conversation_step.not_nil!.should contain("survey/offer_local_news")
+        messages.size.should eq(1)
+        messages[0][:text].should contain("food-related news for Algeria")
+      end
+
+      it "should store user response" do
+        DB.cleanup
+
+        user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
+        user.conversation_state["country_name"] = "Algeria"
+
+        handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
+
+        responses = MvamBot::SurveyResponse.for_user(user.id)
+        responses.size.should eq(1)
+        responses[0].data["receive_local_news"].should eq("Yes")
+      end
     end
 
     describe "geolocation" do

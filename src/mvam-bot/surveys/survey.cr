@@ -211,6 +211,7 @@ module MvamBot
                 .gsub "$some_product" { some_product }
                 .gsub "$user_currency_label" { user_currency_label }
                 .gsub "$asked_price_answer_label" { asked_price_answer_label }
+                .gsub "$user_country_name" { user_country.not_nil!.name }
       end
 
       private def some_product
