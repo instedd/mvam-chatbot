@@ -25,7 +25,7 @@ module MvamBot
       end
 
       def self.find(id : String)
-        row = DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM prices WHERE id = $1").rows[0]
+        row = DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM prices WHERE id = $1", [id]).rows[0]
         return self.new(*row)
       end
 

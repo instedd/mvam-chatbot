@@ -100,6 +100,9 @@ module MvamBot
         if say = transition.say
           messenger.answer(say, update_user: false)
         end
+        if set = transition.set
+          user.conversation_state[set.key] = set.value
+        end
         run transition.target
       end
 
@@ -207,14 +210,15 @@ module MvamBot
                 .gsub "$some_product_price_unit" { some_product_price_unit }
                 .gsub "$some_product" { some_product }
                 .gsub "$user_currency_label" { user_currency_label }
+                .gsub "$asked_price_answer_label" { asked_price_answer_label }
       end
 
       private def some_product
-        reference_price.not_nil!.commodity_name.downcase
+        reference_price.commodity_name.downcase
       end
 
       private def some_product_price_unit
-        reference_price.not_nil!.unit_name
+        reference_price.unit_name
       end
 
       private def user_country
@@ -248,22 +252,28 @@ module MvamBot
 
       private def reference_price
         unless @reference_price
-          lat = user.conversation_state["lat"].not_nil!.as(Float64)
-          lng = user.conversation_state["lng"].not_nil!.as(Float64)
+          if reference_price_id = user.conversation_state["reference_price_id"]?
+            @reference_price = Price.find(reference_price_id.as(String)).not_nil!
+          else
+            lat = user.conversation_state["lat"].not_nil!.as(Float64)
+            lng = user.conversation_state["lng"].not_nil!.as(Float64)
 
-          # search for mkts with a wide radius. this is probably better
-          # than just picking a random from anywhere in the world.
-          nearest_mkts = Location::Mkt.around(lat, lng, kilometers: 2000, count: 1)
-          @reference_price = if nearest_mkts.size > 0
-                               mkt, distance = nearest_mkts[0]
-                               Price.sample_in_mkt(mkt.id)
-                             elsif adm0 = Location::Adm0.find_by_name(user_country.not_nil!.name)
-                               Price.sample_in_adm0(adm0.id)
-                             else
-                               Price.sample
-                             end
+            # search for mkts with a wide radius. this is probably better
+            # than just picking a random from anywhere in the world.
+            nearest_mkts = Location::Mkt.around(lat, lng, kilometers: 2000, count: 1)
+            @reference_price = if nearest_mkts.size > 0
+                                 mkt, distance = nearest_mkts[0]
+                                 Price.sample_in_mkt(mkt.id)
+                               elsif adm0 = Location::Adm0.find_by_name(user_country.not_nil!.name)
+                                 Price.sample_in_adm0(adm0.id)
+                               else
+                                 Price.sample
+                               end
+
+            user.conversation_state["reference_price_id"] = @reference_price.not_nil!.id
+          end
         end
-        @reference_price
+        @reference_price.not_nil!
       end
 
       private def survey_data
@@ -423,6 +433,8 @@ module MvamBot
                   store_chosen_location_coordinates(message)
                 when "can_ask_local_price"
                   can_ask_local_price
+                when "local_price_ok"
+                  local_price_ok
                 else
                   raise "unknown transition method: #{transition.method}"
                 end
@@ -451,6 +463,35 @@ module MvamBot
           return true
         else
           return false
+        end
+      end
+
+      private def local_price_ok
+        # We only verify the answer if the reference price is expressed in the same currency as our question
+        return true if reference_price.currency_name != user_currency.code
+
+        lower = reference_price.price * 0.2
+        upper = reference_price.price * 5
+
+        return lower < asked_price_answer && asked_price_answer < upper
+      end
+
+      private def asked_price_answer : Int64 | Float64
+        user_answer = user.conversation_state["asked_price_answer"]
+        # parsed JSON could have either int or float values for this field
+        if user_answer.is_a? Int64
+          user_answer.as(Int64)
+        else
+          user_answer.as(Float64)
+        end
+      end
+
+      private def asked_price_answer_label
+        price = asked_price_answer
+        if price.is_a? Int64
+          price.to_s
+        else
+          price.as(Float64).round(1).to_s
         end
       end
 

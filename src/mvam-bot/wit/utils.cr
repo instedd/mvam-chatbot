@@ -12,7 +12,7 @@ module MvamBot
 
     def extract_value(entities, key)
       if entities[key]? && entities[key].size > 0 && entities[key][0]["value"]?
-        entities[key][0]["value"].raw.as(String | Int64 | Bool)
+        entities[key][0]["value"].raw.as(String | Int64 | Bool | Float64)
       end
     end
 
