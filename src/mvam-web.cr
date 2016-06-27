@@ -36,13 +36,16 @@ end
 
 post "/news" do |env|
   message = env.params.body["message"]?
-  country = env.params.body["country"]?
+  country_code = env.params.body["country"]?
 
-  if validate_news_params(country, message)
+  puts country_code
+  puts message
+
+  if validate_news_params(country_code, message)
     post_success = true
     post_invalid_params = false
 
-    # TODO: save news to be sent in background
+    MvamBot::News.schedule_delivery(MvamBot::Country.find_by_code(country_code).not_nil!, message.not_nil!)
   else
     post_success = false
     post_invalid_params = true
@@ -101,6 +104,8 @@ end
 def validate_news_params(country, message)
   return false if message.nil? || message.empty?
   return false unless MvamBot::Country.code_exists?(country)
+
+  return true
 end
 
 Kemal.config.tap do |config|
