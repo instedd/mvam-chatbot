@@ -21,6 +21,10 @@ module MvamBot
       !@@countries[country_name]?.nil?
     end
 
+    def self.code_exists?(iso_code)
+      !@@countries.values.find { |c| c.iso_code == iso_code }.nil?
+    end
+
     def self.load
       result = {} of String => Country
 
