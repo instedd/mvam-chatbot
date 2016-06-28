@@ -12,6 +12,16 @@ module MvamBot
       DB.exec({Int32}, "SELECT user_id FROM news_subscriptions WHERE country_code = $1", [country.iso_code]).rows.map { |row| row[0] }
     end
 
+    def self.subscriptions_per_country
+      rows = DB.exec({String, Int64}, "SELECT country_code, count(1) FROM news_subscriptions GROUP BY country_code").rows
+      ({} of String => Int64).tap do |ret|
+        rows.each do |row|
+          country_code, count = row
+          ret[country_code] = count
+        end
+      end
+    end
+
     def self.schedule_delivery(country : MvamBot::Country, message : String) : Content
       timestamp = Time.new
       id = DB.exec({Int64}, "INSERT INTO news_contents (country_code, message, created_at) VALUES ($1, $2, $3) RETURNING id", [country.iso_code, message, timestamp]).rows.first[0]

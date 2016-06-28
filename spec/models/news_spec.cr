@@ -30,6 +30,22 @@ describe ::MvamBot::News do
     MvamBot::News.subscribed_users(country).size.should eq(1)
   end
 
+  it "informs subscriptions per country" do
+    DB.cleanup
+
+    c1 = MvamBot::Country.find_by_code("AR").not_nil!
+    c2 = MvamBot::Country.find_by_code("BE").not_nil!
+
+    MvamBot::News.subscribe(c1, Factory::DB.user(id: 1000000))
+    MvamBot::News.subscribe(c1, Factory::DB.user(id: 1000001))
+    MvamBot::News.subscribe(c2, Factory::DB.user(id: 1000002))
+
+    MvamBot::News.subscriptions_per_country.should eq({
+      "AR" => 2,
+      "BE" => 1
+    })
+  end
+
   it "enqueues messages for future delivery" do
     DB.cleanup
     country = MvamBot::Country.find_by_name("Argentina")

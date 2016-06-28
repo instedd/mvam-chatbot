@@ -30,6 +30,8 @@ end
 get "/news" do
   post_success = false
   post_invalid_params = false
+
+  subscriptions_per_country = MvamBot::News.subscriptions_per_country
   countries = MvamBot::Country.all
   mvam_render "news"
 end
@@ -48,6 +50,7 @@ post "/news" do |env|
     post_invalid_params = true
   end
 
+  subscriptions_per_country = MvamBot::News.subscriptions_per_country
   countries = MvamBot::Country.all
   mvam_render "news"
 end
