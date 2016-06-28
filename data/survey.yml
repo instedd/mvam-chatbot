@@ -302,10 +302,10 @@ states:
   ask_roof_photo:
     say: Would you please send me a picture of your roof?
     transitions:
-      - target: offer_local_news
+      - target: pre_offer_local_news
         photo: true
         store: roof_photo
-      - target: offer_local_news
+      - target: pre_offer_local_news
         say: No problem
         entity: yes_no
         value: No
@@ -313,7 +313,15 @@ states:
         entity: yes_no
         value: Yes
       - failure: true
+        target: pre_offer_local_news
+
+  pre_offer_local_news:
+    dummy: true
+    transitions:
+      - method: can_offer_news_subscription
         target: offer_local_news
+      - default: true
+        target: thank_you
 
   offer_local_news:
     say: Would you like to receive food-related news for $user_country_name?

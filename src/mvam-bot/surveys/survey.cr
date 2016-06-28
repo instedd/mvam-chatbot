@@ -441,6 +441,8 @@ module MvamBot
                   store_chosen_location_coordinates(message)
                 when "can_ask_local_price"
                   can_ask_local_price
+                when "can_offer_news_subscription"
+                  can_offer_news_subscription
                 when "local_price_ok"
                   local_price_ok
                 else
@@ -469,6 +471,14 @@ module MvamBot
           user.conversation_state["asked_price_currency_code"] = user_currency.code
           user.conversation_state["asked_price_commodity_id"] = reference_price.not_nil!.commodity_id.to_i64
           return true
+        else
+          return false
+        end
+      end
+
+      private def can_offer_news_subscription
+        if user_country
+          return !MvamBot::News.subscribed_users(user_country.not_nil!).includes?(user.id)
         else
           return false
         end

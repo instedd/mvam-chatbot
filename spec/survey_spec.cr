@@ -287,41 +287,64 @@ describe ::MvamBot::Bot do
     end
 
     describe "local news" do
-      it "should offer news for user's country" do
-        DB.cleanup
+      context "user is not previously subscribed" do
+        it "should offer news for user's country" do
+          DB.cleanup
 
-        user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
-        user.conversation_state["country_name"] = "Algeria"
-        messages = handle_message(photo: "myphoto", user: user)
+          user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+          user.conversation_state["country_name"] = "Algeria"
+          messages = handle_message(photo: "myphoto", user: user)
 
-        user.conversation_step.not_nil!.should contain("survey/offer_local_news")
-        messages.size.should eq(1)
-        messages[0][:text].should contain("food-related news for Algeria")
+          user.conversation_step.not_nil!.should contain("survey/offer_local_news")
+          messages.size.should eq(1)
+          messages[0][:text].should contain("food-related news for Algeria")
+        end
+
+        it "should store user response" do
+          DB.cleanup
+
+          user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
+          user.conversation_state["country_name"] = "Algeria"
+
+          handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
+
+          responses = MvamBot::SurveyResponse.for_user(user.id)
+          responses.size.should eq(1)
+          responses[0].data["receive_local_news"].should eq("Yes")
+        end
+
+        it "should create a subscription if user response postively" do
+          DB.cleanup
+
+          country = MvamBot::Country.find_by_name("Algeria")
+          user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
+          user.conversation_state["country_name"] = country.name
+
+          handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
+
+          MvamBot::News.subscribed_users(country).should eq([user.id])
+        end
       end
 
-      it "should store user response" do
-        DB.cleanup
+      context "user is previously subscribed" do
+        it "should to straight to survey end" do
+          DB.cleanup
 
-        user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
-        user.conversation_state["country_name"] = "Algeria"
+          country = MvamBot::Country.find_by_name("Algeria")
 
-        handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
+          user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+          user.conversation_state["country_name"] = country.name
+          MvamBot::News.subscribe(country, user)
 
-        responses = MvamBot::SurveyResponse.for_user(user.id)
-        responses.size.should eq(1)
-        responses[0].data["receive_local_news"].should eq("Yes")
-      end
+          messages = handle_message(photo: "myphoto", user: user)
 
-      it "should create a subscription if user response postively" do
-        DB.cleanup
+          messages.last[:text].downcase.should contain("thank you for your answers")
+          messages.last[:text].downcase.should contain("remember you can send `/price`")
 
-        country = MvamBot::Country.find_by_name("Algeria")
-        user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
-        user.conversation_state["country_name"] = country.name
-
-        handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
-
-        MvamBot::News.subscribed_users(country).should eq([user.id])
+          responses = MvamBot::SurveyResponse.for_user(user.id)
+          responses.size.should eq(1)
+          responses[0].completed.should eq(true)
+        end
       end
     end
 

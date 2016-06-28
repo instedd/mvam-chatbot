@@ -93,6 +93,8 @@ Would you ple
 ase send me 
 a picture...
 ", shape = circle, style= solid ];
+	pre_offer_local_news [ label = "pre_offer_local_news
+", shape = circle, style= dotted ];
 	offer_local_news [ label = "offer_local_news
 Would you lik
 e to receive
@@ -176,9 +178,11 @@ ready to ...
 	confirm_local_price -> ask_roof_photo [ label = "entity:number", dir = forward ];
 	confirm_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
 	confirm_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
-	ask_roof_photo -> offer_local_news [ label = "photo", dir = forward ];
-	ask_roof_photo -> offer_local_news [ label = "entity:yes_no", dir = forward ];
-	ask_roof_photo -> offer_local_news [ label = "failure", dir = forward ];
+	ask_roof_photo -> pre_offer_local_news [ label = "photo", dir = forward ];
+	ask_roof_photo -> pre_offer_local_news [ label = "entity:yes_no", dir = forward ];
+	ask_roof_photo -> pre_offer_local_news [ label = "failure", dir = forward ];
+	pre_offer_local_news -> offer_local_news [ label = "method:can_offer_news_subscription", dir = forward ];
+	pre_offer_local_news -> thank_you [ label = "otherwise", dir = forward ];
 	offer_local_news -> thank_you [ label = "entity:yes_no", dir = forward ];
 	offer_local_news -> thank_you [ label = "entity:yes_no", dir = forward ];
 	offer_local_news -> thank_you [ label = "otherwise", dir = forward ];

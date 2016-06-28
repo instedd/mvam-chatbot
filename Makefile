@@ -34,5 +34,8 @@ test:
 run-web:
 	@source .env && crystal src/mvam-web.cr
 
+run-notifications:
+	@source .env && crystal src/mvam-notifications.cr
+
 run:
 	@source .env && crystal src/mvam-bot.cr
