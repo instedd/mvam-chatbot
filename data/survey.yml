@@ -11,6 +11,7 @@ survey_data:
   - asked_price_currency_code
   - asked_price_answer
   - price_certainty
+  - receive_local_news
 
 common_transitions:
   - intent: AskWhy
@@ -301,10 +302,10 @@ states:
   ask_roof_photo:
     say: Would you please send me a picture of your roof?
     transitions:
-      - target: thank_you
+      - target: pre_offer_local_news
         photo: true
         store: roof_photo
-      - target: thank_you
+      - target: pre_offer_local_news
         say: No problem
         entity: yes_no
         value: No
@@ -312,8 +313,32 @@ states:
         entity: yes_no
         value: Yes
       - failure: true
+        target: pre_offer_local_news
+
+  pre_offer_local_news:
+    dummy: true
+    transitions:
+      - method: can_offer_news_subscription
+        target: offer_local_news
+      - default: true
         target: thank_you
 
+  offer_local_news:
+    say: Would you like to receive food-related news for $user_country_name?
+    transitions:
+      - entity: yes_no
+        value: Yes
+        say: Great!
+        store: receive_local_news
+        action: subscribe_user_to_news
+        target: thank_you
+      - entity: yes_no
+        value: No
+        say: OK, just let me know if you change your mind!
+        target: thank_you
+      - default: true
+        target: thank_you
+     
   thank_you:
     say: That would be all, thank you for your answers!
     final: true

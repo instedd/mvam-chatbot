@@ -27,6 +27,34 @@ get "/surveys" do
   mvam_render "surveys"
 end
 
+get "/news" do
+  post_success = false
+  post_invalid_params = false
+
+  subscriptions_per_country = MvamBot::News.subscriptions_per_country
+  countries = MvamBot::Country.all
+  mvam_render "news"
+end
+
+post "/news" do |env|
+  message = env.params.body["message"]?
+  country_code = env.params.body["country"]?
+
+  if validate_news_params(country_code, message)
+    post_success = true
+    post_invalid_params = false
+
+    MvamBot::News.schedule_delivery(MvamBot::Country.find_by_code(country_code).not_nil!, message.not_nil!)
+  else
+    post_success = false
+    post_invalid_params = true
+  end
+
+  subscriptions_per_country = MvamBot::News.subscriptions_per_country
+  countries = MvamBot::Country.all
+  mvam_render "news"
+end
+
 get "/surveys.csv" do |env|
   surveys = MvamBot::SurveyResponse.all
   fields = MvamBot::Surveys::Survey.flow.data
@@ -71,6 +99,13 @@ get "/files/:id" do |env|
   else
     env.response.status_code = 404
   end
+end
+
+def validate_news_params(country, message)
+  return false if message.nil? || message.empty?
+  return false unless MvamBot::Country.code_exists?(country)
+
+  return true
 end
 
 Kemal.config.tap do |config|

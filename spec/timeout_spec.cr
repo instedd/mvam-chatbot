@@ -93,7 +93,7 @@ describe ::MvamBot::Bot do
 
     it "should not enqueue a timeout on a final state" do
       DB.cleanup
-      user = Factory::DB.user(:with_location, conversation_step: "survey/ask_roof_photo", conversation_session_id: "SESSION_ID")
+      user = Factory::DB.user(:with_location, conversation_step: "survey/offer_local_news", conversation_session_id: "SESSION_ID")
 
       handle_message("No", user: user, understand: response({ "yes_no" => "No" }))
       scheduled_task(user)

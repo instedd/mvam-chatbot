@@ -103,6 +103,10 @@ module MvamBot
         if set = transition.set
           user.conversation_state[set.key] = set.value
         end
+        if action = transition.action
+          run_action(action)
+        end
+
         run transition.target
       end
 
@@ -161,11 +165,14 @@ module MvamBot
       end
 
       private def run_actions(state : FlowState)
-        if state.method
-          case state.method
-          when "set_survey_at" then set_survey_at
-          else MvamBot.logger.error("Unknown action for state: #{state.method}")
-          end
+        run_action(state.method.not_nil!) if state.method
+      end
+
+      private def run_action(method_name : String)
+        case method_name
+        when "set_survey_at" then set_survey_at
+        when "subscribe_user_to_news" then subscribe_user_to_news
+        else MvamBot.logger.error("Unknown action: #{method_name}")
         end
       end
 
@@ -211,6 +218,7 @@ module MvamBot
                 .gsub "$some_product" { some_product }
                 .gsub "$user_currency_label" { user_currency_label }
                 .gsub "$asked_price_answer_label" { asked_price_answer_label }
+                .gsub "$user_country_name" { user_country.not_nil!.name }
       end
 
       private def some_product
@@ -433,6 +441,8 @@ module MvamBot
                   store_chosen_location_coordinates(message)
                 when "can_ask_local_price"
                   can_ask_local_price
+                when "can_offer_news_subscription"
+                  can_offer_news_subscription
                 when "local_price_ok"
                   local_price_ok
                 else
@@ -461,6 +471,14 @@ module MvamBot
           user.conversation_state["asked_price_currency_code"] = user_currency.code
           user.conversation_state["asked_price_commodity_id"] = reference_price.not_nil!.commodity_id.to_i64
           return true
+        else
+          return false
+        end
+      end
+
+      private def can_offer_news_subscription
+        if user_country
+          return !MvamBot::News.subscribed_users(user_country.not_nil!).includes?(user.id)
         else
           return false
         end
@@ -593,6 +611,10 @@ module MvamBot
 
       private def survey_at_description
         user.conversation_state["survey_at"].to_s.downcase
+      end
+
+      private def subscribe_user_to_news
+        MvamBot::News.subscribe(user_country.not_nil!, user)
       end
 
       private def clear_states

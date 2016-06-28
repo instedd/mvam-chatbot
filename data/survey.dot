@@ -81,10 +81,24 @@ Currently, ho
 w much does 
 $some_pro...
 ", shape = circle, style= solid ];
+	validate_local_price [ label = "validate_local_price
+", shape = circle, style= dotted ];
+	confirm_local_price [ label = "confirm_local_price
+Sorry, are yo
+u sure $aske
+d_price_a...
+", shape = circle, style= solid ];
 	ask_roof_photo [ label = "ask_roof_photo
 Would you ple
 ase send me 
 a picture...
+", shape = circle, style= solid ];
+	pre_offer_local_news [ label = "pre_offer_local_news
+", shape = circle, style= dotted ];
+	offer_local_news [ label = "offer_local_news
+Would you lik
+e to receive
+ food-rel...
 ", shape = circle, style= solid ];
 	thank_you [ label = "thank_you
 That would be
@@ -156,12 +170,22 @@ ready to ...
 	ask_not_enough_food -> pre_ask_local_price [ label = "failure", dir = forward ];
 	pre_ask_local_price -> ask_local_price [ label = "method:can_ask_local_price", dir = forward ];
 	pre_ask_local_price -> ask_roof_photo [ label = "otherwise", dir = forward ];
-	ask_local_price -> ask_roof_photo [ label = "entity:number", dir = forward ];
+	ask_local_price -> validate_local_price [ label = "entity:number", dir = forward ];
 	ask_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
 	ask_local_price -> ask_roof_photo [ label = "failure", dir = forward ];
-	ask_roof_photo -> thank_you [ label = "photo", dir = forward ];
-	ask_roof_photo -> thank_you [ label = "entity:yes_no", dir = forward ];
-	ask_roof_photo -> thank_you [ label = "failure", dir = forward ];
+	validate_local_price -> ask_roof_photo [ label = "method:local_price_ok", dir = forward ];
+	validate_local_price -> confirm_local_price [ label = "otherwise", dir = forward ];
+	confirm_local_price -> ask_roof_photo [ label = "entity:number", dir = forward ];
+	confirm_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
+	confirm_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
+	ask_roof_photo -> pre_offer_local_news [ label = "photo", dir = forward ];
+	ask_roof_photo -> pre_offer_local_news [ label = "entity:yes_no", dir = forward ];
+	ask_roof_photo -> pre_offer_local_news [ label = "failure", dir = forward ];
+	pre_offer_local_news -> offer_local_news [ label = "method:can_offer_news_subscription", dir = forward ];
+	pre_offer_local_news -> thank_you [ label = "otherwise", dir = forward ];
+	offer_local_news -> thank_you [ label = "entity:yes_no", dir = forward ];
+	offer_local_news -> thank_you [ label = "entity:yes_no", dir = forward ];
+	offer_local_news -> thank_you [ label = "otherwise", dir = forward ];
 	check_inactivity -> timed_out [ label = "", dir = both ];
 	check_inactivity -> timed_out [ label = "entity:yes_no", dir = both ];
 }
