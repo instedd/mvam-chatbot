@@ -38,14 +38,12 @@ module MvamBot
     end
 
     def self.dequeue_delivery
-      result = DB.exec({Int64, Int32, Int32}, "SELECT id, content_id, user_id FROM news_deliveries LIMIT 1").rows.map { |row| Delivery.new(*row) }
+      rows = DB.exec({Int64, Int32, Int32}, "DELETE FROM news_deliveries WHERE id = (SELECT MIN(id) FROM news_deliveries) RETURNING id, content_id, user_id").rows
 
-      if result.empty?
+      if rows.empty?
         nil
       else
-        pending_delivery = result[0]
-        DB.exec("DELETE FROM news_deliveries WHERE id = $1", [pending_delivery.id])
-        return pending_delivery
+        Delivery.new(*rows[0])
       end
     end
 
