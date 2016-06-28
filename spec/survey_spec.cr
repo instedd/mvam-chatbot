@@ -311,6 +311,18 @@ describe ::MvamBot::Bot do
         responses.size.should eq(1)
         responses[0].data["receive_local_news"].should eq("Yes")
       end
+
+      it "should create a subscription if user response postively" do
+        DB.cleanup
+
+        country = MvamBot::Country.find_by_name("Algeria")
+        user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
+        user.conversation_state["country_name"] = country.name
+
+        handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
+
+        MvamBot::News.subscribed_users(country).should eq([user.id])
+      end
     end
 
     describe "geolocation" do

@@ -322,6 +322,7 @@ states:
         value: Yes
         say: Great!
         store: receive_local_news
+        action: subscribe_user_to_news
         target: thank_you
       - entity: yes_no
         value: No

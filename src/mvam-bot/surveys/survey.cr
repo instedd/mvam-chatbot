@@ -103,6 +103,10 @@ module MvamBot
         if set = transition.set
           user.conversation_state[set.key] = set.value
         end
+        if action = transition.action
+          run_action(action)
+        end
+
         run transition.target
       end
 
@@ -161,11 +165,14 @@ module MvamBot
       end
 
       private def run_actions(state : FlowState)
-        if state.method
-          case state.method
-          when "set_survey_at" then set_survey_at
-          else MvamBot.logger.error("Unknown action for state: #{state.method}")
-          end
+        run_action(state.method.not_nil!) if state.method
+      end
+
+      private def run_action(method_name : String)
+        case method_name
+        when "set_survey_at" then set_survey_at
+        when "subscribe_user_to_news" then subscribe_user_to_news
+        else MvamBot.logger.error("Unknown action: #{method_name}")
         end
       end
 
@@ -594,6 +601,10 @@ module MvamBot
 
       private def survey_at_description
         user.conversation_state["survey_at"].to_s.downcase
+      end
+
+      private def subscribe_user_to_news
+        MvamBot::News.subscribe(user_country.not_nil!, user)
       end
 
       private def clear_states

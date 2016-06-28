@@ -38,9 +38,6 @@ post "/news" do |env|
   message = env.params.body["message"]?
   country_code = env.params.body["country"]?
 
-  puts country_code
-  puts message
-
   if validate_news_params(country_code, message)
     post_success = true
     post_invalid_params = false
