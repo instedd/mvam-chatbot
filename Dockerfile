@@ -19,8 +19,8 @@ RUN crystal deps
 ADD . /app
 RUN crystal build src/mvam-bot.cr --release
 RUN crystal build src/mvam-web.cr --release
-RUN crystal build src/mvam-cron.cr --release
-RUN crystal build src/mvam-notifications.cr --release
+RUN crystal build src/mvam-cron.cr
+RUN crystal build src/mvam-notifications.cr
 
 # Start the bot
 CMD "./mvam-bot"
