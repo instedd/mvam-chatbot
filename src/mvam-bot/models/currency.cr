@@ -32,11 +32,12 @@ module MvamBot
 
       CSV.new({{ `cat data/countries.csv`.stringify }}, headers: true) do |row|
         country_name,_,code,name = row
-        country = Country.find_by_name(country_name)
-
-        currency = Currency.new(code, name, country)
-        @@currencies_by_code.not_nil![code] = currency
-        @@currencies_by_country.not_nil![country] = currency
+        if Country.exists?(country_name)
+          country = Country.find_by_name(country_name)
+          currency = Currency.new(code, name, country)
+          @@currencies_by_code.not_nil![code] = currency
+          @@currencies_by_country.not_nil![country] = currency
+        end
       end
     end
 
