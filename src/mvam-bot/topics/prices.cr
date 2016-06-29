@@ -12,7 +12,7 @@ module MvamBot
 
       @@commodity_names : Array(String)?
 
-      delegate answer, answer_with_inline, @messenger
+      delegate answer, answer_with_inline, to: @messenger
 
       def initialize(@messenger : MvamBot::UserMessenger, @message : TelegramBot::Message, @wit : Wit::MessageResponse? = nil)
         @user = @messenger.user

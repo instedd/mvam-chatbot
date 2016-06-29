@@ -51,7 +51,7 @@ module MvamBot
         options: { type: Array(Option), nilable: true },
         options_from: { type: String, nilable: true },
         transient: { type: Bool, default: false },
-        clarification: { type: Clarification, default: Clarification.new }
+        clarification: { type: Clarification, default: Clarification.new },
         method: { type: String, nilable: true }
       }, strict: true)
 

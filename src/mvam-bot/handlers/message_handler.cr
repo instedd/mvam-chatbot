@@ -14,7 +14,7 @@ module MvamBot
 
     include MvamBot::WitUtils
 
-    delegate answer, messenger
+    delegate answer, to: messenger
 
     def initialize(@message : TelegramBot::Message, @user : User, @bot : MvamBot::Bot)
     end

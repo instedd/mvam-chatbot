@@ -16,7 +16,7 @@ module MvamBot::Spec
       end
 
       # Algeria, Alger, Algiers
-      def self.user(*traits = (), id = 100000001, username = nil, name = "John Doe", location_adm0_id = nil, location_adm1_id = nil, location_mkt_id = nil, conversation_step = nil, conversation_session_id = nil, conversation_at = nil, location_lat = nil, location_lng = nil, gps_timestamp = nil, survey_at = nil)
+      def self.user(*traits, id = 100000001, username = nil, name = "John Doe", location_adm0_id = nil, location_adm1_id = nil, location_mkt_id = nil, conversation_step = nil, conversation_session_id = nil, conversation_at = nil, location_lat = nil, location_lng = nil, gps_timestamp = nil, survey_at = nil)
         if traits.includes?(:with_location)
           location_adm0_id ||= 4
           location_adm1_id ||= 344
