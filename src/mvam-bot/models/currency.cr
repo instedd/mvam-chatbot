@@ -4,21 +4,29 @@ module MvamBot
     @@currencies_by_code : Hash(String, Currency)?
     @@currencies_by_country : Hash(Country, Currency)?
 
-    load_from_csv
-
     def self.all
-      @@currencies_by_code.not_nil!.values
+      currencies_by_code.not_nil!.values
     end
 
     def self.find_by_code(code)
-      @@currencies_by_code.not_nil![code]
+      currencies_by_code.not_nil![code]
     end
 
     def self.find_by_country(country)
-      @@currencies_by_country.not_nil![country]
+      currencies_by_country.not_nil![country]
     end
 
-    def self.load_from_csv
+    private def self.currencies_by_code
+      load_from_csv if @@currencies_by_code.nil?
+      @@currencies_by_code
+    end
+
+    private def self.currencies_by_country
+      load_from_csv if @@currencies_by_country.nil?
+      @@currencies_by_country
+    end
+
+    private def self.load_from_csv
       @@currencies_by_code = {} of String => Currency
       @@currencies_by_country = {} of Country => Currency
 
