@@ -428,6 +428,8 @@ module MvamBot
 
       private def test_method_transition(transition, message)
         match = case transition.method
+                when "parse_number"
+                  parse_number(transition, message)
                 when "use_previous_recent_user_position"
                   use_previous_recent_user_position
                 when "reverse_geocode_user_position"
@@ -456,6 +458,20 @@ module MvamBot
 
         MvamBot.logger.debug("Transition to #{transition.target} matched on method #{transition.method}") if match
         match
+      end
+
+      private def parse_number(transition, message)
+        if message && message.text
+          if match = /\d+((?:.|,)\d+)?/.match(message.text.not_nil!)
+            if transition.store
+              number = match[0]
+              fractional_part = match[1]?
+              user.conversation_state[transition.store.not_nil!] = fractional_part ? number.to_f64 : number.to_i64
+            end
+            return true
+          end
+        end
+        return false
       end
 
       private def store_chosen_location_coordinates(message)

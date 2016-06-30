@@ -109,7 +109,7 @@ states:
     clarification:
       say: Sorry, I did not get that. Please answer with a number.
     transitions:
-      - entity: number
+      - method: parse_number
         target: ask_gender
         store: age
       - failure: true
@@ -268,7 +268,7 @@ states:
     clarification:
       say: Sorry, I did not get that. Please answer with a number.
     transitions:
-      - entity: number
+      - method: parse_number
         store: asked_price_answer
         set:
           key: price_certainty
@@ -292,7 +292,7 @@ states:
   confirm_local_price:
     say: Sorry, are you sure $asked_price_answer_label $user_currency_label is the correct price for 1 $some_product_price_unit of $some_product?
     transitions:
-      - entity: number
+      - method: parse_number
         store: asked_price_answer
         set:
           key: price_certainty

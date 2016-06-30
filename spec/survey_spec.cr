@@ -109,7 +109,7 @@ describe ::MvamBot::Bot do
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_age")
       user.conversation_session_id = "TEST_SESSION_ID"
 
-      messages = handle_message("I am 30 years old", user: user, messages: { "I am 30 years old" => response({"number" => 30}) })
+      messages = handle_message("I am 30 years old", user: user)
 
       messages.size.should eq(1)
       messages[0][:text].should eq("Are you a man or a woman?")
@@ -783,7 +783,7 @@ describe ::MvamBot::Bot do
 
             reference_price = MvamBot::Price.sample_in_mkt(496)
             answer = reference_price.price * 1.5
-            handle_message("About #{answer} AFN", user: user, understand: response({"number" => answer}))
+            handle_message("About #{answer} AFN", user: user)
 
             user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
 
@@ -805,7 +805,7 @@ describe ::MvamBot::Bot do
               reference_price = MvamBot::Price.sample_in_mkt(496)
               answer = reference_price.price * 5
 
-              messages = handle_message("About #{answer} AFN", user: user, understand: response({"number" => answer}))
+              messages = handle_message("About #{answer} AFN", user: user)
 
               user.conversation_step.not_nil!.should contain("survey/confirm_local_price")
               messages[0][:text].should contain("are you sure")
@@ -821,7 +821,7 @@ describe ::MvamBot::Bot do
               user = user_near mkt_id: 496, conversation_step: "survey/confirm_local_price"
               user.conversation_state["asked_price_answer"] = 300.to_i64
 
-              handle_message("Oops! Typo! It's actually 30.", user: user, understand: response({"number" => 30}))
+              handle_message("Oops! Typo! It's actually 30.", user: user)
               user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
 
               responses = MvamBot::SurveyResponse.for_user(user.id)
@@ -871,7 +871,7 @@ describe ::MvamBot::Bot do
 
               reference_price = MvamBot::Price.sample_in_mkt(496)
 
-              messages = handle_message("About #{10000000} AFN", user: user, understand: response({"number" => 10000000}))
+              messages = handle_message("About #{10000000} AFN", user: user)
 
               user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
 
@@ -891,7 +891,7 @@ describe ::MvamBot::Bot do
             reference_price = MvamBot::Price.sample_in_mkt(496)
             answer = reference_price.price.to_i
 
-            handle_message("About #{answer} AFN", user: user, understand: response({"number" => answer}))
+            handle_message("About #{answer} AFN", user: user)
 
             user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
           end
