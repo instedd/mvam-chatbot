@@ -103,6 +103,11 @@ Would you lik
 e to receive
  food-rel...
 ", shape = circle, style= solid ];
+	open_question [ label = "open_question
+Would you lik
+e to tell us
+ anything...
+", shape = circle, style= solid ];
 	thank_you [ label = "thank_you
 That would be
  all, thank 
@@ -187,10 +192,12 @@ ready to ...
 	ask_roof_photo -> pre_offer_local_news [ label = "entity:yes_no", dir = forward ];
 	ask_roof_photo -> pre_offer_local_news [ label = "failure", dir = forward ];
 	pre_offer_local_news -> offer_local_news [ label = "method:can_offer_news_subscription", dir = forward ];
-	pre_offer_local_news -> thank_you [ label = "otherwise", dir = forward ];
-	offer_local_news -> thank_you [ label = "entity:yes_no", dir = forward ];
-	offer_local_news -> thank_you [ label = "entity:yes_no", dir = forward ];
-	offer_local_news -> thank_you [ label = "otherwise", dir = forward ];
+	pre_offer_local_news -> open_question [ label = "otherwise", dir = forward ];
+	offer_local_news -> open_question [ label = "entity:yes_no", dir = forward ];
+	offer_local_news -> open_question [ label = "entity:yes_no", dir = forward ];
+	offer_local_news -> open_question [ label = "otherwise", dir = forward ];
+	open_question -> thank_you [ label = "entity:yes_no", dir = forward ];
+	open_question -> thank_you [ label = "otherwise", dir = forward ];
 	check_inactivity -> timed_out [ label = "", dir = both ];
 	check_inactivity -> timed_out [ label = "entity:yes_no", dir = both ];
 }
