@@ -25,7 +25,7 @@ states:
 
   start:
     initial: true
-    say: I would like to ask you a few questions if you have a minute.
+    say: I would like to ask you a few questions if you have a minute. All your answers will remain confidential.
     clarification:
       say: Sorry, I did not get that. Can I ask you a few questions now?
       options:
