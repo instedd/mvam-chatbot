@@ -98,7 +98,7 @@ module MvamBot
 
       private def run(transition : FlowTransition)
         if say = transition.say
-          messenger.answer(say, update_user: false)
+          messenger.answer(hydrate(say), update_user: false)
         end
         if set = transition.set
           user.conversation_state[set.key] = set.value
@@ -219,6 +219,7 @@ module MvamBot
                 .gsub "$user_currency_label" { user_currency_label }
                 .gsub "$asked_price_answer_label" { asked_price_answer_label }
                 .gsub "$user_country_name" { user_country.not_nil!.name }
+                .gsub "$user_name" { user_name }
       end
 
       private def some_product
@@ -252,6 +253,10 @@ module MvamBot
 
       private def user_currency_label
         pluralize(user_currency.name.downcase)
+      end
+
+      private def user_name
+        user.conversation_state["name"]
       end
 
       private def pluralize(s : String)

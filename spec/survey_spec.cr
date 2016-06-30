@@ -69,9 +69,9 @@ describe ::MvamBot::Bot do
       messages[0][:text].should contain("I would like to ask you a few questions if you have a minute")
       messages[1][:text].should eq("Sorry, I did not get that. Can I ask you a few questions now?")
       messages[1][:reply_markup].as(TelegramBot::ReplyKeyboardMarkup).keyboard.flatten.size.should eq(2)
-      messages[2][:text].should contain("Could you share your current position with us?")
+      messages[2][:text].should contain("What's your name?")
 
-      user.conversation_step.should eq("survey/ask_gps?from=geolocate_user")
+      user.conversation_step.not_nil!.should contain("survey/ask_name")
     end
 
     it "should run failure if response was never understood" do
@@ -286,6 +286,43 @@ describe ::MvamBot::Bot do
       file.data.should_not eq(nil)
     end
 
+    describe "getting user name" do
+      it "asks for user name at survey start" do
+        DB.cleanup
+        user = Factory::DB.user(:with_conversation, conversation_step: "survey/start")
+        handle_message("Yes", user: user, understand: response({"yes_no" => "Yes"}))
+
+        user.conversation_step.not_nil!.should contain("survey/ask_name")
+      end
+
+      context "wit understands contact entity" do
+        it "stores contact name and greets user by his name" do
+          DB.cleanup
+          user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_name")
+
+          messages = handle_message("My name is Juan", user: user, understand: response({"contact" => "Juan"}))
+          messages.size.should eq(2)
+          messages[0][:text].should eq("Nice to meet you, Juan.")
+
+          responses = MvamBot::SurveyResponse.for_user(user.id)
+          responses.size.should eq(1)
+          responses[0].user_id.should eq(user.id)
+          responses[0].data.should eq({"name" => "Juan"})
+        end
+      end
+
+      context "wit doesn't understand contact entity" do
+        it "greets user without name and goes on" do
+          DB.cleanup
+          user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_name")
+
+          messages = handle_message("I don't want to tell you my name", user: user, understand: response())
+          messages.size.should eq(2)
+          messages[0][:text].should eq("Nice to meet you.")
+        end
+      end
+    end
+
     describe "local news" do
       context "user is not previously subscribed" do
         it "should offer news for user's country" do
@@ -352,30 +389,29 @@ describe ::MvamBot::Bot do
       context "user with previously known lat/lng" do
         it "should skip asking user for location if known position is recent enough" do
           DB.cleanup
-          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.day.ago)
+          user = Factory::DB.user(conversation_step: "survey/ask_name", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.day.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
 
-          messages = handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
-          messages.size.should eq(1)
+          handle_message("foo", user: user, understand:  response())
           user.conversation_step.not_nil!.should contain("survey/ask_age")
 
           responses = MvamBot::SurveyResponse.for_user(user.id)
-          responses[0].data.should eq({"lat" => user.location_lat, "lng" => user.location_lng})
+          responses[0].data["lat"].should eq(user.location_lat)
+          responses[0].data["lng"].should eq(user.location_lng)
         end
 
         it "should ask the user if his position has changed if known position is not recent enough" do
           DB.cleanup
-          user = Factory::DB.user(conversation_step: "survey/start", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.week.ago)
+          user = Factory::DB.user(conversation_step: "survey/ask_name", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.week.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
 
           geocoder = Geocoder.new
           geocoder.expect_reverse_lookup(10.0, 20.0) { {country_name: "Argentina", label: "Buenos Aires"} }
 
-          messages = handle_message("Yeah", user: user, understand: response({"yes_no" => "Yes"}), geocoder: geocoder)
+          messages = handle_message(user: user, understand: response(), geocoder: geocoder)
           user.conversation_step.not_nil!.should contain("survey/ask_location_changed")
 
-          messages.size.should eq(1)
-          messages[0][:text].should eq("Are you still in Buenos Aires?")
+          messages.last[:text].should eq("Are you still in Buenos Aires?")
 
           responses = MvamBot::SurveyResponse.for_user(user.id)
         end
@@ -384,12 +420,11 @@ describe ::MvamBot::Bot do
       context "user without previously known lat/lng" do
         it "should ask for gps access" do
           DB.cleanup
-          user = Factory::DB.user(conversation_step: "survey/start")
+          user = Factory::DB.user(conversation_step: "survey/ask_name")
           user.conversation_session_id = "TEST_SESSION_ID"
 
-          messages = handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
-          messages.size.should eq(1)
-          reply_buttons(messages[0]).should eq(["Sure", "I'd rather not"])
+          messages = handle_message(user: user, understand: response() )
+          reply_buttons(messages.last).should eq(["Sure", "I'd rather not"])
           user.conversation_step.not_nil!.should contain("survey/ask_gps")
         end
 

@@ -1,4 +1,5 @@
 survey_data:
+  - name
   - age
   - gender
   - not_enough_food
@@ -34,7 +35,7 @@ states:
     transitions:
       - entity: yes_no
         value: Yes
-        target: geolocate_user
+        target: ask_name
       - entity: yes_no
         value: No
         target: check_availability
@@ -131,6 +132,17 @@ states:
       - failure: true
         say: Let's move on
         target: ask_not_enough_food
+
+  ask_name:
+    say: What's your name?
+    transitions:
+      - entity: contact
+        store: name
+        say: "Nice to meet you, $user_name."
+        target: geolocate_user
+      - default: true
+        say: "Nice to meet you."
+        target: geolocate_user
 
   geolocate_user:
     dummy: true
