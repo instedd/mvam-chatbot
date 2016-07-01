@@ -14,7 +14,7 @@ shards:
 
   micrate:
     github: juanedi/micrate
-    version: 0.2.0
+    version: 0.2.1
 
   pg:
     github: will/crystal-pg
