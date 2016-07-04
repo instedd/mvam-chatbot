@@ -52,6 +52,7 @@ module MvamBot
         options_from: { type: String, nilable: true },
         transient: { type: Bool, default: false },
         clarification: { type: Clarification, default: Clarification.new },
+        price_query_instructions: { type: Bool, default: false },
         method: { type: String, nilable: true }
       }, strict: true)
 

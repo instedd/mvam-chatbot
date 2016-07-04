@@ -180,7 +180,7 @@ module MvamBot
         return unless say = state.say
 
         if !with_clarification
-          say = "#{say}\n\nRemember you can send `/price` anytime to ask for prices in your region." if state.final
+          say = "#{say}\n\nRemember you can send `/price` anytime to ask for prices in your region." if state.final || state.price_query_instructions
           return talk_to_user(say, extra_text, state.options, state.options_from)
         end
 

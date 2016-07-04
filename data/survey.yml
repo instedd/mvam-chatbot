@@ -364,6 +364,19 @@ states:
 
   thank_you:
     say: That would be all, thank you for your answers!
+    price_query_instructions: true
+    transitions:
+      - intent: Salutation
+        target: end
+      - entity: yes_no
+        value: Yes
+        target: end
+      - failure: true
+        target: end
+      - timeout: 60
+        target: end
+
+  end:
     final: true
 
   why:

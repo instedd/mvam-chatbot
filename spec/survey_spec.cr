@@ -179,7 +179,45 @@ describe ::MvamBot::Bot do
       responses[0].user_id.should eq(user.id)
       responses[0].session_id.should eq("TEST_SESSION_ID")
       responses[0].data.should eq({ "gender" => "male", "age" => 30, "not_enough_food" => "Yes" })
-      responses[0].completed.should eq(true)
+
+      user.conversation_step.not_nil!.should contain("thank_you")
+    end
+
+    describe "end of survey" do
+      it "should not reply to goodbye message right after ending the survey" do
+        DB.cleanup
+
+        user = Factory::DB.user(:with_conversation, conversation_step: "survey/thank_you")
+        user.conversation_state["age"] = 30i64
+        messages = handle_message("bye", user: user, understand: response({"intent" => "Salutation"}))
+        messages.empty?.should be_true
+
+        responses = MvamBot::SurveyResponse.for_user(user.id)
+        responses.size.should eq(1)
+        responses[0].completed.should eq(true)
+      end
+
+      it "should not reply to acknowledge message right after ending the survey" do
+        DB.cleanup
+
+        user = Factory::DB.user(:with_conversation, conversation_step: "survey/thank_you")
+        user.conversation_state["age"] = 30i64
+        messages = handle_message("ok", user: user, understand: response({"yes_no" => "Yes"}))
+        messages.empty?.should be_true
+
+        responses = MvamBot::SurveyResponse.for_user(user.id)
+        responses.size.should eq(1)
+        responses[0].completed.should eq(true)
+      end
+
+      it "should reply to price queries right after ending the survey" do
+        DB.cleanup
+
+        user = Factory::DB.user(:with_conversation, conversation_step: "survey/thank_you")
+        user.conversation_state["age"] = 30i64
+        messages = handle_message("/price rice", user: user)
+        messages.size.should eq(1)
+      end
     end
 
     it "should support asking why and then going back to the survey" do
