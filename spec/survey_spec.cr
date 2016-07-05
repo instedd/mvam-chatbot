@@ -832,6 +832,25 @@ describe ::MvamBot::Bot do
           end
         end
 
+        it "accepts fractional numbers written with comma" do
+          DB.cleanup
+
+          user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
+          user.conversation_state["country_name"] = "Afghanistan"
+
+          reference_price = MvamBot::Price.sample_in_mkt(496)
+          answer = reference_price.price * 1.5
+          answer_txt = answer.to_s.gsub(".", ",")
+          handle_message("About #{answer_txt} AFN", user: user)
+
+          user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
+
+          responses = MvamBot::SurveyResponse.for_user(user.id)
+          responses.size.should eq(1)
+          responses[0].data["asked_price_answer"].should eq(answer)
+          responses[0].data["price_certainty"].should eq("unconfirmed")
+        end
+
         context "answer is considerably different from reference price" do
           context "user currency matches reference price" do
             it "confirms reported price with the user" do

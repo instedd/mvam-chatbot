@@ -464,7 +464,7 @@ module MvamBot
         if message && message.text
           if match = /\d+((?:.|,)\d+)?/.match(message.text.not_nil!)
             if transition.store
-              number = match[0]
+              number = match[0].gsub(",", ".")
               fractional_part = match[1]?
               user.conversation_state[transition.store.not_nil!] = fractional_part ? number.to_f64 : number.to_i64
             end
