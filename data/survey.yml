@@ -4,6 +4,7 @@ survey_data:
   - age
   - gender
   - not_enough_food
+  - unable_to_get
   - roof_photo
   - lat
   - lng
@@ -255,14 +256,32 @@ states:
       - text: Yes
       - text: No
     transitions:
-      - target: pre_ask_local_price
-        message: ["Yes", "No"]
+      - message: ["Yes"]
         store: not_enough_food
-      - target: pre_ask_local_price
-        entity: yes_no
+        target: ask_not_enough_food_detail
+      - entity: yes_no
+        value: Yes
         store: not_enough_food
+        target: ask_not_enough_food_detail
+      - message: ["No"]
+        store: not_enough_food
+        target: pre_ask_local_price
+      - entity: yes_no
+        value: No
+        store: not_enough_food
+        target: pre_ask_local_price
       - failure: true
         say: Let's move on
+        target: pre_ask_local_price
+
+  ask_not_enough_food_detail:
+    say: What were you unable to get?
+    transitions:
+      - entity: commodity
+        store: unable_to_get
+        target: pre_ask_local_price
+      - default: true
+        store: unable_to_get
         target: pre_ask_local_price
 
   pre_ask_local_price:

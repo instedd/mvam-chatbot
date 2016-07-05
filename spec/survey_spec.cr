@@ -720,6 +720,58 @@ describe ::MvamBot::Bot do
       user.location_adm0_id.should eq(mkt.adm0_id)
     end
 
+    describe "coping question" do
+      context "positive answer" do
+        it "ask user what he was unable to get" do
+          DB.cleanup
+
+          user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
+          messages = handle_message("Yes", user: user)
+
+          user.conversation_step.not_nil!.should contain("ask_not_enough_food_detail")
+          messages.last[:text].downcase.should contain("what were you unable to get")
+        end
+
+        it "stores interpreted entity if available" do
+          DB.cleanup
+
+          user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food_detail")
+          messages = handle_message("i couldn't get meat", user: user, understand: response({"commodity" => "meat"}))
+
+          user.conversation_step.not_nil!.should contain("ask_roof_photo")
+
+          responses = MvamBot::SurveyResponse.for_user(user.id)
+          responses.size.should eq(1)
+          responses[0].data["unable_to_get"].should eq("meat")
+        end
+
+        it "stores raw answer if cannot interpret commodity" do
+          DB.cleanup
+
+          user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food_detail")
+          messages = handle_message("i couldn't get meat", user: user, understand: response())
+
+          user.conversation_step.not_nil!.should contain("ask_roof_photo")
+
+          responses = MvamBot::SurveyResponse.for_user(user.id)
+          responses.size.should eq(1)
+          responses[0].data["unable_to_get"].should eq("i couldn't get meat")
+        end
+      end
+
+      context "negative answer" do
+        it "goes on to next question" do
+          DB.cleanup
+
+          user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
+          handle_message("No", user: user, understand: response())
+
+          user.conversation_step.not_nil!.should contain("ask_roof_photo")
+        end
+      end
+
+    end
+
     describe "asking for local prices" do
       context "user lat/lng not available" do
         it "proceeds to next step if there is no position available" do
@@ -727,7 +779,7 @@ describe ::MvamBot::Bot do
           user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
           user.conversation_session_id = "TEST_SESSION_ID"
 
-          handle_message("Yes", user: user)
+          handle_message("No", user: user, understand: response())
           user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
         end
       end
@@ -739,7 +791,7 @@ describe ::MvamBot::Bot do
           user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
           user.conversation_state["country_name"] = "Ethiopia"
 
-          messages = handle_message("Yes", user: user)
+          messages = handle_message("No", user: user, understand: response())
           messages.size.should eq(1)
           messages[0][:text].should contain("Reply with the price of 1 KG in ethiopian birrs")
         end
@@ -751,7 +803,7 @@ describe ::MvamBot::Bot do
           geocoder = Geocoder.new
           geocoder.expect_user_position_lookup(user) { {country_name: "Ethiopia", label: "Addis Ababa"} }
 
-          messages = handle_message("Yes", user: user, geocoder: geocoder)
+          messages = handle_message("No", user: user, geocoder: geocoder, understand: response())
           messages.size.should eq(1)
           messages[0][:text].should contain("Reply with the price of 1 KG in ethiopian birrs")
         end
@@ -761,7 +813,7 @@ describe ::MvamBot::Bot do
           user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
           user.conversation_state["country_name"] = "foo bar"
 
-          handle_message("Yes", user: user)
+          handle_message("No", user: user, understand: response())
           user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
         end
 
@@ -772,7 +824,7 @@ describe ::MvamBot::Bot do
           geocoder = Geocoder.new
           geocoder.expect_user_position_lookup(user) { nil }
 
-          handle_message("Yes", user: user)
+          handle_message("No", user: user, understand: response())
           user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
         end
       end
@@ -786,7 +838,7 @@ describe ::MvamBot::Bot do
             user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
             user.conversation_state["country_name"] = "Afghanistan"
 
-            messages = handle_message("Yes", user: user)
+            messages = handle_message("No", user: user, understand: response())
             verify_asked_commodity(messages[0], ["wheat", "rice (low quality)"])
           end
         end
@@ -803,7 +855,7 @@ describe ::MvamBot::Bot do
             user.conversation_state["lng"] = -17.046498
             user.conversation_state["country_name"] = "Afghanistan"
 
-            messages = handle_message("Yes", user: user)
+            messages = handle_message("No", user: user, understand: response())
 
             country_commodities = MvamBot::DB.exec({String}, "SELECT DISTINCT(commodity_name) FROM prices WHERE location_adm0_id = 1")
                                              .rows
@@ -820,7 +872,7 @@ describe ::MvamBot::Bot do
             user.conversation_state["lng"] = -41.307781
             user.conversation_state["country_name"] = "Brazil"
 
-            messages = handle_message("Yes", user: user)
+            messages = handle_message("No", user: user, understand: response())
 
             messages[0][:text].should match(/how much does .* cost/)
             asked_currency(messages[0]).should eq("brazilian reals")
@@ -835,7 +887,7 @@ describe ::MvamBot::Bot do
         user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
         user.conversation_state["country_name"] = "Afghanistan"
 
-        handle_message("Yes", user: user)
+        handle_message("No", user: user, understand: response())
         user.conversation_step.not_nil!.should contain("survey/ask_local_price")
 
         reference_price = MvamBot::Price.sample_in_mkt(496)
