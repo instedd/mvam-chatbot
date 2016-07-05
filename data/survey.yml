@@ -14,6 +14,7 @@ survey_data:
   - price_certainty
   - receive_local_news
   - message
+  - feedback
 
 common_transitions:
   - intent: AskWhy
@@ -352,14 +353,22 @@ states:
       - default: true
         target: open_question
      
+  # Ideally, we wouldn't need to store answers such as "No" / "Nothing to say"
+  #
+  # Still, since wit might interpret "yes_no" entities in other answers with a negative sentiment,
+  # we prefer to store everything to avoid loosing this kind of information.
   open_question:
     say: Would you like to tell us anything about the food situation in your town?
     transitions:
-      - entity: yes_no
-        value: No
-        target: thank_you
       - default: true
         store: message
+        target: ask_feedback
+
+  ask_feedback:
+    say: "Last but not least! How did this survey work for you? Do you have any suggestions?"
+    transitions:
+      - default: true
+        store: feedback
         target: thank_you
 
   thank_you:

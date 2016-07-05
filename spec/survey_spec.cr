@@ -162,14 +162,14 @@ describe ::MvamBot::Bot do
     it "should end the survey collecting all data" do
       DB.cleanup
 
-      user = Factory::DB.user_with_location(conversation_step: "survey/open_question")
+      user = Factory::DB.user_with_location(conversation_step: "survey/ask_feedback")
       user.conversation_state["age"] = 30i64
       user.conversation_state["gender"] = "male"
       user.conversation_state["not_enough_food"] = "Yes"
       user.conversation_session_id = "TEST_SESSION_ID"
       user.conversation_at = Time.utc_now
 
-      messages = handle_message("No", user: user, messages: { "No" => response({"yes_no" => "No"}) })
+      messages = handle_message("No", user: user, understand: response({"yes_no" => "No"}))
       messages.last[:text].downcase.should contain("thank you for your answers")
       messages.last[:text].downcase.should contain("remember you can send `/price`")
 
@@ -178,7 +178,7 @@ describe ::MvamBot::Bot do
 
       responses[0].user_id.should eq(user.id)
       responses[0].session_id.should eq("TEST_SESSION_ID")
-      responses[0].data.should eq({ "gender" => "male", "age" => 30, "not_enough_food" => "Yes" })
+      responses[0].data.should eq({ "gender" => "male", "age" => 30, "not_enough_food" => "Yes", "feedback" => "No" })
 
       user.conversation_step.not_nil!.should contain("thank_you")
     end
@@ -418,7 +418,7 @@ describe ::MvamBot::Bot do
     end
 
     describe "open ended question" do
-      it "asks open ended question before ending the survey" do
+      it "asks open ended question" do
         DB.cleanup
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/offer_local_news")
 
@@ -439,14 +439,48 @@ describe ::MvamBot::Bot do
         responses[0].data["message"].should eq(message)
       end
 
-      it "doesn't store negative answers" do
+      it "stores negative answers" do
         DB.cleanup
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/open_question")
-        # user.conversation_state["country_name"] = "Argentina"
 
         handle_message("No", user: user, understand: response({"yes_no" => "No"}))
 
-        MvamBot::SurveyResponse.for_user(user.id).empty?.should be_true
+        responses = MvamBot::SurveyResponse.for_user(user.id)
+        responses[0].data["message"].should eq("No")
+      end
+    end
+
+    describe "asking for feedback" do
+      it "asks if survey was helpful before ending survey" do
+        DB.cleanup
+        user = Factory::DB.user(:with_conversation, conversation_step: "survey/open_question")
+
+        messages = handle_message("No", user: user, understand: response({"yes_no" => "No"}))
+        user.conversation_step.not_nil!.should contain("survey/ask_feedback")
+
+        messages.last[:text].downcase.should contain("do you have any suggestions?")
+      end
+
+      it "stores user feedback if any" do
+        DB.cleanup
+        user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_feedback")
+
+        feedback = "I didn't like this and that..."
+        messages = handle_message(feedback, user: user, understand: response())
+        user.conversation_step.not_nil!.should contain("survey/thank_you")
+
+        responses = MvamBot::SurveyResponse.for_user(user.id)
+        responses[0].data["feedback"].should eq(feedback)
+      end
+
+      it "stores negative answers" do
+        DB.cleanup
+        user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_feedback")
+
+        handle_message("No", user: user, understand: response({"yes_no" => "No"}))
+
+        responses = MvamBot::SurveyResponse.for_user(user.id)
+        responses[0].data["feedback"].should eq("No")
       end
     end
 
