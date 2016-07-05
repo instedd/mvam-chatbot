@@ -170,7 +170,7 @@ describe ::MvamBot::Bot do
       user.conversation_at = Time.utc_now
 
       messages = handle_message("No", user: user, understand: response({"yes_no" => "No"}))
-      messages.last[:text].downcase.should contain("thank you for your answers")
+      messages.last[:text].downcase.should contain("thank you")
       messages.last[:text].downcase.should contain("remember you can send `/price`")
 
       responses = MvamBot::SurveyResponse.for_user(user.id)

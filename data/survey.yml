@@ -372,7 +372,7 @@ states:
         target: thank_you
 
   thank_you:
-    say: That would be all, thank you for your answers!
+    say: Got it, thank you!
     price_query_instructions: true
     transitions:
       - intent: Salutation
