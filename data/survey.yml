@@ -1,5 +1,6 @@
 survey_data:
   - name
+  - how_you_doing
   - age
   - gender
   - not_enough_food
@@ -141,9 +142,17 @@ states:
       - entity: contact
         store: name
         say: "Nice to meet you, $user_name."
-        target: geolocate_user
+        target: ask_how_you_doing
       - default: true
         say: "Nice to meet you."
+        target: ask_how_you_doing
+
+  ask_how_you_doing:
+    say: How are you doing?
+    transitions:
+      - default: true
+        store: how_you_doing
+        say: "Thanks for sharing"
         target: geolocate_user
 
   geolocate_user:

@@ -40,6 +40,9 @@ Are you a man
 	ask_name [ label = "ask_name
 What's your n
 ame?", shape = circle, style= solid ];
+	ask_how_you_doing [ label = "ask_how_you_doing
+How are you d
+oing?", shape = circle, style= solid ];
 	geolocate_user [ label = "geolocate_user
 ", shape = circle, style= dotted ];
 	ask_location_changed [ label = "ask_location_changed
@@ -108,11 +111,14 @@ Would you lik
 e to tell us
  anything...
 ", shape = circle, style= solid ];
-	thank_you [ label = "thank_you
-That would be
- all, thank 
-you for y...
+	ask_feedback [ label = "ask_feedback
+Last but not 
+least! How d
+id this s...
 ", shape = circle, style= solid ];
+	thank_you [ label = "thank_you
+Got it, thank
+ you!", shape = circle, style= solid ];
 	end [ label = "end
 ", shape = doublecircle, style= solid ];
 	why [ label = "why
@@ -151,8 +157,9 @@ ready to ...
 	ask_gender -> ask_not_enough_food [ label = "Man/Woman/Other", dir = forward ];
 	ask_gender -> ask_not_enough_food [ label = "entity:gender", dir = forward ];
 	ask_gender -> ask_not_enough_food [ label = "failure", dir = forward ];
-	ask_name -> geolocate_user [ label = "entity:contact", dir = forward ];
-	ask_name -> geolocate_user [ label = "otherwise", dir = forward ];
+	ask_name -> ask_how_you_doing [ label = "entity:contact", dir = forward ];
+	ask_name -> ask_how_you_doing [ label = "otherwise", dir = forward ];
+	ask_how_you_doing -> geolocate_user [ label = "otherwise", dir = forward ];
 	geolocate_user -> ask_age [ label = "method:use_previous_recent_user_position", dir = forward ];
 	geolocate_user -> ask_location_changed [ label = "method:reverse_geocode_user_position", dir = forward ];
 	geolocate_user -> ask_gps [ label = "otherwise", dir = forward ];
@@ -198,8 +205,8 @@ ready to ...
 	offer_local_news -> open_question [ label = "entity:yes_no", dir = forward ];
 	offer_local_news -> open_question [ label = "entity:yes_no", dir = forward ];
 	offer_local_news -> open_question [ label = "otherwise", dir = forward ];
-	open_question -> thank_you [ label = "entity:yes_no", dir = forward ];
-	open_question -> thank_you [ label = "otherwise", dir = forward ];
+	open_question -> ask_feedback [ label = "otherwise", dir = forward ];
+	ask_feedback -> thank_you [ label = "otherwise", dir = forward ];
 	thank_you -> end [ label = "intent:Salutation", dir = forward ];
 	thank_you -> end [ label = "entity:yes_no", dir = forward ];
 	thank_you -> end [ label = "failure", dir = forward ];

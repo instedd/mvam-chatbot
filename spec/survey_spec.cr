@@ -488,10 +488,10 @@ describe ::MvamBot::Bot do
       context "user with previously known lat/lng" do
         it "should skip asking user for location if known position is recent enough" do
           DB.cleanup
-          user = Factory::DB.user(conversation_step: "survey/ask_name", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.day.ago)
+          user = Factory::DB.user(conversation_step: "survey/ask_how_you_doing", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.day.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
 
-          handle_message("foo", user: user, understand:  response())
+          handle_message("fine", user: user, understand:  response())
           user.conversation_step.not_nil!.should contain("survey/ask_age")
 
           responses = MvamBot::SurveyResponse.for_user(user.id)
@@ -501,7 +501,7 @@ describe ::MvamBot::Bot do
 
         it "should ask the user if his position has changed if known position is not recent enough" do
           DB.cleanup
-          user = Factory::DB.user(conversation_step: "survey/ask_name", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.week.ago)
+          user = Factory::DB.user(conversation_step: "survey/ask_how_you_doing", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.week.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
 
           geocoder = Geocoder.new
@@ -519,7 +519,7 @@ describe ::MvamBot::Bot do
       context "user without previously known lat/lng" do
         it "should ask for gps access" do
           DB.cleanup
-          user = Factory::DB.user(conversation_step: "survey/ask_name")
+          user = Factory::DB.user(conversation_step: "survey/ask_how_you_doing")
           user.conversation_session_id = "TEST_SESSION_ID"
 
           messages = handle_message(user: user, understand: response() )
