@@ -112,6 +112,8 @@ e to tell us
 That would be
  all, thank 
 you for y...
+", shape = circle, style= solid ];
+	end [ label = "end
 ", shape = doublecircle, style= solid ];
 	why [ label = "why
 We are asking
@@ -144,7 +146,7 @@ ready to ...
 	ask_availability -> wait_survey [ label = "I will let you know", dir = forward ];
 	ask_availability -> no_survey [ label = "entity:yes_no", dir = forward ];
 	ask_availability -> no_survey [ label = "failure", dir = forward ];
-	ask_age -> ask_gender [ label = "entity:number", dir = forward ];
+	ask_age -> ask_gender [ label = "method:parse_number", dir = forward ];
 	ask_age -> ask_gender [ label = "failure", dir = forward ];
 	ask_gender -> ask_not_enough_food [ label = "Man/Woman/Other", dir = forward ];
 	ask_gender -> ask_not_enough_food [ label = "entity:gender", dir = forward ];
@@ -180,12 +182,12 @@ ready to ...
 	ask_not_enough_food -> pre_ask_local_price [ label = "failure", dir = forward ];
 	pre_ask_local_price -> ask_local_price [ label = "method:can_ask_local_price", dir = forward ];
 	pre_ask_local_price -> ask_roof_photo [ label = "otherwise", dir = forward ];
-	ask_local_price -> validate_local_price [ label = "entity:number", dir = forward ];
+	ask_local_price -> validate_local_price [ label = "method:parse_number", dir = forward ];
 	ask_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
 	ask_local_price -> ask_roof_photo [ label = "failure", dir = forward ];
 	validate_local_price -> ask_roof_photo [ label = "method:local_price_ok", dir = forward ];
 	validate_local_price -> confirm_local_price [ label = "otherwise", dir = forward ];
-	confirm_local_price -> ask_roof_photo [ label = "entity:number", dir = forward ];
+	confirm_local_price -> ask_roof_photo [ label = "method:parse_number", dir = forward ];
 	confirm_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
 	confirm_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
 	ask_roof_photo -> pre_offer_local_news [ label = "photo", dir = forward ];
@@ -198,6 +200,10 @@ ready to ...
 	offer_local_news -> open_question [ label = "otherwise", dir = forward ];
 	open_question -> thank_you [ label = "entity:yes_no", dir = forward ];
 	open_question -> thank_you [ label = "otherwise", dir = forward ];
+	thank_you -> end [ label = "intent:Salutation", dir = forward ];
+	thank_you -> end [ label = "entity:yes_no", dir = forward ];
+	thank_you -> end [ label = "failure", dir = forward ];
+	thank_you -> end [ label = "", dir = forward ];
 	check_inactivity -> timed_out [ label = "", dir = both ];
 	check_inactivity -> timed_out [ label = "entity:yes_no", dir = both ];
 }
