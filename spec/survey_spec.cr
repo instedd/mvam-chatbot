@@ -363,41 +363,54 @@ describe ::MvamBot::Bot do
 
     describe "local news" do
       context "user is not previously subscribed" do
-        it "should offer news for user's country" do
-          DB.cleanup
+        context "user country is known" do
+          it "should offer news for user's country" do
+            DB.cleanup
 
-          user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
-          user.conversation_state["country_name"] = "Algeria"
-          messages = handle_message(photo: "myphoto", user: user)
+            user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+            user.conversation_state["country_name"] = "Algeria"
+            messages = handle_message(photo: "myphoto", user: user)
 
-          user.conversation_step.not_nil!.should contain("survey/offer_local_news")
-          messages.size.should eq(1)
-          messages[0][:text].should contain("food-related news for Algeria")
+            user.conversation_step.not_nil!.should contain("survey/offer_local_news")
+            messages.size.should eq(1)
+            messages[0][:text].should contain("food-related news for Algeria")
+          end
+
+          it "should store user response" do
+            DB.cleanup
+
+            user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
+            user.conversation_state["country_name"] = "Algeria"
+
+            handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
+
+            responses = MvamBot::SurveyResponse.for_user(user.id)
+            responses.size.should eq(1)
+            responses[0].data["receive_local_news"].should eq("Yes")
+          end
+
+          it "should create a subscription if user response postively" do
+            DB.cleanup
+
+            country = MvamBot::Country.find_by_name("Algeria")
+            user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
+            user.conversation_state["country_name"] = country.name
+
+            handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
+
+            MvamBot::News.subscribed_users(country).should eq([user.id])
+          end
         end
 
-        it "should store user response" do
-          DB.cleanup
+        context "user has no country or lat/lng" do
+          it "should skip and go to next state" do
+            DB.cleanup
 
-          user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
-          user.conversation_state["country_name"] = "Algeria"
+            user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_roof_photo")
+            messages = handle_message(photo: "myphoto", user: user)
 
-          handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
-
-          responses = MvamBot::SurveyResponse.for_user(user.id)
-          responses.size.should eq(1)
-          responses[0].data["receive_local_news"].should eq("Yes")
-        end
-
-        it "should create a subscription if user response postively" do
-          DB.cleanup
-
-          country = MvamBot::Country.find_by_name("Algeria")
-          user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
-          user.conversation_state["country_name"] = country.name
-
-          handle_message("Yeah", user: user, messages: { "Yeah" => response({"yes_no" => "Yes"}) })
-
-          MvamBot::News.subscribed_users(country).should eq([user.id])
+            user.conversation_step.not_nil!.should contain("survey/open_question")
+          end
         end
       end
 
@@ -877,7 +890,19 @@ describe ::MvamBot::Bot do
             messages[0][:text].should match(/how much does .* cost/)
             asked_currency(messages[0]).should eq("brazilian reals")
           end
+
+          it "asks for a random commodity when users' country does not match a known Adm0 and no lat/lng is known" do
+            DB.cleanup
+            user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
+            user.conversation_state["country_name"] = "Brazil"
+            user.conversation_session_id = "TEST_SESSION_ID"
+
+            messages = handle_message("No", user: user, understand: response())
+            messages[0][:text].should match(/how much does .* cost/)
+            asked_currency(messages[0]).should eq("brazilian reals")
+          end
         end
+
       end
       
       it "stores requested commodity and currency after asking" do
@@ -1051,6 +1076,7 @@ describe ::MvamBot::Bot do
         handle_message("We don't have that in my town", user: user, understand: response({"yes_no" => "No"}))
         user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
       end
+
     end
   end
 

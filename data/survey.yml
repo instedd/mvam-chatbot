@@ -153,7 +153,7 @@ states:
     transitions:
       - default: true
         store: how_you_doing
-        say: "Thanks for sharing"
+        say: "Thanks for sharing."
         target: geolocate_user
 
   geolocate_user:

@@ -230,13 +230,18 @@ module MvamBot
         reference_price.unit_name
       end
 
+      private def user_lat_lng
+        lat = user.conversation_state["lat"]?
+        lng = user.conversation_state["lng"]?
+        return lat && lng ? {lat.as(Float64), lng.as(Float64)} : nil
+      end
+
       private def user_country
         if !@user_country
           country_name = if user.conversation_state["country_name"]?
                            reported_country_name.not_nil!
-                         else
-                           lat = user.conversation_state["lat"].not_nil!.as(Float64)
-                           lng = user.conversation_state["lng"].not_nil!.as(Float64)
+                         elsif lat_lng = user_lat_lng
+                           lat, lng = lat_lng
                            location = geocoder.reverse(lat, lng)
                            !location.nil? && location[:country_name]
                          end
@@ -268,20 +273,25 @@ module MvamBot
           if reference_price_id = user.conversation_state["reference_price_id"]?
             @reference_price = Price.find(reference_price_id.as(String)).not_nil!
           else
-            lat = user.conversation_state["lat"].not_nil!.as(Float64)
-            lng = user.conversation_state["lng"].not_nil!.as(Float64)
+            if lat_lng = user_lat_lng
+              lat = user.conversation_state["lat"].not_nil!.as(Float64)
+              lng = user.conversation_state["lng"].not_nil!.as(Float64)
 
-            # search for mkts with a wide radius. this is probably better
-            # than just picking a random from anywhere in the world.
-            nearest_mkts = Location::Mkt.around(lat, lng, kilometers: 2000, count: 1)
-            @reference_price = if nearest_mkts.size > 0
-                                 mkt, distance = nearest_mkts[0]
-                                 Price.sample_in_mkt(mkt.id)
-                               elsif adm0 = Location::Adm0.find_by_name(user_country.not_nil!.name)
-                                 Price.sample_in_adm0(adm0.id)
-                               else
-                                 Price.sample
-                               end
+              # search for mkts with a wide radius. this is probably better
+              # than just picking a random from anywhere in the world.
+              nearest_mkts = Location::Mkt.around(lat, lng, kilometers: 2000, count: 1)
+              @reference_price = if nearest_mkts.size > 0
+                                   mkt, distance = nearest_mkts[0]
+                                   Price.sample_in_mkt(mkt.id)
+                                 elsif adm0 = Location::Adm0.find_by_name(user_country.not_nil!.name)
+                                   Price.sample_in_adm0(adm0.id)
+                                 else
+                                   Price.sample
+                                 end
+
+            else
+              @reference_price = Price.sample
+            end
 
             user.conversation_state["reference_price_id"] = @reference_price.not_nil!.id
           end
@@ -487,8 +497,7 @@ module MvamBot
       end
 
       private def can_ask_local_price
-        has_position = user.conversation_state["lat"]? && user.conversation_state["lng"]?
-        if has_position && !user_country.nil?
+        if user_country
           user.conversation_state["asked_price_currency_code"] = user_currency.code
           user.conversation_state["asked_price_commodity_id"] = reference_price.not_nil!.commodity_id.to_i64
           return true

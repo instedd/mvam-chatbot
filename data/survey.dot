@@ -192,6 +192,7 @@ ready to ...
 	ask_not_enough_food -> ask_not_enough_food_detail [ label = "entity:yes_no", dir = forward ];
 	ask_not_enough_food -> pre_ask_local_price [ label = "No", dir = forward ];
 	ask_not_enough_food -> pre_ask_local_price [ label = "entity:yes_no", dir = forward ];
+	ask_not_enough_food -> pre_ask_local_price [ label = "failure", dir = forward ];
 	ask_not_enough_food_detail -> pre_ask_local_price [ label = "entity:commodity", dir = forward ];
 	ask_not_enough_food_detail -> pre_ask_local_price [ label = "otherwise", dir = forward ];
 	pre_ask_local_price -> ask_local_price [ label = "method:can_ask_local_price", dir = forward ];
