@@ -99,7 +99,7 @@ describe ::MvamBot::Bot do
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_roof_photo")
 
       messages = handle_message("eh?", user: user, bot: bot, understand: response())
-      messages[0][:text].should contain("Sorry, I did not get that. Would you please send me a picture of your roof?")
+      messages[0][:text].should contain("Sorry, I did not understand your reply. Would you please send me a picture of your roof?")
 
       user.conversation_step.not_nil!.should match(/^survey\/ask_roof_photo\?.*retries=1/)
     end
@@ -265,8 +265,8 @@ describe ::MvamBot::Bot do
       user.conversation_state["country_name"] = "Algeria"
       messages = handle_message(photo: "myphoto", user: user)
 
-      messages.size.should eq(1)
-      messages[0][:text].downcase.should contain("would you like to receive food-related news")
+      messages.size.should eq(2)
+      messages[0][:text].downcase.should match(/thanks/)
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
       responses.size.should eq(1)
@@ -292,7 +292,7 @@ describe ::MvamBot::Bot do
 
       messages.size.should eq(2)
       messages[0][:text].should contain("No problem")
-      messages[1][:text].downcase.should contain("would you like to receive food-related news")
+      messages[1][:text].downcase.should contain("would you like to tell us more about")
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
       responses.size.should eq(1)
@@ -308,8 +308,9 @@ describe ::MvamBot::Bot do
       handle_message("sure", user: user, bot: bot, messages: { "sure" => response({"yes_no" => "Yes"}) })
       messages = handle_message(photo: "myphoto", user: user, bot: bot)
 
-      messages.size.should eq(1)
-      messages[0][:text].downcase.should contain("would you like to receive food-related news")
+      messages.size.should eq(2)
+      messages[0][:text].downcase.should match(/thanks/)
+      messages[1][:text].downcase.should contain("would you like to tell us more")
 
       responses = MvamBot::SurveyResponse.for_user(user.id)
       responses.size.should eq(1)
@@ -367,13 +368,14 @@ describe ::MvamBot::Bot do
           it "should offer news for user's country" do
             DB.cleanup
 
-            user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
+            user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/open_question")
             user.conversation_state["country_name"] = "Algeria"
-            messages = handle_message(photo: "myphoto", user: user)
+            messages = handle_message("Not really", user: user, understand: response({"yes_no" => "No"}))
 
             user.conversation_step.not_nil!.should contain("survey/offer_local_news")
-            messages.size.should eq(1)
-            messages[0][:text].should contain("food-related news for Algeria")
+            messages.size.should eq(2)
+            messages[0][:text].should contain("thank you for your participation")
+            messages[1][:text].should contain("food-related news for Algeria")
           end
 
           it "should store user response" do
@@ -433,12 +435,12 @@ describe ::MvamBot::Bot do
     describe "open ended question" do
       it "asks open ended question" do
         DB.cleanup
-        user = Factory::DB.user(:with_conversation, conversation_step: "survey/offer_local_news")
+        user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_roof_photo")
 
         messages = handle_message("No", user: user, understand: response({"yes_no" => "No"}))
         user.conversation_step.not_nil!.should contain("survey/open_question")
 
-        messages.last[:text].downcase.should contain("would you like to tell us anything")
+        messages.last[:text].downcase.should contain("would you like to tell us more")
       end
 
       it "stores user user open message if any" do
@@ -735,40 +737,40 @@ describe ::MvamBot::Bot do
 
     describe "coping question" do
       context "positive answer" do
-        it "ask user what he was unable to get" do
+        it "ask user how many days he needed help" do
           DB.cleanup
 
           user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
           messages = handle_message("Yes", user: user)
 
-          user.conversation_step.not_nil!.should contain("ask_not_enough_food_detail")
-          messages.last[:text].downcase.should contain("what were you unable to get")
+          user.conversation_step.not_nil!.should contain("ask_days_needed_help")
+          messages.last[:text].downcase.should contain("how many days did your household borrow food")
         end
 
-        it "stores interpreted entity if available" do
+        it "stores interpreted number if available" do
           DB.cleanup
 
-          user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food_detail")
-          messages = handle_message("i couldn't get meat", user: user, understand: response({"commodity" => "meat"}))
+          user = Factory::DB.user(conversation_step: "survey/ask_days_needed_help")
+          messages = handle_message("about 3 days", user: user)
 
           user.conversation_step.not_nil!.should contain("ask_roof_photo")
 
-          responses = MvamBot::SurveyResponse.for_user(user.id)
-          responses.size.should eq(1)
-          responses[0].data["unable_to_get"].should eq("meat")
+         responses = MvamBot::SurveyResponse.for_user(user.id)
+         responses.size.should eq(1)
+         responses[0].data["days_needed_help"].should eq(3)
         end
 
         it "stores raw answer if cannot interpret commodity" do
           DB.cleanup
 
-          user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food_detail")
-          messages = handle_message("i couldn't get meat", user: user, understand: response())
+          user = Factory::DB.user(conversation_step: "survey/ask_days_needed_help")
+          messages = handle_message("about three days", user: user, understand: response())
 
           user.conversation_step.not_nil!.should contain("ask_roof_photo")
 
           responses = MvamBot::SurveyResponse.for_user(user.id)
           responses.size.should eq(1)
-          responses[0].data["unable_to_get"].should eq("i couldn't get meat")
+          responses[0].data["days_needed_help"].should eq("about three days")
         end
       end
 
@@ -904,7 +906,7 @@ describe ::MvamBot::Bot do
         end
 
       end
-      
+
       it "stores requested commodity and currency after asking" do
         DB.cleanup
 

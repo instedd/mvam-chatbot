@@ -185,7 +185,7 @@ module MvamBot
         end
 
         clarification = state.clarification.not_nil!
-        say = clarification.say || "Sorry, I did not get that. #{state.say}"
+        say = clarification.say || "Sorry, I did not understand your reply. #{state.say}"
         options = clarification.options || state.options
         options_from = clarification.options_from || state.options_from
 

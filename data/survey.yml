@@ -4,7 +4,7 @@ survey_data:
   - age
   - gender
   - not_enough_food
-  - unable_to_get
+  - days_needed_help
   - roof_photo
   - lat
   - lng
@@ -30,7 +30,7 @@ states:
 
   start:
     initial: true
-    say: I would like to ask you a few questions if you have a minute. All your answers will remain confidential.
+    say: WFP is conducting nationwide phone surveys to learn more about food security. I would like to ask you a few questions if you have a minute. All your answers will remain confidential. Would you like to participate in this survey?
     clarification:
       say: Sorry, I did not get that. Can I ask you a few questions now?
       options:
@@ -149,7 +149,7 @@ states:
         target: ask_how_you_doing
 
   ask_how_you_doing:
-    say: How are you doing?
+    say: How are you?
     transitions:
       - default: true
         store: how_you_doing
@@ -182,7 +182,7 @@ states:
     options:
       - text: Sure
         request_location: true
-      - text: I'd rather not
+      - text: "I'd rather not"
     transitions:
       - location: true
         target: ask_age
@@ -196,7 +196,7 @@ states:
         target: ask_gps_ping
 
   ask_gps_ping:
-    say: Sorry, I didn't get anything. Let's try again...
+    say: "Sorry, I didn't get anything. Let's try again..."
     options:
       - text: Share my position
         request_location: true
@@ -222,7 +222,7 @@ states:
         target: ask_age
 
   ask_location_name:
-    say: What's the name of your town?
+    say: "What's the name of your town?"
     transitions:
       - entity: location
         store: location_name
@@ -241,7 +241,7 @@ states:
         target: ask_age
 
   ask_which_location:
-    say: I'm not sure I know that town... is it any of these?
+    say: "I'm not sure I know that town... is it any of these?"
     options_from: geocoding_result
     transitions:
       - method: store_chosen_location_coordinates
@@ -258,11 +258,11 @@ states:
     transitions:
       - message: ["Yes"]
         store: not_enough_food
-        target: ask_not_enough_food_detail
+        target: ask_days_needed_help
       - entity: yes_no
         value: Yes
         store: not_enough_food
-        target: ask_not_enough_food_detail
+        target: ask_days_needed_help
       - message: ["No"]
         store: not_enough_food
         target: pre_ask_local_price
@@ -271,17 +271,17 @@ states:
         store: not_enough_food
         target: pre_ask_local_price
       - failure: true
-        say: Let's move on
+        say: "Let's move on"
         target: pre_ask_local_price
 
-  ask_not_enough_food_detail:
-    say: What were you unable to get?
+  ask_days_needed_help:
+    say: In the past seven days, how many days did your household borrow food, or rely on help from a friend or relative due to lack of foor or money to buy food?
     transitions:
-      - entity: commodity
-        store: unable_to_get
+      - method: parse_number
+        store: days_needed_help
         target: pre_ask_local_price
       - default: true
-        store: unable_to_get
+        store: days_needed_help
         target: pre_ask_local_price
 
   pre_ask_local_price:
@@ -307,7 +307,7 @@ states:
         value: No
         target: ask_roof_photo
       - failure: true
-        say: Let's move on
+        say: "Let's move on"
         target: ask_roof_photo
 
   validate_local_price:
@@ -338,16 +338,17 @@ states:
         set:
           key: price_certainty
           value: not_sure
-        say: That's fine, thanks!
+        say: "That's fine, thanks!"
         target: ask_roof_photo
 
   ask_roof_photo:
     say: Would you please send me a picture of your roof?
     transitions:
-      - target: pre_offer_local_news
+      - target: open_question
+        say: "Thanks!"
         photo: true
         store: roof_photo
-      - target: pre_offer_local_news
+      - target: open_question
         say: No problem
         entity: yes_no
         value: No
@@ -355,7 +356,7 @@ states:
         entity: yes_no
         value: Yes
       - failure: true
-        target: pre_offer_local_news
+        target: open_question
 
   pre_offer_local_news:
     dummy: true
@@ -363,7 +364,7 @@ states:
       - method: can_offer_news_subscription
         target: offer_local_news
       - default: true
-        target: open_question
+        target: ask_feedback
 
   offer_local_news:
     say: Would you like to receive food-related news for $user_country_name?
@@ -373,27 +374,28 @@ states:
         say: Great!
         store: receive_local_news
         action: subscribe_user_to_news
-        target: open_question
+        target: ask_feedback
       - entity: yes_no
         value: No
         say: OK, just let me know if you change your mind!
-        target: open_question
+        target: ask_feedback
       - default: true
-        target: open_question
-     
+        target: ask_feedback
+
   # Ideally, we wouldn't need to store answers such as "No" / "Nothing to say"
   #
   # Still, since wit might interpret "yes_no" entities in other answers with a negative sentiment,
   # we prefer to store everything to avoid loosing this kind of information.
   open_question:
-    say: Would you like to tell us anything about the food situation in your town?
+    say: Would you like to tell us more about the food situation in your town?
     transitions:
       - default: true
         store: message
-        target: ask_feedback
+        say: "That's all for this survey, thank you for your participation!"
+        target: pre_offer_local_news
 
   ask_feedback:
-    say: "Last but not least! How did this survey work for you? Do you have any suggestions?"
+    say: "Last but not least: how did this survey work for you? Do you have any suggestions?"
     transitions:
       - default: true
         store: feedback
@@ -426,7 +428,7 @@ states:
         default: true
 
   who:
-    say: I am a WFP bot assistant, for tracking food security in your region.
+    say: I am a WFP bot assistant, and help the Organization to assess and monitor food security in your region.
     transient: true
     transitions:
       - target: back

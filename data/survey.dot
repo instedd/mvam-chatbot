@@ -2,9 +2,9 @@ digraph survey_flow {
 	rankdir=LR;
 	size="40";
 	start [ label = "start
-I would like 
-to ask you a
- few ques...
+WFP is conduc
+ting nationw
+ide phone...
 ", shape = circle, style= solid ];
 	check_availability [ label = "check_availability
 Would you be 
@@ -41,8 +41,7 @@ Are you a man
 What's your n
 ame?", shape = circle, style= solid ];
 	ask_how_you_doing [ label = "ask_how_you_doing
-How are you d
-oing?", shape = circle, style= solid ];
+How are you?", shape = circle, style= solid ];
 	geolocate_user [ label = "geolocate_user
 ", shape = circle, style= dotted ];
 	ask_location_changed [ label = "ask_location_changed
@@ -113,7 +112,7 @@ e to receive
 	open_question [ label = "open_question
 Would you lik
 e to tell us
- anything...
+ more abo...
 ", shape = circle, style= solid ];
 	ask_feedback [ label = "ask_feedback
 Last but not 
@@ -205,15 +204,15 @@ ready to ...
 	confirm_local_price -> ask_roof_photo [ label = "method:parse_number", dir = forward ];
 	confirm_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
 	confirm_local_price -> ask_roof_photo [ label = "entity:yes_no", dir = forward ];
-	ask_roof_photo -> pre_offer_local_news [ label = "photo", dir = forward ];
-	ask_roof_photo -> pre_offer_local_news [ label = "entity:yes_no", dir = forward ];
-	ask_roof_photo -> pre_offer_local_news [ label = "failure", dir = forward ];
+	ask_roof_photo -> open_question [ label = "photo", dir = forward ];
+	ask_roof_photo -> open_question [ label = "entity:yes_no", dir = forward ];
+	ask_roof_photo -> open_question [ label = "failure", dir = forward ];
 	pre_offer_local_news -> offer_local_news [ label = "method:can_offer_news_subscription", dir = forward ];
-	pre_offer_local_news -> open_question [ label = "otherwise", dir = forward ];
-	offer_local_news -> open_question [ label = "entity:yes_no", dir = forward ];
-	offer_local_news -> open_question [ label = "entity:yes_no", dir = forward ];
-	offer_local_news -> open_question [ label = "otherwise", dir = forward ];
-	open_question -> ask_feedback [ label = "otherwise", dir = forward ];
+	pre_offer_local_news -> ask_feedback [ label = "otherwise", dir = forward ];
+	offer_local_news -> ask_feedback [ label = "entity:yes_no", dir = forward ];
+	offer_local_news -> ask_feedback [ label = "entity:yes_no", dir = forward ];
+	offer_local_news -> ask_feedback [ label = "otherwise", dir = forward ];
+	open_question -> pre_offer_local_news [ label = "otherwise", dir = forward ];
 	ask_feedback -> thank_you [ label = "otherwise", dir = forward ];
 	thank_you -> end [ label = "intent:Salutation", dir = forward ];
 	thank_you -> end [ label = "entity:yes_no", dir = forward ];
