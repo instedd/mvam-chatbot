@@ -9,6 +9,7 @@ dependencies:
     github: spalladino/TelegramBot
   pg:
     github: will/crystal-pg
+    version: 0.8.0
   wit:
     github: spalladino/wit-crystal
     version: 1.3.0
@@ -17,3 +18,7 @@ dependencies:
     version: 0.2.1
   kemal:
     github: sdogruyol/kemal
+    version: 0.13.0
+  radix:
+    github: luislavena/radix
+    version: 0.3.0
