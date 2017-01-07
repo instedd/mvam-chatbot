@@ -9,7 +9,7 @@ module MvamBot
 
       include ::MvamBot::WitUtils
 
-      @@flow = Flow.from_yaml({{ `cat data/survey.yml`.stringify }})
+      @@flow = Flow.from_yaml(ENV["SURVEY_URL"]? ? HTTP::Client.get(ENV["SURVEY_URL"]).body : {{ `cat data/survey.yml`.stringify }})
 
       getter messenger
       getter! geocoder
