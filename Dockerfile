@@ -5,9 +5,9 @@ RUN apt-get update && apt-get -y install git libyaml-0-2 postgresql-client curl 
 
 # Download ffmpeg and symlink it to bin
 WORKDIR /opt
-RUN curl -o ffmpeg.tar.xz http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
+RUN curl -o ffmpeg.tar.xz http://ffmpeg.org/releases/ffmpeg-3.0.5.tar.xz
 RUN tar xvJf ffmpeg.tar.xz
-RUN ln -ns /opt/ffmpeg-3.0.2-64bit-static/ffmpeg /usr/local/bin/
+RUN ln -ns /opt/ffmpeg-3.0.5/ffmpeg /usr/local/bin/
 
 # Install crystal deps
 ADD shard.yml /app/
