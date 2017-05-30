@@ -14,7 +14,7 @@ describe ::MvamBot::Location do
   end
 
   it "allows to query mkts around a point" do
-    DB.cleanup
+    MvamBot::Spec::DB.cleanup
 
     result = MvamBot::Location::Mkt.around(*jacmel_center)
                                    .map { |tup| {tup[0].name, tup[1]} }
@@ -30,7 +30,7 @@ describe ::MvamBot::Location do
   end
 
   it "allows to limit result count" do
-    DB.cleanup
+    MvamBot::Spec::DB.cleanup
 
     result = MvamBot::Location::Mkt.around(*jacmel_center, 3)
                                    .map { |tup| {tup[0].name, tup[1]} }
@@ -44,7 +44,7 @@ describe ::MvamBot::Location do
   end
 
   it "allows to limit search radius" do
-    DB.cleanup
+    MvamBot::Spec::DB.cleanup
 
     result = MvamBot::Location::Mkt.around(*jacmel_center, 5, 120)
                                    .map { |tup| {tup[0].name, tup[1]} }

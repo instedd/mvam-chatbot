@@ -1,11 +1,11 @@
 module MvamBot::Spec
 
   class WitClient < ::MvamBot::WitClient
-    @runner : Proc(String, String, Wit::Actions, Wit::State)?
+    @runner : Proc(String, String, ::Wit::Actions, ::Wit::State)?
 
-    def initialize(user, messenger, @messages : Hash(String, Wit::MessageResponse)? = nil, @understand : Wit::MessageResponse? = nil)
+    def initialize(user, messenger, @messages : Hash(String, ::Wit::MessageResponse)? = nil, @understand : ::Wit::MessageResponse? = nil)
       super(user, token: "")
-      @messages ||= Hash(String, Wit::MessageResponse).new
+      @messages ||= Hash(String, ::Wit::MessageResponse).new
     end
 
     protected def understand(message : String)

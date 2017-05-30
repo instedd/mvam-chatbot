@@ -17,9 +17,9 @@ module MvamBot::Spec
     end
 
     def self.delete_test_locations
-      ::MvamBot::DB.exec("DELETE FROM locations_mkt WHERE id >= 10000000")
-      ::MvamBot::DB.exec("DELETE FROM locations_adm1 WHERE id >= 10000000")
-      ::MvamBot::DB.exec("DELETE FROM locations_adm0 WHERE id >= 10000000")
+      ::MvamBot::DB.db.exec("DELETE FROM locations_mkt WHERE id >= 10000000")
+      ::MvamBot::DB.db.exec("DELETE FROM locations_adm1 WHERE id >= 10000000")
+      ::MvamBot::DB.db.exec("DELETE FROM locations_adm0 WHERE id >= 10000000")
 
       ::MvamBot::Location.clear_cache
     end

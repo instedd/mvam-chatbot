@@ -1,4 +1,4 @@
-require "TelegramBot"
+require "telegram_bot"
 require "process"
 
 module MvamBot
@@ -128,14 +128,14 @@ module MvamBot
       file_id = voice.file_id
       file = bot.get_file(file_id)
       mime = voice.mime_type
-      raw = bot.download(file)
+      raw = bot.download(file).not_nil!
 
       MvamBot.logger.debug("Downloaded voice #{file_id} for user #{user.id}")
 
       # Convert to mp3
-      mp3 = MemoryIO.new
-      error = MemoryIO.new
-      status = Process.run("ffmpeg", {"-f", "ogg", "-i", "pipe:0", "-nostdin", "-ac", "1", "-f", "mp3", "-"}, input: MemoryIO.new(raw.to_slice), output: mp3, error: error)
+      mp3 = IO::Memory.new
+      error = IO::Memory.new
+      status = Process.run("ffmpeg", {"-f", "ogg", "-i", "pipe:0", "-nostdin", "-ac", "1", "-f", "mp3", "-"}, input: IO::Memory.new(raw.to_slice), output: mp3, error: error)
 
       # Save file locally in ogg if conversion failed and return
       unless status.success?

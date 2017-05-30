@@ -3,13 +3,9 @@ require "pg"
 module MvamBot
 
   class DB
-    @@db : PG::Connection?
+    @@db : ::DB::Database?
 
-    def self.exec(*args)
-      db.exec(*args)
-    end
-
-    def self.db : PG::Connection
+    def self.db : ::DB::Database
       @@db ||= PG.connect(MvamBot::Config.pg_url)
     end
 
@@ -17,20 +13,15 @@ module MvamBot
       @@db = value
     end
 
-    def self.exec_with_builder(types, head : String, limit : Int32? = nil, offset : Int32? = nil)
+    def self.query_with_builder(head : String, limit : Int32? = nil, offset : Int32? = nil, as types = nil)
       builder = QueryBuilder.new(head, limit, offset)
       yield builder
-      db.exec(types, builder.query, builder.params)
+      db.query_all(builder.query, builder.params, as: types)
     end
 
     def self.register_extension_decoder(extension_name : String, decoder : PG::Decoders::Decoder)
-      rows = MvamBot::DB.exec({UInt32},"select oid from pg_type where typname = $1", [extension_name]).rows
-      if rows.empty?
-        raise "Postgres extension type #{extension_name} doesn't seem to be installed"
-      else
-        oid = rows[0][0]
-        PG::Decoders.register_decoder(decoder, oid.to_i32)
-      end
+      oid = MvamBot::DB.db.query_one("select oid from pg_type where typname = $1", extension_name, as: UInt32)
+      PG::Decoders.register_decoder(decoder, oid.to_i32)
     end
 
     class QueryBuilder

@@ -54,19 +54,19 @@ module MvamBot
     end
 
     def self.all
-      DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM users").rows.map { |row| User.new(*row) }
+      DB.db.query_all("SELECT #{FIELD_NAMES.join(", ")} FROM users", as: FIELD_TYPES).map { |row| User.new(*row) }
     end
 
     def self.to_survey(timestamp = Time.utc_now)
-      DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM users WHERE survey_at <= $1", [timestamp]).rows.map { |row| User.new(*row) }
+      DB.db.query_all("SELECT #{FIELD_NAMES.join(", ")} FROM users WHERE survey_at <= $1", [timestamp], as: FIELD_TYPES).map { |row| User.new(*row) }
     end
 
     def self.find(id : Int32)
-      result = DB.exec(FIELD_TYPES,
+      result = DB.db.query_one?(
         "SELECT #{FIELD_NAMES.join(", ")}
-        FROM users WHERE id = $1", [id])
-      return nil if result.rows.size == 0
-      User.new(*(result.rows[0]))
+        FROM users WHERE id = $1", [id], as: FIELD_TYPES)
+      return nil if result.nil?
+      User.new(*result)
     end
 
     def self.find!(id : Int32)
@@ -74,7 +74,7 @@ module MvamBot
     end
 
     def self.create(id : Int32, username : String? = nil, name : String? = nil, location_adm0_id : Int32? = nil, location_adm1_id : Int32? = nil, location_mkt_id : Int32? = nil, location_lat : Float64? = nil, location_lng : Float64? = nil, gps_timestamp : Time? = nil, conversation_step : String? = nil, conversation_at : Time? = nil, conversation_session_id : String? = nil, conversation_state : ConversationState = ConversationState.new, survey_at : Time? = nil)
-      DB.exec(
+      DB.db.exec(
         "INSERT INTO users (#{FIELD_NAMES.join(", ")})
         VALUES (#{FIELD_NAMES.size.times.map {|i| "$#{i+1}"}.join(", ")})",
         [id, username, name, location_adm0_id, location_adm1_id, location_mkt_id, location_lat, location_lng, gps_timestamp, conversation_step, conversation_at, conversation_session_id, conversation_state.to_json, survey_at])
@@ -82,7 +82,7 @@ module MvamBot
     end
 
     def update
-      DB.exec("UPDATE users SET username = $1, name = $2, location_adm0_id = $3,
+      DB.db.exec("UPDATE users SET username = $1, name = $2, location_adm0_id = $3,
                location_adm1_id = $4, location_mkt_id = $5, location_lat = $6,
                location_lng = $7, gps_timestamp = $8, conversation_step = $9, conversation_at = $10,
                conversation_session_id = $11, conversation_state = $12, survey_at = $13

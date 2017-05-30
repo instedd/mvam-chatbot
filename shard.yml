@@ -5,15 +5,15 @@ authors:
   - Santiago Palladino <spalladino@gmail.com>
 
 dependencies:
-  TelegramBot:
-    github: spalladino/TelegramBot
+  telegram_bot:
+    github: hangyas/telegram_bot
   pg:
     github: will/crystal-pg
   wit:
     github: spalladino/wit-crystal
-    version: 1.3.0
+    version: 1.4.0
   micrate:
     github: juanedi/micrate
-    version: 0.2.1
+    commit: 1386a5793fe43ed877f004b810349206eca5e707
   kemal:
     github: sdogruyol/kemal

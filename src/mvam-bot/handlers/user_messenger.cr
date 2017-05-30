@@ -27,7 +27,7 @@ module MvamBot
     end
 
     def answer(text : String, keyboard : TelegramBot::ReplyKeyboardMarkup | TelegramBot::InlineKeyboardMarkup | Nil = nil, update_user : Bool = true)
-      keyboard ||= TelegramBot::ReplyKeyboardHide.new
+      keyboard ||= TelegramBot::ReplyKeyboardRemove.new
 
       MvamBot.logger.debug "< SendMessage #{chat_id}, #{text}, keyboard: #{keyboard.inspect}"
       MvamBot::Logs::Message.create(user.id, true, text, Time.utc_now)
@@ -58,7 +58,7 @@ module MvamBot
     def download_photo(file_id : String)
       # TODO: Download photo in a separate fiber to avoid blocking; check for issues with accessing the DB connection from there
       file = bot.get_file(file_id)
-      raw = bot.download(file)
+      raw = bot.download(file).not_nil!
       MvamBot.logger.debug("Downloaded photo #{file_id} for user #{user.id} #{user.username}")
 
       # Use the telegram unique identifier as our own id

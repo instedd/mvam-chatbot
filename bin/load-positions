@@ -7,8 +7,12 @@ require "../src/mvam-bot/*"
 def main
   File.open("data/positions.csv", "r") do |file|
     CSV.new(file, headers: true) do |row|
-      _, _, _, _, _, _, _, _, id, name, lat, lng = row
-      MvamBot::Location::Mkt.set_position(id, lat.to_f, lng.to_f)
+      begin
+        _, _, _, _, _, _, _, _, id, name, lat, lng = row
+        MvamBot::Location::Mkt.set_position(id, lat.to_f, lng.to_f)
+      rescue e
+        puts "Error in row #{id}: #{e}"
+      end
     end
     puts "Locations lat/lng updated!"
   end

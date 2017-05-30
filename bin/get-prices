@@ -8,7 +8,7 @@ fi
 
 if [ ! -f "$WFP_LOCAL_FILE" ]
 then
-  curl -X GET -o $WFP_LOCAL_FILE $WFP_DATA_URL
+  curl -X GET $WFP_DATA_URL | gzip -d > $WFP_LOCAL_FILE
 fi
 
 # Use '-s' flag if only download is needed without printing the file to stdout.

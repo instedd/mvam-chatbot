@@ -1,4 +1,4 @@
-require "TelegramBot"
+require "telegram_bot"
 require "logger"
 require "benchmark"
 require "openssl"

@@ -8,7 +8,7 @@ describe ::MvamBot::Topics::Prices do
   describe "via command" do
 
     it "should return the requested price for the user location" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user_with_location
       messages = handle_message("/price rice", user)
       messages.size.should eq(1)
@@ -16,7 +16,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should handle query with no prices associated" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user_with_location
       messages = handle_message("/price foobar", user)
       messages.size.should eq(1)
@@ -24,7 +24,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should handle prices command without query" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user_with_location
       messages = handle_message("/price", user)
       messages.size.should eq(1)
@@ -32,7 +32,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should handle query with multiple commodities associated" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user_with_location
       messages = handle_message("/price o", user)
       messages.size.should eq(1)
@@ -41,7 +41,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should request location before answering prices" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user
       messages = handle_message("/price rice", user)
       messages.size.should eq(1)
@@ -50,7 +50,7 @@ describe ::MvamBot::Topics::Prices do
 
     context "user with gps data" do
       it "should ask user to reset location if gps data was provided recently but no near mkt matches" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user
         user.location_lat = -19.469574
         user.location_lng = -17.046498
@@ -62,7 +62,7 @@ describe ::MvamBot::Topics::Prices do
       end
 
       it "should request location directly if gps record is old enough" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user
         user.location_lat = -19.469574
         user.location_lng = -17.046498
@@ -78,7 +78,7 @@ describe ::MvamBot::Topics::Prices do
   describe "via text" do
 
     it "should return commodity price" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user_with_location
       messages = handle_message("How much is rice?", user, understand: response({"intent" => "QueryPrice", "commodity" => "rice"}))
 
@@ -87,7 +87,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should return commodity price even without intent" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user_with_location
       messages = handle_message("cost of rice", user, understand: response({"commodity" => "rice"}))
 
@@ -96,7 +96,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should ask commodity to user and then return its price" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
       user = Factory::DB.user_with_location
 
@@ -109,7 +109,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should match commodity even if not recognised by wit" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
       user = Factory::DB.user_with_location
 
@@ -122,7 +122,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should ask the user to repeat the commodity if it failed to match" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
       user = Factory::DB.user_with_location
 
@@ -137,7 +137,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should request location before answering prices" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user
       messages = handle_message("How much is rice?", user, understand: response({"intent" => "QueryPrice", "commodity" => "rice"}))
       messages.size.should eq(1)
@@ -165,13 +165,13 @@ describe ::MvamBot::Topics::Prices do
     # User is in Ethiopia (79), Amhara (1229), Abomsa (467)
 
     it "should return nothing if there are no prices" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       description = MvamBot::Price.description(Array(MvamBot::Price).new, Factory::DB.user)
       description.should eq("")
     end
 
     it "should return price of user's marketplace" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user(location_adm0_id: 79, location_adm1_id: 1229, location_mkt_id: 467)
       description = MvamBot::Price.description([467, 489, 482, 469, 503, 510, 504].map do |mkt_id|
         Factory.price(commodity_id: 1, commodity_name: "Bread", unit_name: "KG", currency_name: "USD", month: 1, year: Time.utc_now.year, price: 10.0, location_adm0_id: 79, location_adm1_id: 1229, location_mkt_id: mkt_id)
@@ -181,7 +181,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should return prices in user's region" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user(location_adm0_id: 79, location_adm1_id: 1229, location_mkt_id: 467)
       description = MvamBot::Price.description([489, 482, 469, 503, 510, 504].map do |mkt_id|
         Factory.price(commodity_id: 1, commodity_name: "Bread", unit_name: "KG", currency_name: "USD", month: 1, year: Time.utc_now.year, price: 10.0, location_adm0_id: 79, location_adm1_id: 1229, location_mkt_id: mkt_id)
@@ -191,7 +191,7 @@ describe ::MvamBot::Topics::Prices do
     end
 
     it "should return prices in user's country" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user(location_adm0_id: 79, location_adm1_id: 1229, location_mkt_id: 467)
       description = MvamBot::Price.description([506, 517].map do |mkt_id|
         Factory.price(commodity_id: 1, commodity_name: "Bread", unit_name: "KG", currency_name: "USD", month: 1, year: Time.utc_now.year, price: 10.0, location_adm0_id: 79, location_adm1_id: 1232, location_mkt_id: mkt_id)

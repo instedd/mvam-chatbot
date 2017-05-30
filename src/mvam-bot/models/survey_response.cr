@@ -33,27 +33,27 @@ module MvamBot
     end
 
     def self.save_response(user_id : Int32, session_id : String, data : SurveyData, completed : Bool = false, timestamp : Time = Time.utc_now)
-      id = DB.exec({Int64},
+      id = DB.db.scalar(
         "INSERT INTO survey_responses (user_id, session_id, data, completed, timestamp)
          VALUES ($1, $2, $3, $4, $5)
          ON CONFLICT (session_id) DO UPDATE SET data = EXCLUDED.data, completed = EXCLUDED.completed, timestamp = EXCLUDED.timestamp
          RETURNING id",
-         [user_id, session_id, data.to_json, completed, timestamp]).rows[0][0]
+         [user_id, session_id, data.to_json, completed, timestamp]).as(Int64)
       SurveyResponse.new(id, user_id, session_id, data, completed, timestamp)
     end
 
     def self.find(id)
-      rows = DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM survey_responses WHERE id = $1", [id]).rows
-      return nil if rows.size == 0
-      self.new(*rows[0])
+      result = DB.db.query_one?("SELECT #{FIELD_NAMES.join(", ")} FROM survey_responses WHERE id = $1", [id], as: FIELD_TYPES)
+      return nil if result.nil?
+      self.new(*result)
     end
 
     def self.for_user(user_id)
-      DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM survey_responses WHERE user_id = $1 ORDER BY timestamp DESC", [user_id]).rows.map{|r| self.new(*r)}
+      DB.db.query_all("SELECT #{FIELD_NAMES.join(", ")} FROM survey_responses WHERE user_id = $1 ORDER BY timestamp DESC", [user_id], as: FIELD_TYPES).map{|r| self.new(*r)}
     end
 
     def self.all
-      DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM survey_responses ORDER BY timestamp DESC").rows.map{|r| self.new(*r)}
+      DB.db.query_all("SELECT #{FIELD_NAMES.join(", ")} FROM survey_responses ORDER BY timestamp DESC", as: FIELD_TYPES).map{|r| self.new(*r)}
     end
 
   end

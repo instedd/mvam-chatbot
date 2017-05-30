@@ -7,7 +7,7 @@ describe ::MvamBot::Bot do
   describe "messaging" do
 
     it "should return help" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       messages = handle_message("/help")
       messages.size.should eq(1)
       messages[0][:text].should contain("You can ask for the price of a commodity in your location using the `/price` command.")
@@ -15,17 +15,17 @@ describe ::MvamBot::Bot do
     end
 
     it "should return help with example if user has location" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user_with_location
       messages = handle_message("/help", user)
       messages.size.should eq(1)
       messages[0][:text].should contain("You can ask for the price of a commodity in your location using the `/price` command.")
-      messages[0][:text].should contain("For example, `/price rice`.")
+      messages[0][:text].should contain("For example, `/price")
     end
 
     describe "via wit" do
       it "should return not understood when message is not understood in wit" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user_with_location
 
         messages = handle_message("Lorem ipsum dolor sit amet", user: user, understand: response())
@@ -35,7 +35,7 @@ describe ::MvamBot::Bot do
       end
 
       it "should offer /help if not understood at least three times" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user_with_location
         bot = Bot.new
 
@@ -57,7 +57,7 @@ describe ::MvamBot::Bot do
   describe "inline queries" do
     context "user with known location" do
       it "return results for user location" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user_with_location
 
         reply = handle_query("rice", user).first
@@ -66,7 +66,7 @@ describe ::MvamBot::Bot do
       end
 
       it "should use known location regardless of reported gps position" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user_with_location
 
         reply = handle_query("rice", user, location: {-34.515951, -58.474975}).first
@@ -77,7 +77,7 @@ describe ::MvamBot::Bot do
     context "user without location" do
       context "with gps position" do
         it "returns result for inferred location if there is a single close match" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = Factory::DB.user
           location = MvamBot::Location::Mkt.find_by_name("Lindi", 48364).not_nil!
 
@@ -89,7 +89,7 @@ describe ::MvamBot::Bot do
         end
 
         it "asks user to input location if there is more than one close match" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = Factory::DB.user
           location = MvamBot::Location::Mkt.find_by_name("Lindi", 48364).not_nil!
 
@@ -99,7 +99,7 @@ describe ::MvamBot::Bot do
         end
 
         it "stores reported gps position even if there was no match" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = Factory::DB.user
 
           reply = handle_query("rice", user, location: {-34.516065, -58.474936}, search_radius_kilometers: 1).first

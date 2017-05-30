@@ -9,7 +9,7 @@ describe ::MvamBot::Bot do
 
     {% for label, hours in { "in two hours" => 2, "in six hours" => 6, "tomorrow" => 24 } %}
     it "should reschedule survey based on reschedule option" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user(:with_conversation, conversation_step: "survey/check_availability")
 
       messages = handle_message({{ label }}, user: user)
@@ -21,7 +21,7 @@ describe ::MvamBot::Bot do
     {% end %}
 
     it "should clear scheduled survey when survey executes" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user(:with_conversation, survey_at: Time.utc_now + 1.hour)
       user.survey_at.should_not eq(nil)
 
@@ -30,7 +30,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should run surveys for scheduled users" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user1 = Factory::DB.user(id: 1000, survey_at: Time.utc_now - 1.day)
       user2 = Factory::DB.user(id: 1001, survey_at: Time.utc_now - 1.hour)
       user3 = Factory::DB.user(id: 1002, survey_at: Time.utc_now + 1.hour)

@@ -1,0 +1,31 @@
+version: '2'
+
+volumes:
+  libs:
+  shards:
+  pgdata:
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - '.:/app'
+      - 'libs:/app/lib'
+      - 'shards:/app/.shards'
+    environment:
+      PG_URL: postgres://mvambot:mvambot@db/mvambot
+      TEST_PG_URL: postgres://mvambot:mvambot@db/mvambot-test
+      WFP_DATA_URL: https://s3.amazonaws.com/downloads.instedd.org/datasets/WFPVAM_FoodPrices_18-05-2016.csv.gz
+      WFP_LOCAL_FILE: prices/WFPVAM_FoodPrices_18-05-2016.csv
+
+  db:
+    image: mdillon/postgis:9.5
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_USER: 'mvambot'
+      POSTGRES_PASSWORD: 'mvambot'
+      POSTGRES_DB: 'mvambot'
+      PGDATA: '/var/lib/postgresql/data/pgdata'

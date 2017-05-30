@@ -2,7 +2,7 @@ require "./spec_helper"
 
 describe ::MvamBot::Surveys::DotGenerator do
   it "builds valid DOT diagram" do
-    dot = MemoryIO.new
+    dot = IO::Memory.new
 
     # generate dot from yml
     generator = MvamBot::Surveys::DotGenerator.new(dot)

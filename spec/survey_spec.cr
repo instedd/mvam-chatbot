@@ -8,7 +8,7 @@ describe ::MvamBot::Bot do
   describe "surveys" do
 
     it "should start survey on a start action" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user_with_location
 
       messages = handle_message("/start", user: user, understand: response({ "intent" => "Salutation" }))
@@ -20,7 +20,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should not greet the user again when returning from a clarification to the initial step" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
       user = Factory::DB.user_with_location
 
@@ -37,7 +37,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should not save a survey response if the user refused the survey" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
       user = Factory::DB.user_with_location
 
@@ -56,7 +56,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should show clarification if response was not understood" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
       user = Factory::DB.user_with_location
 
@@ -75,7 +75,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should run failure if response was never understood" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
       user = Factory::DB.user_with_location
 
@@ -94,7 +94,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should show default clarification if new text is unspecified" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_roof_photo")
 
@@ -105,7 +105,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should move to the next step on an extracted entity" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_age")
       user.conversation_session_id = "TEST_SESSION_ID"
 
@@ -126,7 +126,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should extract boolean answer" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
 
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_not_enough_food")
       user.conversation_at = Time.utc_now
@@ -143,7 +143,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should extract boolean answer from message" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
 
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_not_enough_food")
       user.conversation_at = Time.utc_now
@@ -160,7 +160,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should end the survey collecting all data" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
 
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_feedback")
       user.conversation_state["age"] = 30i64
@@ -185,7 +185,7 @@ describe ::MvamBot::Bot do
 
     describe "end of survey" do
       it "should not reply to goodbye message right after ending the survey" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
 
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/thank_you")
         user.conversation_state["age"] = 30i64
@@ -198,7 +198,7 @@ describe ::MvamBot::Bot do
       end
 
       it "should not reply to acknowledge message right after ending the survey" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
 
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/thank_you")
         user.conversation_state["age"] = 30i64
@@ -211,7 +211,7 @@ describe ::MvamBot::Bot do
       end
 
       it "should reply to price queries right after ending the survey" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
 
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/thank_you")
         user.conversation_state["age"] = 30i64
@@ -221,7 +221,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should support asking why and then going back to the survey" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
 
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_gender")
@@ -239,7 +239,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should support asking why and who and then going back to the survey" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
 
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_gender")
@@ -259,7 +259,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should support a picture upload" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
 
       user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
       user.conversation_state["country_name"] = "Algeria"
@@ -282,7 +282,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should support refusing uploading a picture" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
 
       user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
       user.conversation_state["country_name"] = "Algeria"
@@ -300,7 +300,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should support a picture upload after a confirmation" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
 
       user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/ask_roof_photo")
@@ -327,7 +327,7 @@ describe ::MvamBot::Bot do
 
     describe "getting user name" do
       it "asks for user name at survey start" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/start")
         handle_message("Yes", user: user, understand: response({"yes_no" => "Yes"}))
 
@@ -336,7 +336,7 @@ describe ::MvamBot::Bot do
 
       context "wit understands contact entity" do
         it "stores contact name and greets user by his name" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_name")
 
           messages = handle_message("My name is Juan", user: user, understand: response({"contact" => "Juan"}))
@@ -352,7 +352,7 @@ describe ::MvamBot::Bot do
 
       context "wit doesn't understand contact entity" do
         it "greets user without name and goes on" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_name")
 
           messages = handle_message("I don't want to tell you my name", user: user, understand: response())
@@ -366,7 +366,7 @@ describe ::MvamBot::Bot do
       context "user is not previously subscribed" do
         context "user country is known" do
           it "should offer news for user's country" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
 
             user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/open_question")
             user.conversation_state["country_name"] = "Algeria"
@@ -379,7 +379,7 @@ describe ::MvamBot::Bot do
           end
 
           it "should store user response" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
 
             user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
             user.conversation_state["country_name"] = "Algeria"
@@ -392,7 +392,7 @@ describe ::MvamBot::Bot do
           end
 
           it "should create a subscription if user response postively" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
 
             country = MvamBot::Country.find_by_name("Algeria")
             user = Factory::DB.user(:with_location, :with_conversation, conversation_step: "survey/offer_local_news")
@@ -406,7 +406,7 @@ describe ::MvamBot::Bot do
 
         context "user has no country or lat/lng" do
           it "should skip and go to next state" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
 
             user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_roof_photo")
             messages = handle_message(photo: "myphoto", user: user)
@@ -418,7 +418,7 @@ describe ::MvamBot::Bot do
 
       context "user is previously subscribed" do
         it "should to straight to next step" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
 
           country = MvamBot::Country.find_by_name("Algeria")
 
@@ -434,7 +434,7 @@ describe ::MvamBot::Bot do
 
     describe "open ended question" do
       it "asks open ended question" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_roof_photo")
 
         messages = handle_message("No", user: user, understand: response({"yes_no" => "No"}))
@@ -444,7 +444,7 @@ describe ::MvamBot::Bot do
       end
 
       it "stores user user open message if any" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/open_question")
         message = "Food situation is really bad over here..."
 
@@ -455,7 +455,7 @@ describe ::MvamBot::Bot do
       end
 
       it "stores negative answers" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/open_question")
 
         handle_message("No", user: user, understand: response({"yes_no" => "No"}))
@@ -467,7 +467,7 @@ describe ::MvamBot::Bot do
 
     describe "asking for feedback" do
       it "asks if survey was helpful before ending survey" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/open_question")
 
         messages = handle_message("No", user: user, understand: response({"yes_no" => "No"}))
@@ -477,7 +477,7 @@ describe ::MvamBot::Bot do
       end
 
       it "stores user feedback if any" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_feedback")
 
         feedback = "I didn't like this and that..."
@@ -489,7 +489,7 @@ describe ::MvamBot::Bot do
       end
 
       it "stores negative answers" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = Factory::DB.user(:with_conversation, conversation_step: "survey/ask_feedback")
 
         handle_message("No", user: user, understand: response({"yes_no" => "No"}))
@@ -502,7 +502,7 @@ describe ::MvamBot::Bot do
     describe "geolocation" do
       context "user with previously known lat/lng" do
         it "should skip asking user for location if known position is recent enough" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = Factory::DB.user(conversation_step: "survey/ask_how_you_doing", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.day.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
 
@@ -515,7 +515,7 @@ describe ::MvamBot::Bot do
         end
 
         it "should ask the user if his position has changed if known position is not recent enough" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = Factory::DB.user(conversation_step: "survey/ask_how_you_doing", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.week.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
 
@@ -533,7 +533,7 @@ describe ::MvamBot::Bot do
 
       context "user without previously known lat/lng" do
         it "should ask for gps access" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = Factory::DB.user(conversation_step: "survey/ask_how_you_doing")
           user.conversation_session_id = "TEST_SESSION_ID"
 
@@ -544,7 +544,7 @@ describe ::MvamBot::Bot do
 
         context "user shares gps position" do
           it "should continue to next step if user shares gps position" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
             user = Factory::DB.user(conversation_step: "survey/ask_gps")
             user.conversation_session_id = "TEST_SESSION_ID"
 
@@ -560,7 +560,7 @@ describe ::MvamBot::Bot do
         context "if user refuses to share gps position" do
           context "user's country is known" do
             it "should ask for location name for geocoding" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
               user = Factory::DB.user_with_location(conversation_step: "survey/ask_gps")
               user.conversation_session_id = "TEST_SESSION_ID"
               adm0_name = MvamBot::Location::Adm0.find(user.location_adm0_id.not_nil!).name
@@ -577,7 +577,7 @@ describe ::MvamBot::Bot do
 
           context "user's country is not known" do
             it "should ask the user to select his country if we don't know it yet" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_gps")
               user.conversation_session_id = "TEST_SESSION_ID"
 
@@ -590,7 +590,7 @@ describe ::MvamBot::Bot do
             end
 
             it "should store selected country and ask for location name after country selection" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_country")
               user.conversation_session_id = "TEST_SESSION_ID"
 
@@ -608,7 +608,7 @@ describe ::MvamBot::Bot do
 
           context "geolocation yields a single result" do
             it "should store response and continue to next question" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_location_name")
               user.conversation_session_id = "TEST_SESSION_ID"
               user.conversation_state["country_name"] = "Argentina"
@@ -636,7 +636,7 @@ describe ::MvamBot::Bot do
 
           context "geolocation yields no result" do
             it "continue to next question" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_location_name")
               user.conversation_session_id = "TEST_SESSION_ID"
               user.conversation_state["country_name"] = "Argentina"
@@ -656,7 +656,7 @@ describe ::MvamBot::Bot do
 
           context "geolocation yields multiple results" do
             it "asks the user to select his real location" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_location_name")
               user.conversation_session_id = "TEST_SESSION_ID"
               user.conversation_state["country_name"] = "Argentina"
@@ -688,7 +688,7 @@ describe ::MvamBot::Bot do
             end
 
             it "stores position of selected geolocation result" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_which_location")
               user.conversation_session_id = "TEST_SESSION_ID"
               user.conversation_state["country_name"] = "Argentina"
@@ -717,7 +717,7 @@ describe ::MvamBot::Bot do
     end
 
     it "presets user administrative location when obtained lat/lng is close tu a known mkt" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       Location.create_test_locations
 
       user = Factory::DB.user(conversation_step: "survey/ask_gps")
@@ -738,7 +738,7 @@ describe ::MvamBot::Bot do
     describe "coping question" do
       context "positive answer" do
         it "ask user how many days he needed help" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
 
           user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
           messages = handle_message("Yes", user: user)
@@ -748,7 +748,7 @@ describe ::MvamBot::Bot do
         end
 
         it "stores interpreted number if available" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
 
           user = Factory::DB.user(conversation_step: "survey/ask_days_needed_help")
           messages = handle_message("about 3 days", user: user)
@@ -761,7 +761,7 @@ describe ::MvamBot::Bot do
         end
 
         it "stores raw answer if cannot interpret commodity" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
 
           user = Factory::DB.user(conversation_step: "survey/ask_days_needed_help")
           messages = handle_message("about three days", user: user, understand: response())
@@ -776,7 +776,7 @@ describe ::MvamBot::Bot do
 
       context "negative answer" do
         it "goes on to next question" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
 
           user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
           handle_message("No", user: user, understand: response())
@@ -790,7 +790,7 @@ describe ::MvamBot::Bot do
     describe "asking for local prices" do
       context "user lat/lng not available" do
         it "proceeds to next step if there is no position available" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
           user.conversation_session_id = "TEST_SESSION_ID"
 
@@ -801,7 +801,7 @@ describe ::MvamBot::Bot do
 
       describe "determining requested currency" do
         it "infers currency from reported country name if available" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
 
           user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
           user.conversation_state["country_name"] = "Ethiopia"
@@ -812,7 +812,7 @@ describe ::MvamBot::Bot do
         end
 
         it "reverse geocodes lat/lng if necessary to obtain country" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
 
           geocoder = Geocoder.new
@@ -824,7 +824,7 @@ describe ::MvamBot::Bot do
         end
 
         it "skips asking if currency could not be determined due to unknown country name" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
           user.conversation_state["country_name"] = "foo bar"
 
@@ -833,7 +833,7 @@ describe ::MvamBot::Bot do
         end
 
         it "skips asking if currency could not be determined due to failed reverse geocoding" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
 
           geocoder = Geocoder.new
@@ -847,7 +847,7 @@ describe ::MvamBot::Bot do
       describe "determining requested commodity" do
         context "user is located near a known mkt" do
           it "asks for any commodity of that mkt" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
 
             # mkt with multiple products
             user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
@@ -860,7 +860,7 @@ describe ::MvamBot::Bot do
 
         context "user is not located near a known mkt" do
           it "asks for any commodity in the user's country when it matches a known Adm0" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
 
             user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
             user.conversation_session_id = "TEST_SESSION_ID"
@@ -872,15 +872,12 @@ describe ::MvamBot::Bot do
 
             messages = handle_message("No", user: user, understand: response())
 
-            country_commodities = MvamBot::DB.exec({String}, "SELECT DISTINCT(commodity_name) FROM prices WHERE location_adm0_id = 1")
-                                             .rows
-                                             .map(&.first.downcase)
-
+            country_commodities = MvamBot::DB.db.query_all("SELECT DISTINCT(commodity_name) FROM prices WHERE location_adm0_id = 1", as: {String}).map(&.downcase)
             verify_asked_commodity(messages[0], country_commodities)
           end
 
           it "asks for a random commodity when user's country does not match a known Adm0" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
             user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
             user.conversation_session_id = "TEST_SESSION_ID"
             user.conversation_state["lat"] = -15.583478
@@ -894,7 +891,7 @@ describe ::MvamBot::Bot do
           end
 
           it "asks for a random commodity when users' country does not match a known Adm0 and no lat/lng is known" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
             user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
             user.conversation_state["country_name"] = "Brazil"
             user.conversation_session_id = "TEST_SESSION_ID"
@@ -908,7 +905,7 @@ describe ::MvamBot::Bot do
       end
 
       it "stores requested commodity and currency after asking" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
 
         # mkt with single price
         user = user_near mkt_id: 496, conversation_step: "survey/ask_not_enough_food"
@@ -927,7 +924,7 @@ describe ::MvamBot::Bot do
       describe "processing answer" do
         context "answer is close tu reference price" do
           it "stores user answer" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
 
             user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
             user.conversation_state["country_name"] = "Afghanistan"
@@ -946,7 +943,7 @@ describe ::MvamBot::Bot do
         end
 
         it "accepts fractional numbers written with comma" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
 
           user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
           user.conversation_state["country_name"] = "Afghanistan"
@@ -960,14 +957,14 @@ describe ::MvamBot::Bot do
 
           responses = MvamBot::SurveyResponse.for_user(user.id)
           responses.size.should eq(1)
-          responses[0].data["asked_price_answer"].should eq(answer)
+          responses[0].data["asked_price_answer"].as(Float64).should be_close(answer, 0.001)
           responses[0].data["price_certainty"].should eq("unconfirmed")
         end
 
         context "answer is considerably different from reference price" do
           context "user currency matches reference price" do
             it "confirms reported price with the user" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
 
               user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
               user.conversation_state["country_name"] = "Ethiopia"
@@ -986,7 +983,7 @@ describe ::MvamBot::Bot do
             end
 
             it "overrides original answer if user responds with a different amount after confirmation" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
 
               user = user_near mkt_id: 496, conversation_step: "survey/confirm_local_price"
               user.conversation_state["asked_price_answer"] = 300.to_i64
@@ -1001,7 +998,7 @@ describe ::MvamBot::Bot do
             end
 
             it "continues to next step and leaves original value if user responds he is sure" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
 
               user = user_near mkt_id: 496, conversation_step: "survey/confirm_local_price"
               user.conversation_state["asked_price_answer"] = 300.to_i64
@@ -1016,7 +1013,7 @@ describe ::MvamBot::Bot do
             end
 
             it "continues to next step and leaves original value if user responds he is not sure" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
 
               user = user_near mkt_id: 496, conversation_step: "survey/confirm_local_price"
               user.conversation_state["asked_price_answer"] = 300.to_i64
@@ -1033,7 +1030,7 @@ describe ::MvamBot::Bot do
 
           context "user currency differs from reference price" do
             it "continues to next step even reference price is not in the same currency as user" do
-              DB.cleanup
+              MvamBot::Spec::DB.cleanup
 
               # nearby market in Ethiopia but user currency is from Somalia
               user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
@@ -1053,7 +1050,7 @@ describe ::MvamBot::Bot do
 
           # JSON from Wit could return both integer and floats for number entities, we should support both
           it "supports integer responses" do
-            DB.cleanup
+            MvamBot::Spec::DB.cleanup
 
             user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
             user.conversation_state["country_name"] = "Afghanistan"
@@ -1070,7 +1067,7 @@ describe ::MvamBot::Bot do
 
 
       it "moves to next step if user responds in a negative way" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
 
         user = user_near mkt_id: 496, conversation_step: "survey/ask_local_price"
         user.conversation_state["country_name"] = "Afghanistan"

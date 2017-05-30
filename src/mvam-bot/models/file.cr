@@ -16,18 +16,18 @@ module MvamBot
     end
 
     def self.create(id : String, user_id : Int32, kind : String, extension : String, data : Slice(UInt8), timestamp : Time = Time.utc_now)
-      DB.exec(
+      DB.db.exec(
         "INSERT INTO files (id, user_id, kind, extension, data, timestamp)
          VALUES ($1, $2, $3, $4, $5, $6)
          RETURNING id",
-         [id, user_id, kind, extension, data, timestamp])
+         id, user_id, kind, extension, data, timestamp)
       self.new(id, user_id, kind, extension, data, timestamp)
     end
 
     def self.find(id : String)
-      rows = DB.exec(FIELD_TYPES, "SELECT #{FIELD_NAMES.join(", ")} FROM files WHERE id = $1", [id]).rows
-      return nil if rows.size == 0
-      self.new(*rows[0])
+      row = DB.db.query_one?("SELECT #{FIELD_NAMES.join(", ")} FROM files WHERE id = $1", id, as: FIELD_TYPES)
+      return nil if row.nil?
+      self.new(*row)
     end
 
   end

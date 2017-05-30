@@ -6,7 +6,7 @@ include MvamBot::Spec::Wit
 describe ::MvamBot::Topics::Geolocation do
   context "unknown gps position" do
     it "requests user GPS position" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user
       messages = handle_message("/start location", user)
       messages.size.should eq(1)
@@ -19,7 +19,7 @@ describe ::MvamBot::Topics::Geolocation do
 
     # see issue #65
     it "should ping user after inactivity when asking for gps" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       bot = Bot.new
       user = Factory::DB.user
       handle_message("/start location", bot: bot, user: user)
@@ -37,7 +37,7 @@ describe ::MvamBot::Topics::Geolocation do
 
     context "user accepts to share position" do
       it "starts step by step selection if there is no close match" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = user_at_step "location/gps_request"
         messages = handle_message("", user, location: {atlantic_ocean_position[0], atlantic_ocean_position[1]})
         messages.size.should eq(1)
@@ -48,7 +48,7 @@ describe ::MvamBot::Topics::Geolocation do
       end
 
       it "uses closest location if there is a single close match" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         Location.create_test_locations
         user = user_at_step "location/gps_request"
 
@@ -70,7 +70,7 @@ describe ::MvamBot::Topics::Geolocation do
       end
 
       it "asks user to choose if there are multiple close matches" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         Location.create_test_locations
         user = user_at_step "location/gps_request"
 
@@ -88,7 +88,7 @@ describe ::MvamBot::Topics::Geolocation do
 
     context "user refuses to share position" do
       it "starts step by step selection if there is no close match" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         user = user_at_step "location/gps_request"
         messages = handle_message("", user, location: nil)
         messages.size.should eq(1)
@@ -107,7 +107,7 @@ describe ::MvamBot::Topics::Geolocation do
         # assigned it means that either there was no close location
         # or there many, case in which we should ask the user to choose
         it "asks user to choose if there are multiple close matches" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           Location.create_test_locations
 
           user = user_near_location(Location.vicente_lopez, Time.now - 1.day)
@@ -125,7 +125,7 @@ describe ::MvamBot::Topics::Geolocation do
         # we asume that receiving a '/location' msg when a recent gps
         # record is present means that the user wants to override our match
         it "starts step by step selection" do
-          DB.cleanup
+          MvamBot::Spec::DB.cleanup
           Location.create_test_locations
 
           user = user_near_location(Location.esquel, Time.now - 1.day)
@@ -151,7 +151,7 @@ describe ::MvamBot::Topics::Geolocation do
       # mean that the user moved somewhere else, so we try with the
       # gps again
       it "should forget last postition and request a new one" do
-        DB.cleanup
+        MvamBot::Spec::DB.cleanup
         Location.create_test_locations
 
         user = user_near_location(Location.esquel, Time.now - 1.week)

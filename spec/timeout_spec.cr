@@ -8,7 +8,7 @@ describe ::MvamBot::Bot do
   describe "surveys" do
 
     it "should ping user after inactivity" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
 
       user = Factory::DB.user_with_location
       bot = Bot.new
@@ -25,7 +25,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should go back to previous question after checking presence" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
 
       user = Factory::DB.user_with_location
       bot = Bot.new
@@ -41,7 +41,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should give up if user is not there for a long time" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
 
       user = Factory::DB.user_with_location
       bot = Bot.new
@@ -58,7 +58,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should go back to previous question when user returns" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
 
       user = Factory::DB.user_with_location
       bot = Bot.new
@@ -75,7 +75,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should go back to previous question after timeout on clarification" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
 
       user = Factory::DB.user_with_location
       bot = Bot.new
@@ -92,7 +92,7 @@ describe ::MvamBot::Bot do
     end
 
     it "should not enqueue a timeout on a final state" do
-      DB.cleanup
+      MvamBot::Spec::DB.cleanup
       user = Factory::DB.user(:with_location, conversation_step: "survey/offer_local_news", conversation_session_id: "SESSION_ID")
 
       handle_message("No", user: user, understand: response({ "yes_no" => "No" }))
