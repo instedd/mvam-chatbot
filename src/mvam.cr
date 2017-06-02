@@ -1,4 +1,5 @@
 require "./mvam-bot/models/*"
+require "./mvam-bot/messaging/*"
 require "./mvam-bot/geocoding/*"
 require "./mvam-bot/wit/*"
 require "./mvam-bot/topics/*"

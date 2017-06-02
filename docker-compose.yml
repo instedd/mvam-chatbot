@@ -12,8 +12,6 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - '.:/app'
-      - 'libs:/app/lib'
-      - 'shards:/app/.shards'
     environment:
       PG_URL: postgres://mvambot:mvambot@db/mvambot
       TEST_PG_URL: postgres://mvambot:mvambot@db/mvambot-test

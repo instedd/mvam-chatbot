@@ -3,4 +3,10 @@ FROM crystallang/crystal:0.22.0
 # Install dependencies
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install git libyaml-0-2 postgresql-client curl xz-utils graphviz
 
+# Download ffmpeg and symlink it to bin
+WORKDIR /opt
+RUN curl -o ffmpeg.tar.xz http://ffmpeg.org/releases/ffmpeg-3.0.5.tar.xz
+RUN tar xvJf ffmpeg.tar.xz
+RUN ln -ns /opt/ffmpeg-3.0.5/ffmpeg /usr/local/bin/
+
 WORKDIR /app

@@ -1,20 +1,19 @@
 module MvamBot
   module Topics
     class Prices
-
       include MvamBot::WitUtils
       extend MvamBot::WitUtils
 
       getter user : MvamBot::User
       getter messenger : MvamBot::UserMessenger
-      getter message : TelegramBot::Message
+      getter message : MvamBot::Message
       getter wit : Wit::MessageResponse?
 
       @@commodity_names : Array(String)?
 
       delegate answer, answer_with_inline, to: @messenger
 
-      def initialize(@messenger : MvamBot::UserMessenger, @message : TelegramBot::Message, @wit : Wit::MessageResponse? = nil)
+      def initialize(@messenger : MvamBot::UserMessenger, @message : MvamBot::Message, @wit : Wit::MessageResponse? = nil)
         @user = @messenger.user
       end
 
@@ -74,12 +73,12 @@ module MvamBot
         if prices.empty?
           return answer("Sorry, I have no information on _#{query.strip}_ in #{Location::Adm0.find(user.location_adm0_id.not_nil!).name}.")
 
-        # If there is more than a single commodity that matches, display an inline keyboard to choose one
+          # If there is more than a single commodity that matches, display an inline keyboard to choose one
         elsif prices.map(&.commodity_id).uniq.size > 1
-          options = prices.map{|p| {p.commodity_name, "commodity/#{p.commodity_id}"}}.uniq
-          return answer_with_inline("I have information on #{options.map{|opt| opt[0]}.join(", ")}; please choose one.", options)
+          options = prices.map { |p| {p.commodity_name, "commodity/#{p.commodity_id}"} }.uniq
+          return answer_with_inline("I have information on #{options.map { |opt| opt[0] }.join(", ")}; please choose one.", options)
 
-        # Otherwise, show a description of the prices
+          # Otherwise, show a description of the prices
         else
           answer(Price.description(prices, user: user, format: :markdown))
         end
@@ -94,7 +93,7 @@ module MvamBot
       end
 
       private def is_commodity?(string)
-        string && commodity_names.any? {|commodity| commodity.downcase.includes?(string.not_nil!.downcase.strip)}
+        string && commodity_names.any? { |commodity| commodity.downcase.includes?(string.not_nil!.downcase.strip) }
       end
 
       private def commodity_names
@@ -109,7 +108,7 @@ module MvamBot
         @@commodity_names ||= Price.commodity_names
       end
 
-      def self.handles?(user : MvamBot::User, message : TelegramBot::Message, wit : Wit::MessageResponse? = nil)
+      def self.handles?(user : MvamBot::User, message : MvamBot::Message, wit : Wit::MessageResponse? = nil)
         return true if message.text =~ /\/price/
 
         if wit
@@ -121,7 +120,6 @@ module MvamBot
 
         false
       end
-
     end
   end
 end

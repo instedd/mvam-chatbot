@@ -1,14 +1,13 @@
 module MvamBot::Topics
   class Geolocation
-
-    GPS_MATCH_LIMIT = 5
+    GPS_MATCH_LIMIT  =  5
     GPS_MATCH_RADIUS = 50
 
     getter user : MvamBot::User
     getter messenger
     getter message
 
-    def initialize(@messenger : MvamBot::UserMessenger, @message : TelegramBot::Message)
+    def initialize(@messenger : MvamBot::UserMessenger, @message : MvamBot::Message)
       @user = @messenger.user
     end
 
@@ -45,12 +44,7 @@ module MvamBot::Topics
         user.clear_all_location_data
         user.conversation_step = "location/gps_request"
 
-        keyboard = TelegramBot::ReplyKeyboardMarkup.new([
-          [TelegramBot::KeyboardButton.new("Sure", request_location: true)],
-          [TelegramBot::KeyboardButton.new("I'd rather not", request_location: false) ]
-        ], one_time_keyboard: true)
-
-        messenger.answer("#{extra_text}Could you share your current position with us?", keyboard)
+        messenger.answer_with_location_request("#{extra_text}Could you share your current position with us?", "Sure", "I'd rather not")
 
         schedule_retry_ask_gps
       end
@@ -58,12 +52,7 @@ module MvamBot::Topics
 
     def schedule_retry_ask_gps
       MvamBot::Scheduler.schedule("geolocation/#{user.id}", 30) do
-        keyboard = TelegramBot::ReplyKeyboardMarkup.new([
-          [TelegramBot::KeyboardButton.new("Share my position", request_location: true)],
-          [TelegramBot::KeyboardButton.new("Skip this and continue", request_location: false) ]
-        ], one_time_keyboard: true)
-
-        messenger.answer("Sorry, I didn't get anything. Let's try again...", keyboard)
+        messenger.answer_with_location_request("Sorry, I didn't get anything. Let's try again...", "Share my position", "Skip this and continue")
       end
     end
 
@@ -109,7 +98,7 @@ module MvamBot::Topics
       if location = Location::Mkt.find_by_name(message.text, user.location_adm1_id.not_nil!)
         user.location_mkt_id = location.id
         user.conversation_step = nil
-        messenger.answer_location_complete(location)
+        answer_location_complete(location)
       else
         messenger.answer_with_keyboard "Sorry, I do not have information on #{message.text}. Please pick a city from the list.", Location::Mkt.where_adm1_id(user.location_adm1_id.not_nil!).map(&.name).sort
       end
@@ -139,7 +128,7 @@ module MvamBot::Topics
       user.location_mkt_id = mkt.id
 
       user.conversation_step = nil
-      messenger.answer_location_complete(mkt)
+      answer_location_complete(mkt)
     end
 
     def request_location_adm0(extra_text = nil)
@@ -151,7 +140,7 @@ module MvamBot::Topics
       locations = Location::Adm1.where_adm0_id(location_adm0.id)
       if locations.size == 0
         user.conversation_step = nil
-        messenger.answer_location_complete(location_adm0)
+        answer_location_complete(location_adm0)
       elsif locations.size == 1
         location_adm1 = locations.first
         user.location_adm1_id = location_adm1.id
@@ -166,17 +155,20 @@ module MvamBot::Topics
       locations = Location::Mkt.where_adm1_id(location_adm1.id)
       if locations.size == 0
         user.conversation_step = nil
-        messenger.answer_location_complete(location_adm1)
+        answer_location_complete(location_adm1)
       elsif locations.size == 1
         location_mkt = locations.first
         user.location_mkt_id = location_mkt.id
         user.conversation_step = nil
-        messenger.answer_location_complete(location_mkt)
+        answer_location_complete(location_mkt)
       else
         user.conversation_step = "location/mkt"
         messenger.answer_with_keyboard "And which city in #{location_adm1.name} would you like information from?", locations.map(&.name).sort
       end
     end
 
+    private def answer_location_complete(location)
+      messenger.answer "Got it, I will send you food prices from #{location.description}. If you want to change it at anytime, just send `/location`."
+    end
   end
 end

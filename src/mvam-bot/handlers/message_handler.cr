@@ -2,9 +2,7 @@ require "telegram_bot"
 require "process"
 
 module MvamBot
-
   class MessageHandler
-
     include MvamBot::WitUtils
 
     getter message
@@ -12,11 +10,17 @@ module MvamBot
     getter bot
     getter wit : Wit::MessageResponse?
 
-    include MvamBot::WitUtils
-
     delegate answer, to: messenger
 
-    def initialize(@message : TelegramBot::Message, @user : User, @bot : MvamBot::Bot)
+    def initialize(@message : MvamBot::Message, @user : User, @bot : MvamBot::Bot)
+    end
+
+    def initialize(message : TelegramBot::Message, @user : User, @bot : MvamBot::Bot)
+      @message = MvamBot::Message.from(message)
+    end
+
+    def initialize(message : FacebookBot::Incoming::Message, @user : User, @bot : MvamBot::Bot)
+      @message = MvamBot::Message.from(message)
     end
 
     def handle
@@ -177,9 +181,7 @@ module MvamBot
     end
 
     protected def messenger
-      UserMessenger.new(user, message.chat.id, bot)
+      bot.user_messenger(user, message.chat_id)
     end
-
   end
-
 end

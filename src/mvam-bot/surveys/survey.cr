@@ -2,11 +2,8 @@ require "http"
 require "file"
 
 module MvamBot
-
   module Surveys
-
     class Survey
-
       include ::MvamBot::WitUtils
 
       @@flow = Flow.from_yaml(ENV["SURVEY_URL"]? ? HTTP::Client.get(ENV["SURVEY_URL"]).body : {{ `cat data/survey.yml`.stringify }})
@@ -18,7 +15,7 @@ module MvamBot
       MAX_RETRIES = 1
 
       getter user : MvamBot::User
-      getter message : TelegramBot::Message?
+      getter message : MvamBot::Message?
       getter state_id : String?
       getter previous_state_id : String?
 
@@ -33,7 +30,7 @@ module MvamBot
       @state_id : String?
       @previous_state_id : String?
       @retries : Int32
-      @message : TelegramBot::Message?
+      @message : MvamBot::Message?
 
       def initialize(@messenger : MvamBot::UserMessenger, @wit_client : MvamBot::WitClient? = nil, @geocoder : MvamBot::Geocoding::Geocoder? = nil)
         @user = @messenger.user
@@ -76,7 +73,7 @@ module MvamBot
         elsif @retries < MAX_RETRIES && current_state.clarification
           @retries += 1
           run to_state: current_state, with_clarification: true
-        elsif transition = current_state.transitions.find{ |t| t.kind == :failure }
+        elsif transition = current_state.transitions.find { |t| t.kind == :failure }
           @retries = 0
           run transition: transition
         else
@@ -170,9 +167,9 @@ module MvamBot
 
       private def run_action(method_name : String)
         case method_name
-        when "set_survey_at" then set_survey_at
+        when "set_survey_at"          then set_survey_at
         when "subscribe_user_to_news" then subscribe_user_to_news
-        else MvamBot.logger.error("Unknown action: #{method_name}")
+        else                               MvamBot.logger.error("Unknown action: #{method_name}")
         end
       end
 
@@ -288,7 +285,6 @@ module MvamBot
                                  else
                                    Price.sample
                                  end
-
             else
               @reference_price = Price.sample
             end
@@ -310,7 +306,7 @@ module MvamBot
       end
 
       private def transitions_for(state)
-        non_defaults, defaults = state.transitions.partition{|t| t.kind != :default}
+        non_defaults, defaults = state.transitions.partition { |t| t.kind != :default }
         if state.final
           state.transitions
         elsif state.dummy
@@ -419,7 +415,7 @@ module MvamBot
         photos = message.photo
         if (transition_photo = transition.photo) && photos && photos.size > 0
           MvamBot.logger.debug("Transition to #{transition.target} matched on photo")
-          telegram_file_id = (photos.find {|p| p.width >= 800} || photos.last).file_id
+          telegram_file_id = (photos.find { |p| p.width >= 800 } || photos.last).file_id
           file_id = messenger.download_photo(telegram_file_id)
           user.conversation_state[transition.store.not_nil!] = "photo://#{file_id}" if transition.store
           return true
@@ -634,8 +630,8 @@ module MvamBot
         user.survey_at = Time.utc_now + case user.conversation_state["survey_at"]?.try(&.to_s.downcase)
         when "in two hours" then 2.hours
         when "in six hours" then 6.hours
-        when "tomorrow" then 24.hours
-        else raise "Unexpected value for survey reschedule for user #{user.id}: #{ user.conversation_state["survey_at"]? }"
+        when "tomorrow"     then 24.hours
+        else                     raise "Unexpected value for survey reschedule for user #{user.id}: #{user.conversation_state["survey_at"]?}"
         end
       end
 
@@ -682,7 +678,7 @@ module MvamBot
       private def set_user_timeout(state)
         clear_user_timeout
         return if state.nil?
-        if transition = transitions_for(state).find {|t| t.kind == :timeout}
+        if transition = transitions_for(state).find { |t| t.kind == :timeout }
           if transition.timeout.not_nil! > 0 && transition.target != "none"
             target = transition.target
             MvamBot::Scheduler.schedule("survey/#{user.id}", transition.timeout.not_nil!) do
@@ -692,9 +688,6 @@ module MvamBot
           end
         end
       end
-
     end
-
   end
-
 end

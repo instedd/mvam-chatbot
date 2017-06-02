@@ -39,6 +39,10 @@ module MvamBot
       end
     end
 
+    def user_messenger(user, chat_id)
+      UserMessenger::Telegram.new(user, chat_id, self)
+    end
+
     private def certificate
       if cert_path = MvamBot::Config.telegram_certificate_path
         File.read(cert_path).to_s
@@ -67,6 +71,5 @@ module MvamBot
         User.find(user.id) || User.create(user.id, user.username, [user.first_name, user.last_name].compact.join(" "))
       end
     end
-
   end
 end
