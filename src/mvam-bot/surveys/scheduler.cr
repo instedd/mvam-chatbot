@@ -11,9 +11,10 @@ module MvamBot
       end
 
       def run_survey(user)
-        MvamBot.logger.info("Running scheduled survey for user #{user.id}")
+        definition = MvamBot::MessageHandler.fetch_bot_definition(user.facebook_page_id, user)
+        MvamBot.logger.info("Running scheduled survey for user #{user.id} with bot #{definition || "default"}")
         messenger = MvamBot::UserMessenger::Telegram.new(user, @bot)
-        MvamBot::Surveys::Survey.new(messenger).start
+        MvamBot::Surveys::Survey.new(messenger, flow: definition.try(&.flow)).start
       end
     end
   end

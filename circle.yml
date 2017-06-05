@@ -4,6 +4,7 @@ machine:
     TEST_PG_URL: postgres://ubuntu@localhost/mvambot
     WFP_DATA_URL: https://s3.amazonaws.com/downloads.instedd.org/datasets/WFPVAM_FoodPrices_18-05-2016.csv.gz
     WFP_LOCAL_FILE: prices/WFPVAM_FoodPrices_18-05-2016.csv
+    START_SURVEY_ON_MISUNDERSTAND: "false"
 
 dependencies:
   cache_directories:

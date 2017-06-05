@@ -1,18 +1,28 @@
 require "yaml"
 
 module MvamBot
-
   module Surveys
-
     class Flow
       YAML.mapping({
-        states: { type: Hash(String, FlowState), converter: FlowStates },
-        data: { type: Array(String), key: "survey_data" },
-        common_transitions: { type: Array(FlowTransition) }
+        states:             {type: Hash(String, FlowState), converter: FlowStates},
+        data:               {type: Array(String), key: "survey_data"},
+        common_transitions: {type: Array(FlowTransition)},
       }, strict: true)
 
       def start
         states.values.find(&.initial).not_nil!
+      end
+
+      def self.from(flow : String)
+        from_yaml(flow)
+      end
+
+      def self.from(flow : Flow)
+        flow
+      end
+
+      def self.from(flow : Nil)
+        nil
       end
     end
 
@@ -30,12 +40,11 @@ module MvamBot
     end
 
     class FlowState
-
       class Clarification
         YAML.mapping({
-          say: { type: String, nilable: true },
-          options: { type: Array(Option), nilable: true },
-          options_from: { type: String, nilable: true },
+          say:          {type: String, nilable: true},
+          options:      {type: Array(Option), nilable: true},
+          options_from: {type: String, nilable: true},
         }, strict: true)
 
         def initialize
@@ -43,17 +52,17 @@ module MvamBot
       end
 
       YAML.mapping({
-        dummy: { type: Bool, nilable: true },
-        say: { type: String, nilable: true },
-        transitions: { type: Array(FlowTransition), default: Array(FlowTransition).new },
-        initial: { type: Bool, default: false },
-        final: { type: Bool, default: false },
-        options: { type: Array(Option), nilable: true },
-        options_from: { type: String, nilable: true },
-        transient: { type: Bool, default: false },
-        clarification: { type: Clarification, default: Clarification.new },
-        price_query_instructions: { type: Bool, default: false },
-        method: { type: String, nilable: true }
+        dummy:                    {type: Bool, nilable: true},
+        say:                      {type: String, nilable: true},
+        transitions:              {type: Array(FlowTransition), default: Array(FlowTransition).new},
+        initial:                  {type: Bool, default: false},
+        final:                    {type: Bool, default: false},
+        options:                  {type: Array(Option), nilable: true},
+        options_from:             {type: String, nilable: true},
+        transient:                {type: Bool, default: false},
+        clarification:            {type: Clarification, default: Clarification.new},
+        price_query_instructions: {type: Bool, default: false},
+        method:                   {type: String, nilable: true},
       }, strict: true)
 
       getter id
@@ -61,35 +70,33 @@ module MvamBot
       def initialize(@id : String?, pull : YAML::PullParser)
         initialize(pull)
       end
-
     end
 
     class FlowTransition
-
       class Set
         YAML.mapping({
-          key: { type: String, nilable: false },
-          value: { type: String, nilable: false },
+          key:   {type: String, nilable: false},
+          value: {type: String, nilable: false},
         })
       end
 
       YAML.mapping({
-        target: { type: String },
-        action: { type: String, nilable: true },
-        entity: { type: String, nilable: true },
-        value: { type: String, nilable: true },
-        intent: { type: String, nilable: true },
-        message: { type: Array(String), nilable: true },
-        message_from: { type: String, nilable: true },
-        default: { type: Bool, default: false },
-        store: { type: String, nilable: true },
-        photo: { type: Bool, default: false },
-        location: { type: Bool, default: false },
-        method: { type: String, nilable: true },
-        say: { type: String, nilable: true },
-        set: { type: Set, nilable: true },
-        failure: { type: Bool, default: false },
-        timeout: { type: Int32, nilable: true }
+        target:       {type: String},
+        action:       {type: String, nilable: true},
+        entity:       {type: String, nilable: true},
+        value:        {type: String, nilable: true},
+        intent:       {type: String, nilable: true},
+        message:      {type: Array(String), nilable: true},
+        message_from: {type: String, nilable: true},
+        default:      {type: Bool, default: false},
+        store:        {type: String, nilable: true},
+        photo:        {type: Bool, default: false},
+        location:     {type: Bool, default: false},
+        method:       {type: String, nilable: true},
+        say:          {type: String, nilable: true},
+        set:          {type: Set, nilable: true},
+        failure:      {type: Bool, default: false},
+        timeout:      {type: Int32, nilable: true},
       }, strict: true)
 
       def kind
@@ -142,16 +149,13 @@ module MvamBot
           "{unknown}"
         end
       end
-
     end
 
     class Option
       YAML.mapping({
-        text: {type: String, nilable: false},
+        text:             {type: String, nilable: false},
         request_location: {type: Bool, default: false},
       })
     end
-
   end
-
 end

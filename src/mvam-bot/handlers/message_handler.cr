@@ -9,18 +9,22 @@ module MvamBot
     getter user
     getter bot
     getter wit : Wit::MessageResponse?
+    getter definition : MvamBot::BotDefinition?
 
     delegate answer, to: messenger
 
     def initialize(@message : MvamBot::Message, @user : User, @bot : MvamBot::Bot)
+      @definition = fetch_bot_definition
     end
 
     def initialize(message : TelegramBot::Message, @user : User, @bot : MvamBot::Bot)
       @message = MvamBot::Message.from(message)
+      @definition = fetch_bot_definition
     end
 
-    def initialize(message : FacebookBot::Incoming::Message, @user : User, @bot : MvamBot::Bot)
-      @message = MvamBot::Message.from(message)
+    def initialize(message : FacebookBot::Incoming::Message, entry : FacebookBot::Incoming::Entry, @user : User, @bot : MvamBot::Bot)
+      @message = MvamBot::Message.from(message, entry)
+      @definition = fetch_bot_definition
     end
 
     def handle
@@ -62,10 +66,6 @@ module MvamBot
         survey.handle message, wit_response: wit_message
       elsif intent == INTENT_SALUTATION
         survey.start
-      elsif intent == INTENT_ASK_CAPABILITIES
-        handle_help
-      elsif intent == INTENT_ASK_WHO
-        handle_whois
       elsif intent == INTENT_THANKS
         answer "😀"
       else
@@ -74,10 +74,14 @@ module MvamBot
     end
 
     def handle_not_understood
-      strike = user.conversation_step =~ /^misunderstood\/(\d+)/ ? ($~[1].to_i + 1) : 1
-      user.conversation_step = "misunderstood/#{strike}"
-      extra = strike > 2 ? " Send `/help` if you want information on how I can be of assistance." : ""
-      answer("Sorry, I did not understand what you just said.#{extra}")
+      if MvamBot::Config.start_survey_on_misunderstand?
+        survey.start
+      else
+        strike = user.conversation_step =~ /^misunderstood\/(\d+)/ ? ($~[1].to_i + 1) : 1
+        user.conversation_step = "misunderstood/#{strike}"
+        extra = strike > 2 ? " Send `/help` if you want information on how I can be of assistance." : ""
+        answer("Sorry, I did not understand what you just said.#{extra}")
+      end
     end
 
     def handle_echo(echo)
@@ -169,7 +173,7 @@ module MvamBot
     end
 
     protected def survey
-      MvamBot::Surveys::Survey.new(messenger, wit_client, geocoder)
+      MvamBot::Surveys::Survey.new(messenger, wit_client, geocoder, definition.try(&.flow))
     end
 
     protected def geolocation
@@ -181,7 +185,23 @@ module MvamBot
     end
 
     protected def messenger
-      bot.user_messenger(user, message.chat_id)
+      bot.user_messenger(user, message.chat_id, definition.try(&.access_token))
+    end
+
+    protected def fetch_bot_definition
+      self.class.fetch_bot_definition(@message.try(&.page_id), @user)
+    end
+
+    def self.fetch_bot_definition(page_id, user)
+      if page_id
+        MvamBot::BotDefinition.resolve(page_id, user.locale).tap do |bot|
+          if bot && bot.flow && !bot.flow.not_nil!.empty?
+            MvamBot.logger.debug("Using bot definition '#{bot.name}' for user #{user.full_name} (#{user.locale})")
+          else
+            MvamBot.logger.debug("Using default bot definition for user #{user.full_name} (#{user.locale})")
+          end
+        end
+      end
     end
   end
 end

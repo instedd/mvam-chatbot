@@ -2,8 +2,9 @@ require "wit"
 
 module MvamBot
   module WitClient
-    def self.for(user : User, token = nil)
-      if token || MvamBot::Config.wit_access_token
+    def self.for(user : User, token = nil, locale = nil)
+      token ||= MvamBot::Config.wit_access_token(locale || user.locale)
+      if token
         Client.new(user, token)
       else
         NilClient.new
@@ -32,6 +33,10 @@ module MvamBot
         get_message(data, session, content_type)
       end
 
+      def enabled?
+        true
+      end
+
       protected def get_message(data : Slice(UInt8), session : String, content_type : String)
         @app.speech(data, content_type: content_type, thread_id: session)
       end
@@ -50,6 +55,10 @@ module MvamBot
 
       def speech(data, content_type)
         nil
+      end
+
+      def enabled?
+        false
       end
     end
   end

@@ -12,6 +12,7 @@ module MvamBot::Topics
     end
 
     def self.handles?(user, message)
+      return false unless MvamBot::Config.topic_geolocation?
       message.text == "/start location" || message.text == "/location" || user.conversation_step =~ /location\//
     end
 

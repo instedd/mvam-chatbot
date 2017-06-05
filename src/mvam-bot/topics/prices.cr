@@ -18,6 +18,7 @@ module MvamBot
       end
 
       def handle
+        return false unless MvamBot::Config.topic_prices?
         if user.location_adm0_id.nil?
           if user.position_set_recently?
             answer("I could not find any marketplace near your location. Please use /location to select another one.")

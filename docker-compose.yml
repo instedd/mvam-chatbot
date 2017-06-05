@@ -1,29 +1,51 @@
 version: '2'
 
 volumes:
-  libs:
-  shards:
   pgdata:
 
 services:
+
   bot:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: crystal src/mvam-bot.cr
+    command: /bin/sh -c "(crystal build src/mvam-bot.cr) && ./mvam-bot"
     volumes:
       - '.:/app'
     depends_on:
       - db
     env_file:
       - .docker-env
-    environment:
+    environment: &env
       PG_URL: postgres://mvambot:mvambot@db/mvambot
       TEST_PG_URL: postgres://mvambot:mvambot@db/mvambot-test
       WFP_DATA_URL: https://s3.amazonaws.com/downloads.instedd.org/datasets/WFPVAM_FoodPrices_18-05-2016.csv.gz
       WFP_LOCAL_FILE: prices/WFPVAM_FoodPrices_18-05-2016.csv
       FACEBOOK_BIND_ADDRESS: 0.0.0.0
       FACEBOOK_BIND_PORT: 80
+      TOPIC_GEOLOCATION: "false"
+      TOPIC_PRICES: "false"
+      START_SURVEY_ON_MISUNDERSTAND: "true"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: /bin/sh -c "(crystal build src/mvam-web.cr) && ./mvam-web"
+    stop_signal: SIGINT
+    volumes:
+      - '.:/app'
+    depends_on:
+      - db
+    env_file:
+      - .docker-env
+    ports:
+      - 3000:3000
+    environment:
+      <<: *env
+      WEB_BIND_PORT: 3000
+      WEB_BIND_ADDRESS: "0.0.0.0"
+
   db:
     image: mdillon/postgis:9.5
     volumes:
@@ -33,8 +55,25 @@ services:
       POSTGRES_PASSWORD: 'mvambot'
       POSTGRES_DB: 'mvambot'
       PGDATA: '/var/lib/postgresql/data/pgdata'
+
   ngrok:
     image: fnichol/ngrok
     command: "bot:80"
     ports:
       - 4040:4040
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: crystal spec
+    volumes:
+      - '.:/app'
+    depends_on:
+      - db
+    environment:
+      PG_URL: postgres://mvambot:mvambot@db/mvambot-test
+      TEST_PG_URL: postgres://mvambot:mvambot@db/mvambot-test
+      WFP_DATA_URL: https://s3.amazonaws.com/downloads.instedd.org/datasets/WFPVAM_FoodPrices_18-05-2016.csv.gz
+      WFP_LOCAL_FILE: prices/WFPVAM_FoodPrices_18-05-2016.csv
+      START_SURVEY_ON_MISUNDERSTAND: "false"

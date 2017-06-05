@@ -1,6 +1,5 @@
 module MvamBot::Spec
-
-  class WitClient < ::MvamBot::WitClient
+  class WitClient < ::MvamBot::WitClient::Client
     @runner : Proc(String, String, ::Wit::Actions, ::Wit::State)?
 
     def initialize(user, messenger, @messages : Hash(String, ::Wit::MessageResponse)? = nil, @understand : ::Wit::MessageResponse? = nil)
@@ -18,7 +17,6 @@ module MvamBot::Spec
   end
 
   class Geocoder < ::MvamBot::Geocoding::Geocoder
-
     @lookup_results : Hash({String, String}, Hash(String, {Float64, Float64}))
     @reverse_lookup_results : Hash({Float64, Float64}, MvamBot::Geocoding::ReverseGeocodingResult)
 
@@ -79,14 +77,14 @@ module MvamBot::Spec
     bot.fake(photo: photo) if photo
 
     message = if photo
-      Telegram.photo(photo, location: location)
-    elsif msg
-      Telegram.message(msg, location: location)
-    else
-      Telegram.message("", location: location)
-    end
+                Telegram.photo(photo, location: location)
+              elsif msg
+                Telegram.message(msg, location: location)
+              else
+                Telegram.message("", location: location)
+              end
 
-    user = user || Factory::DB.user()
+    user = user || Factory::DB.user
     MessageHandler.new(message, user, bot)
   end
 
@@ -101,5 +99,4 @@ module MvamBot::Spec
   def reply_buttons(msg)
     msg[:reply_markup].as(TelegramBot::ReplyKeyboardMarkup).keyboard.flatten.map(&.text)
   end
-
 end

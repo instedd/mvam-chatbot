@@ -3,12 +3,13 @@ module MvamBot
     getter user : MvamBot::User
     getter chat_id : Int32 | String
     getter bot : MvamBot::Bot
+    getter token : String?
 
-    def initialize(@user : MvamBot::User, @bot : MvamBot::Bot)
+    def initialize(@user : MvamBot::User, @bot : MvamBot::Bot, @token : String? = nil)
       @chat_id = @user.id
     end
 
-    def initialize(@user : MvamBot::User, @chat_id : Int32 | String, @bot : MvamBot::Bot)
+    def initialize(@user : MvamBot::User, @chat_id : Int32 | String, @bot : MvamBot::Bot, @token : String? = nil)
     end
 
     abstract def answer_with_location_request(text : String, yes_text : String, no_text : String)
@@ -42,7 +43,7 @@ module MvamBot
       MvamBot.logger.debug "< SendMessage #{chat_id}, #{text}"
       MvamBot::Logs::Message.create(user.id, true, text, Time.utc_now)
 
-      bot.send_text chat_id, text
+      bot.send_text chat_id, text, token: token
       user.conversation_at = Time.utc_now
       user.update if update_user
     end

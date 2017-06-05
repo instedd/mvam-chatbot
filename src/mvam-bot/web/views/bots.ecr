@@ -1,0 +1,11 @@
+<h1>Bots</h1>
+
+<p>
+  <a class="btn btn-default" href="/bots/new" role="button">Register new bot</a>
+</p>
+
+<div class="list-group">
+<% bot_definitions.each do |bot| %>
+  <a href="/bots/<%= bot.id %>" class="list-group-item"><h4><%= bot.name %></h4><small><%= [bot.page_id, bot.locales].reject(&.nil?).join(", ") %></small></a>
+<% end %>
+</div>

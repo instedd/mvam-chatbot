@@ -40,7 +40,7 @@ module MvamBot
       end
     end
 
-    def user_messenger(user, chat_id)
+    def user_messenger(user, chat_id, token = nil)
       UserMessenger::Telegram.new(user, chat_id, self)
     end
 

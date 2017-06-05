@@ -7,8 +7,8 @@ module MvamBot
     abstract def voice
     abstract def location
 
-    def self.from(msg : FacebookBot::Incoming::Message)
-      Message::FacebookProxy.new(msg)
+    def self.from(msg : FacebookBot::Incoming::Message, entry : FacebookBot::Incoming::Entry)
+      Message::FacebookProxy.new(msg, entry)
     end
 
     def self.from(msg : TelegramBot::Message)
@@ -29,10 +29,14 @@ module MvamBot
     def text=(txt)
       @message.text = txt
     end
+
+    def page_id
+      nil
+    end
   end
 
   class Message::FacebookProxy < Message
-    def initialize(@message : FacebookBot::Incoming::Message)
+    def initialize(@message : FacebookBot::Incoming::Message, @entry : FacebookBot::Incoming::Entry)
     end
 
     macro defnil(*names)
@@ -52,6 +56,10 @@ module MvamBot
 
     def text=(txt)
       @message.message.text = txt
+    end
+
+    def page_id
+      @entry.id
     end
   end
 end

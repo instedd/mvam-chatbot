@@ -9,6 +9,7 @@ module MvamBot
       @@flow = Flow.from_yaml(ENV["SURVEY_URL"]? ? HTTP::Client.get(ENV["SURVEY_URL"]).body : {{ `cat data/survey.yml`.stringify }})
 
       getter messenger
+      getter flow : Flow
       getter! geocoder
       getter! wit_client
 
@@ -32,7 +33,8 @@ module MvamBot
       @retries : Int32
       @message : MvamBot::Message?
 
-      def initialize(@messenger : MvamBot::UserMessenger, @wit_client : MvamBot::WitClient? = nil, @geocoder : MvamBot::Geocoding::Geocoder? = nil)
+      def initialize(@messenger : MvamBot::UserMessenger, @wit_client : MvamBot::WitClient? = nil, @geocoder : MvamBot::Geocoding::Geocoder? = nil, flow : Flow | String | Nil = nil)
+        @flow = Flow.from(flow) || @@flow
         @user = @messenger.user
         @retries = 0
         if user.conversation_step =~ /^survey\/([^\/?]+)(?:\?(.+))?/
@@ -56,7 +58,7 @@ module MvamBot
       def start
         clear_states
         clear_user_timeout
-        run(flow.start, extra_text: "Hello! I'm a WFP bot assistant. ")
+        run(flow.start, extra_text: "")
       end
 
       def handle(message, wit_response : Wit::MessageResponse? = nil)
@@ -79,10 +81,6 @@ module MvamBot
         else
           MvamBot.logger.warn("No transition matched #{message} at state #{state_id} for user #{user.id}") unless current_state.final
         end
-      end
-
-      private def flow
-        @@flow
       end
 
       protected def current_state
@@ -177,16 +175,20 @@ module MvamBot
         return unless say = state.say
 
         if !with_clarification
-          say = "#{say}\n\nRemember you can send `/price` anytime to ask for prices in your region." if state.final || state.price_query_instructions
-          return talk_to_user(say, extra_text, state.options, state.options_from)
+          say = if (state.final || state.price_query_instructions) && MvamBot::Config.topic_prices?
+                  "#{say}\n\nRemember you can send `/price` anytime to ask for prices in your region."
+                else
+                  say
+                end
+          return talk_to_user(say.not_nil!, extra_text || "", state.options, state.options_from)
         end
 
         clarification = state.clarification.not_nil!
-        say = clarification.say || "Sorry, I did not understand your reply. #{state.say}"
+        say = clarification.say || state.say
         options = clarification.options || state.options
         options_from = clarification.options_from || state.options_from
 
-        talk_to_user(say, "", options, options_from)
+        talk_to_user(say.not_nil!, "", options, options_from)
       end
 
       private def talk_to_user(say : String, extra_text : String?, options = nil, options_from : String? = nil)
@@ -258,7 +260,7 @@ module MvamBot
       end
 
       private def user_name
-        user.conversation_state["name"]
+        user.conversation_state["name"] || user.name || user.username
       end
 
       private def pluralize(s : String)
@@ -357,7 +359,7 @@ module MvamBot
         text = message.text.not_nil!
 
         if transition_messages
-          if transition_messages.map(&.downcase).includes?(text.downcase)
+          if transition_messages.map(&.downcase).any? { |goal| text.downcase.includes?(goal) }
             MvamBot.logger.debug("Transition to #{transition.target} matched on message #{text}")
             user.conversation_state[transition.store.not_nil!] = text if transition.store
             return true
@@ -685,7 +687,7 @@ module MvamBot
             target = transition.target
             MvamBot::Scheduler.schedule("survey/#{user.id}", transition.timeout.not_nil!) do
               MvamBot.logger.info("Executing timeout to transition #{target} for user #{messenger.user.id}")
-              Survey.new(messenger).run target
+              Survey.new(messenger, flow: @flow).run target
             end
           end
         end

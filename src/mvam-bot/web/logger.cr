@@ -2,13 +2,17 @@ require "kemal"
 
 module MvamBot
   class KemalLogger < Kemal::BaseLogHandler
+    def write(message)
+      MvamBot.logger.info(message)
+    end
+
     def call(context)
       time = Time.now
       call_next(context)
       elapsed = Time.now - time
       elapsed_text = elapsed_text(elapsed)
       message = "#{time} #{context.response.status_code} #{context.request.method} #{context.request.resource} - #{elapsed_text}"
-      MvamBot.logger.info(message)
+      write(message)
       context
     end
 

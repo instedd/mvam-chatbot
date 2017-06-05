@@ -78,12 +78,25 @@ module MvamBot
       ENV["WIT_ACCESS_TOKEN"]?
     end
 
+    def self.wit_access_token(locale) : String | Nil
+      if locale
+        lang = locale.split(/-|_/, 2).first
+        ENV["WIT_ACCESS_TOKEN_#{lang.not_nil!.upcase}"]? || ENV["WIT_ACCESS_TOKEN"]?
+      else
+        wit_access_token
+      end
+    end
+
     def self.mapquest_token : String | Nil
       ENV["MAPQUEST_ACCESS_TOKEN"]?
     end
 
     def self.mapzen_token : String | Nil
       ENV["MAPZEN_ACCESS_TOKEN"]?
+    end
+
+    def self.web_basic_auth? : Bool
+      ENV.has_key?("WEB_USERNAME")
     end
 
     def self.web_username : String
@@ -104,6 +117,18 @@ module MvamBot
 
     def self.web_url : String
       ENV["WEB_URL"]? || "http://mvam-bot.instedd.org/"
+    end
+
+    def self.topic_geolocation? : Bool
+      ENV["TOPIC_GEOLOCATION"]? != "false"
+    end
+
+    def self.topic_prices? : Bool
+      ENV["TOPIC_PRICES"]? != "false"
+    end
+
+    def self.start_survey_on_misunderstand? : Bool
+      ENV["START_SURVEY_ON_MISUNDERSTAND"]? != "false"
     end
   end
 end
