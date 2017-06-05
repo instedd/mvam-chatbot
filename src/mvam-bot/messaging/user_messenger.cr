@@ -18,6 +18,14 @@ module MvamBot
   end
 
   class UserMessenger::Facebook < UserMessenger
+    def bot
+      super.as(MvamBot::Bot::Facebook)
+    end
+
+    def chat_id
+      super.as(String)
+    end
+
     def answer_with_location_request(text : String, yes_text : String, no_text : String)
       answer(text)
     end
@@ -34,7 +42,7 @@ module MvamBot
       MvamBot.logger.debug "< SendMessage #{chat_id}, #{text}"
       MvamBot::Logs::Message.create(user.id, true, text, Time.utc_now)
 
-      bot.send_message chat_id, text
+      bot.send_text chat_id, text
       user.conversation_at = Time.utc_now
       user.update if update_user
     end
@@ -45,6 +53,14 @@ module MvamBot
   end
 
   class UserMessenger::Telegram < UserMessenger
+    def bot
+      super.as(MvamBot::Bot::Telegram)
+    end
+
+    def chat_id
+      super.as(Int32)
+    end
+
     def answer_with_location_request(text : String, yes_text : String, no_text : String)
       keyboard = TelegramBot::ReplyKeyboardMarkup.new([
         [TelegramBot::KeyboardButton.new(yes_text, request_location: true)],
@@ -97,8 +113,7 @@ module MvamBot
 
     def download_photo(file_id : String)
       # TODO: Download photo in a separate fiber to avoid blocking; check for issues with accessing the DB connection from there
-      file = bot.get_file(file_id)
-      raw = bot.download(file).not_nil!
+      raw = bot.download_file(file_id).not_nil!
       MvamBot.logger.debug("Downloaded photo #{file_id} for user #{user.id} #{user.username}")
 
       # Use the telegram unique identifier as our own id

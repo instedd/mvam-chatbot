@@ -1,14 +1,12 @@
 module MvamBot
-
   class InlineQueryHandler
-
     getter :query
     getter :user
     getter :bot
 
     RESULTS_LIMIT = 30
 
-    def initialize(@query : TelegramBot::InlineQuery, @user : User, @bot : MvamBot::Bot)
+    def initialize(@query : TelegramBot::InlineQuery, @user : User, @bot : MvamBot::Bot::Telegram)
     end
 
     def handle
@@ -57,5 +55,4 @@ module MvamBot
       MvamBot::Topics::Geolocation::GPS_MATCH_RADIUS
     end
   end
-
 end

@@ -1,8 +1,6 @@
 module MvamBot::Spec
-
-  class Bot < MvamBot::Bot
-
-    def initialize()
+  class Bot < MvamBot::Bot::Telegram
+    def initialize
       super("")
     end
 
@@ -36,22 +34,16 @@ module MvamBot::Spec
                             next_offset : String? = nil,
                             switch_pm_text : String? = nil,
                             switch_pm_parameter : String? = nil) : Bool?
-      @query_replies << { inline_query_id: inline_query_id, results: results.map &.as(TelegramBot::InlineQueryResult), cache_time: cache_time, is_personal: is_personal, next_offset: next_offset, switch_pm_text: switch_pm_text, switch_pm_parameter: switch_pm_parameter }
+      @query_replies << {inline_query_id: inline_query_id, results: results.map &.as(TelegramBot::InlineQueryResult), cache_time: cache_time, is_personal: is_personal, next_offset: next_offset, switch_pm_text: switch_pm_text, switch_pm_parameter: switch_pm_parameter}
       nil
     end
 
-    def get_file(file_id : String) : TelegramBot::File
-      @files[file_id]
-    end
-
-    def download(file_path : String)
-      if @files.has_key?(file_path)
-        "#{file_path}/content"
+    def download_file(file_id : String)
+      if @files.has_key?(file_id)
+        "#{file_id}/content"
       else
         raise "FileNotFound"
       end
     end
-
   end
-
 end

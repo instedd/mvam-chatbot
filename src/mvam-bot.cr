@@ -1,4 +1,4 @@
 require "./mvam"
 
 # Start the bot
-MvamBot::Bot.new(MvamBot::Config.telegram_token).run
+MvamBot::Bot::Telegram.new(MvamBot::Config.telegram_token).run

@@ -130,9 +130,8 @@ module MvamBot
     def handle_voice
       voice = message.voice.not_nil!
       file_id = voice.file_id
-      file = bot.get_file(file_id)
       mime = voice.mime_type
-      raw = bot.download(file).not_nil!
+      raw = bot.download_file(file_id).not_nil!
 
       MvamBot.logger.debug("Downloaded voice #{file_id} for user #{user.id}")
 

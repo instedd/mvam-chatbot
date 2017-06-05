@@ -12,6 +12,8 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - '.:/app'
+    depends_on:
+      - db
     environment:
       PG_URL: postgres://mvambot:mvambot@db/mvambot
       TEST_PG_URL: postgres://mvambot:mvambot@db/mvambot-test

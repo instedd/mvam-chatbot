@@ -1,12 +1,10 @@
 module MvamBot
-
   class CallbackQueryHandler
-
     getter :callback
     getter :user
     getter :bot
 
-    def initialize(@callback : TelegramBot::CallbackQuery, @user : User, @bot : MvamBot::Bot)
+    def initialize(@callback : TelegramBot::CallbackQuery, @user : User, @bot : MvamBot::Bot::Telegram)
     end
 
     def handle
@@ -26,7 +24,5 @@ module MvamBot
       message = callback.message.not_nil!
       bot.edit_message_text(chat_id: message.chat.id, message_id: message.message_id, text: text, parse_mode: "Markdown")
     end
-
   end
-
 end
