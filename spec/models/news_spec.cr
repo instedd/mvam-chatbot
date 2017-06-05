@@ -3,7 +3,6 @@ require "../spec_helper"
 include MvamBot::Spec
 
 describe ::MvamBot::News do
-
   it "allows to retrieve current subscriptions for a country" do
     MvamBot::Spec::DB.cleanup
 
@@ -36,13 +35,13 @@ describe ::MvamBot::News do
     c1 = MvamBot::Country.find_by_code("AR").not_nil!
     c2 = MvamBot::Country.find_by_code("BE").not_nil!
 
-    MvamBot::News.subscribe(c1, Factory::DB.user(id: 1000000))
-    MvamBot::News.subscribe(c1, Factory::DB.user(id: 1000001))
-    MvamBot::News.subscribe(c2, Factory::DB.user(id: 1000002))
+    MvamBot::News.subscribe(c1, Factory::DB.user(telegram_id: 1000000))
+    MvamBot::News.subscribe(c1, Factory::DB.user(telegram_id: 1000001))
+    MvamBot::News.subscribe(c2, Factory::DB.user(telegram_id: 1000002))
 
     MvamBot::News.subscriptions_per_country.should eq({
       "AR" => 2,
-      "BE" => 1
+      "BE" => 1,
     })
   end
 
@@ -53,8 +52,8 @@ describe ::MvamBot::News do
     n1 = MvamBot::News.schedule_delivery(country, "The price of wheat is falling in Argentina.")
     MvamBot::News.pending_deliveries(n1).should eq(0)
 
-    MvamBot::News.subscribe(country, Factory::DB.user(id: 1000000))
-    MvamBot::News.subscribe(country, Factory::DB.user(id: 1000001))
+    MvamBot::News.subscribe(country, Factory::DB.user(telegram_id: 1000000))
+    MvamBot::News.subscribe(country, Factory::DB.user(telegram_id: 1000001))
 
     n2 = MvamBot::News.schedule_delivery(country, "The price of wheat is rising in Argentina.")
     MvamBot::News.pending_deliveries(n2).should eq(2)
@@ -65,8 +64,8 @@ describe ::MvamBot::News do
 
     country = MvamBot::Country.find_by_name("Argentina")
 
-    user1 = Factory::DB.user(id: 1000000); MvamBot::News.subscribe(country, user1) 
-    user2 = Factory::DB.user(id: 1000001); MvamBot::News.subscribe(country, user2) 
+    user1 = Factory::DB.user(telegram_id: 1000000); MvamBot::News.subscribe(country, user1)
+    user2 = Factory::DB.user(telegram_id: 1000001); MvamBot::News.subscribe(country, user2)
 
     n = MvamBot::News.schedule_delivery(country, "The price of wheat is rising in Argentina.")
     MvamBot::News.pending_deliveries(n).should eq(2)
@@ -83,5 +82,4 @@ describe ::MvamBot::News do
 
     MvamBot::News.dequeue_delivery.should be_nil
   end
-
 end

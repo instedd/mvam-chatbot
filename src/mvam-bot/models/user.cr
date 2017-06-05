@@ -84,8 +84,23 @@ module MvamBot
       find(id).not_nil!
     end
 
-    def self.create(id : Int32,
-                    username : String? = nil,
+    def self.find_telegram(id : Int32)
+      result = DB.db.query_one?(
+        "SELECT #{FIELD_NAMES.join(", ")}
+        FROM users WHERE telegram_user_id = $1", [id], as: FIELD_TYPES)
+      return nil if result.nil?
+      User.new(*result)
+    end
+
+    def self.find_facebook(id : String)
+      result = DB.db.query_one?(
+        "SELECT #{FIELD_NAMES.join(", ")}
+        FROM users WHERE facebook_psid = $1", [id], as: FIELD_TYPES)
+      return nil if result.nil?
+      User.new(*result)
+    end
+
+    def self.create(username : String? = nil,
                     name : String? = nil,
                     location_adm0_id : Int32? = nil,
                     location_adm1_id : Int32? = nil,
@@ -104,10 +119,11 @@ module MvamBot
                     facebook_psid : String? = nil,
                     facebook_page_id : String? = nil,
                     telegram_user_id : Int32? = nil)
-      DB.db.exec(
-        "INSERT INTO users (#{FIELD_NAMES.join(", ")})
-        VALUES (#{FIELD_NAMES.size.times.map { |i| "$#{i + 1}" }.join(", ")})",
-        [id, username, name, location_adm0_id, location_adm1_id, location_mkt_id, location_lat, location_lng, gps_timestamp, conversation_step, conversation_at, conversation_session_id, conversation_state.to_json, survey_at, gender, timezone, locale, facebook_psid, facebook_page_id, telegram_user_id])
+      id = DB.db.scalar(
+        "INSERT INTO users (#{FIELD_NAMES[1..-1].join(", ")})
+        VALUES (#{FIELD_NAMES[1..-1].size.times.map { |i| "$#{i + 1}" }.join(", ")})
+        RETURNING id",
+        [username, name, location_adm0_id, location_adm1_id, location_mkt_id, location_lat, location_lng, gps_timestamp, conversation_step, conversation_at, conversation_session_id, conversation_state.to_json, survey_at, gender, timezone, locale, facebook_psid, facebook_page_id, telegram_user_id]).as(Int32)
       User.new(id: id, username: username, name: name, location_adm0_id: location_adm0_id, location_adm1_id: location_adm1_id, location_mkt_id: location_mkt_id, location_lat: location_lat, location_lng: location_lng, gps_timestamp: gps_timestamp, conversation_step: conversation_step, conversation_at: conversation_at, conversation_session_id: conversation_session_id, conversation_state_json: conversation_state.to_json, survey_at: survey_at, gender: gender, timezone: timezone, locale: locale, facebook_psid: facebook_psid, facebook_page_id: facebook_page_id, telegram_user_id: telegram_user_id)
     end
 

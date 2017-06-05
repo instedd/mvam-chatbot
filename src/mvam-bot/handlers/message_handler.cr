@@ -51,6 +51,8 @@ module MvamBot
     end
 
     def handle_wit_message
+      return handle_not_understood if @wit.nil?
+
       wit_message = @wit.not_nil!
       intent = extract_value(wit_message.entities, "intent")
 
@@ -151,8 +153,7 @@ module MvamBot
       MvamBot::DataFile.create(id: file_id, user_id: user.id, extension: "mp3", data: mp3.to_slice, kind: "voice")
 
       # Send to wit for processing
-      if wit = wit_client
-        wit_response = wit.speech(data: mp3.to_slice, content_type: "audio/mpeg3")
+      if wit_response = wit_client.speech(data: mp3.to_slice, content_type: "audio/mpeg3")
         message.text = wit_response._text
         @wit = wit_response
         handle_wit_message
@@ -160,7 +161,7 @@ module MvamBot
     end
 
     protected def wit_client
-      WitClient.new(user)
+      WitClient.for(user)
     end
 
     protected def geocoder

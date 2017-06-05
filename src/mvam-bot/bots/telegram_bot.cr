@@ -74,7 +74,7 @@ module MvamBot
 
     private def load_user(msg)
       if user = msg.from
-        User.find(user.id) || User.create(user.id, user.username, [user.first_name, user.last_name].compact.join(" "))
+        User.find_telegram(user.id) || User.create(telegram_user_id: user.id, username: user.username, name: [user.first_name, user.last_name].compact.join(" "))
       end
     end
   end

@@ -1,12 +1,15 @@
 module MvamBot
   module Config
-
     def self.pg_url : String
       ENV["PG_URL"]
     end
 
     def self.log_level : String
       ENV["LOG_LEVEL"]? || "DEBUG"
+    end
+
+    def self.telegram? : Bool
+      ENV.has_key?("TELEGRAM_TOKEN")
     end
 
     def self.telegram_token : String
@@ -41,6 +44,34 @@ module MvamBot
 
     def self.telegram_webhook_url : String | Nil
       ENV["TELEGRAM_WEBHOOK_URL"]?
+    end
+
+    def self.facebook? : Bool
+      ENV.has_key?("FACEBOOK_ACCESS_TOKEN")
+    end
+
+    def self.facebook_access_token : String
+      ENV["FACEBOOK_ACCESS_TOKEN"]
+    end
+
+    def self.facebook_verify_token : String
+      ENV["FACEBOOK_VERIFY_TOKEN"]
+    end
+
+    def self.facebook_certificate_path : String | Nil
+      ENV["FACEBOOK_CERTIFICATE_PATH"]?
+    end
+
+    def self.facebook_key_path : String | Nil
+      ENV["FACEBOOK_KEY_PATH"]?
+    end
+
+    def self.facebook_bind_address : String
+      ENV["FACEBOOK_BIND_ADDRESS"]
+    end
+
+    def self.facebook_bind_port : Int32
+      ENV["FACEBOOK_BIND_PORT"].to_i
     end
 
     def self.wit_access_token : String | Nil

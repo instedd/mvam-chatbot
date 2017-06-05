@@ -5,8 +5,8 @@ module MvamBot
   class Bot::Facebook < FacebookBot::Bot
     include MvamBot::Bot
 
-    def initialize
-      super(MvamBot::Config.facebook_access_token, MvamBot::Config.facebook_verify_token, logger)
+    def initialize(access_token, verify_token)
+      super(access_token, verify_token, logger)
     end
 
     protected def logger : Logger
@@ -42,14 +42,15 @@ module MvamBot
 
     private def load_user(msg)
       if user_id = msg.sender.id
-        User.find(user_id) || create_user(user_id)
+        User.find_facebook(user_id) || create_user(user_id)
       end
     end
 
     private def create_user(user_id)
-      profile = user_profile(user_id)
-      name = [user.first_name, user.last_name].compact.join(" ")
-      User.create(user_id, name, name)
+      if profile = user_profile(user_id)
+        name = [profile.first_name, profile.last_name].compact.join(" ")
+        User.create(facebook_psid: user_id, name: name)
+      end
     end
   end
 end

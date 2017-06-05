@@ -386,25 +386,27 @@ module MvamBot
       end
 
       private def test_intent_transition(transition, message)
-        response = wit_understand(message.text.not_nil!)
-        entities = response.entities
-        if extract_value(entities, "intent") == transition.intent
-          MvamBot.logger.debug("Transition to #{transition.target} matched on intent #{transition.intent}")
-          user.conversation_state[transition.store.not_nil!] = transition.intent if transition.store
-          return true
+        if response = wit_understand(message.text.not_nil!)
+          entities = response.entities
+          if extract_value(entities, "intent") == transition.intent
+            MvamBot.logger.debug("Transition to #{transition.target} matched on intent #{transition.intent}")
+            user.conversation_state[transition.store.not_nil!] = transition.intent if transition.store
+            return true
+          end
         end
         return false
       end
 
       private def test_entity_transition(transition, message)
-        response = wit_understand(message.text.not_nil!)
-        entities = response.entities
-        if entity = transition.entity
-          if value = extract_value(response.entities, entity)
-            if transition.value.nil? || transition.value == value
-              MvamBot.logger.debug("Transition to #{transition.target} matched on entity #{entity} with value #{value}")
-              user.conversation_state[transition.store.not_nil!] = value if transition.store
-              return true
+        if response = wit_understand(message.text.not_nil!)
+          entities = response.entities
+          if entity = transition.entity
+            if value = extract_value(response.entities, entity)
+              if transition.value.nil? || transition.value == value
+                MvamBot.logger.debug("Transition to #{transition.target} matched on entity #{entity} with value #{value}")
+                user.conversation_state[transition.store.not_nil!] = value if transition.store
+                return true
+              end
             end
           end
         end
