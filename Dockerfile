@@ -1,4 +1,4 @@
-FROM crystallang/crystal:0.18.6
+FROM crystallang/crystal:0.22.0
 
 # Install dependencies
 RUN apt-get update && apt-get -y install git libyaml-0-2 postgresql-client curl xz-utils && apt-get clean && rm -rf /var/lib/apt/lists/*
