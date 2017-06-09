@@ -40,8 +40,8 @@ module MvamBot
       end
     end
 
-    def user_messenger(user, chat_id, token = nil)
-      UserMessenger::Telegram.new(user, chat_id, self)
+    def user_messenger(user, chat_id = nil, token = nil)
+      UserMessenger::Telegram.new(user, (chat_id || user.telegram_user_id).not_nil!, self)
     end
 
     def download_file(file_id)

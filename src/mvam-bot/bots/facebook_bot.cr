@@ -44,8 +44,9 @@ module MvamBot
       serve(MvamBot::Config.facebook_bind_address, MvamBot::Config.facebook_bind_port, MvamBot::Config.facebook_certificate_path, MvamBot::Config.facebook_key_path)
     end
 
-    def user_messenger(user, chat_id, token = nil)
-      UserMessenger::Facebook.new(user, chat_id, self, token)
+    def user_messenger(user, chat_id = nil, token = nil)
+      # TODO: If token is unset, make sure to use the one corresponding to the current psid
+      UserMessenger::Facebook.new(user, (chat_id || user.facebook_psid).not_nil!, self, token)
     end
 
     def download_file(file_id)
