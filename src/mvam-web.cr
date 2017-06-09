@@ -23,7 +23,7 @@ end
 
 get "/surveys" do
   surveys = MvamBot::SurveyResponse.all
-  fields = MvamBot::Surveys::Survey.flow.data # TODO: Go through all fields of all surveys to present, not just the default
+  fields = collect_survey_fields
   users_by_id = MvamBot::User.all.index_by(&.id)
   mvam_render "surveys"
 end
@@ -58,7 +58,7 @@ end
 
 get "/surveys.csv" do |env|
   surveys = MvamBot::SurveyResponse.all
-  fields = MvamBot::Surveys::Survey.flow.data
+  fields = collect_survey_fields
   users_by_id = MvamBot::User.all.index_by(&.id)
   env.response.content_type = "text/csv"
 
@@ -84,7 +84,7 @@ get "/users/:id" do |env|
     messages_by_day = messages.group_by { |m| m.timestamp.date }
     message_count = MvamBot::Logs.count(user_id: user.id)
     surveys = MvamBot::SurveyResponse.for_user(user.id)
-    fields = MvamBot::Surveys::Survey.flow.data
+    fields = collect_survey_fields
     mvam_render "user"
   else
     env.response.status_code = 404
@@ -141,6 +141,15 @@ put "/bots/:id" do |env|
   else
     MvamBot::BotDefinition.update(int_id(env), *strict_bot_definition_params(env))
     env.redirect "/bots"
+  end
+end
+
+def collect_survey_fields
+  bots = MvamBot::BotDefinition.all
+  if bots.empty?
+    MvamBot::Surveys::Survey.flow.data
+  else
+    bots.flat_map { |bot| MvamBot::Surveys::Flow.from(bot.flow).not_nil!.data rescue Array(String).new }.uniq.sort
   end
 end
 
