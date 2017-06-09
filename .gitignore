@@ -8,5 +8,8 @@
 src/foo.cr
 docker-cloud.yml
 /mvam-bot
+/mvam-cron
+/mvam-notifications
+/mvam-web
 /WFPVAM_FoodPrices_*.csv
 /prices/*.csv
