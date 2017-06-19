@@ -106,6 +106,7 @@ describe ::MvamBot::Bot do
       MvamBot::Spec::DB.cleanup
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_age")
       user.conversation_session_id = "TEST_SESSION_ID"
+      user.conversation_at = Time.utc_now
 
       messages = handle_message("I am 30 years old", user: user)
 
@@ -129,6 +130,7 @@ describe ::MvamBot::Bot do
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_not_enough_food")
       user.conversation_at = Time.utc_now
       user.conversation_session_id = "TEST_SESSION_ID"
+      user.conversation_at = Time.utc_now
 
       messages = handle_message("Yeah", user: user, messages: {"Yeah" => response({"yes_no" => "Yes"})})
       messages.size.should eq(1)
@@ -146,6 +148,7 @@ describe ::MvamBot::Bot do
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_not_enough_food")
       user.conversation_at = Time.utc_now
       user.conversation_session_id = "TEST_SESSION_ID"
+      user.conversation_at = Time.utc_now
 
       messages = handle_message("Yes", user: user)
       messages.size.should eq(1)
@@ -165,6 +168,7 @@ describe ::MvamBot::Bot do
       user.conversation_state["gender"] = "male"
       user.conversation_state["not_enough_food"] = "Yes"
       user.conversation_session_id = "TEST_SESSION_ID"
+      user.conversation_at = Time.utc_now
       user.conversation_at = Time.utc_now
 
       messages = handle_message("No", user: user, understand: response({"yes_no" => "No"}))
@@ -225,6 +229,7 @@ describe ::MvamBot::Bot do
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_gender")
       user.conversation_session_id = "TEST_SESSION_ID"
       user.conversation_at = Time.utc_now
+      user.conversation_at = Time.utc_now
 
       handle_message("Why?", user: user, bot: bot, messages: {"Why?" => response({"intent" => "AskWhy"})})
       messages = handle_message("Ok", user: user, bot: bot, messages: {"Ok" => response({"yes_no" => "Yes"})})
@@ -242,6 +247,7 @@ describe ::MvamBot::Bot do
 
       user = Factory::DB.user_with_location(conversation_step: "survey/ask_gender")
       user.conversation_session_id = "TEST_SESSION_ID"
+      user.conversation_at = Time.utc_now
       user.conversation_at = Time.utc_now
 
       handle_message("Why?", user: user, bot: bot, messages: {"Why?" => response({"intent" => "AskWhy"})})
@@ -503,6 +509,7 @@ describe ::MvamBot::Bot do
           MvamBot::Spec::DB.cleanup
           user = Factory::DB.user(conversation_step: "survey/ask_how_you_doing", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.day.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
+          user.conversation_at = Time.utc_now
 
           handle_message("fine", user: user, understand: response())
           user.conversation_step.not_nil!.should contain("survey/ask_age")
@@ -516,6 +523,7 @@ describe ::MvamBot::Bot do
           MvamBot::Spec::DB.cleanup
           user = Factory::DB.user(conversation_step: "survey/ask_how_you_doing", location_lat: 10.0, location_lng: 20.0, gps_timestamp: 1.week.ago)
           user.conversation_session_id = "TEST_SESSION_ID"
+          user.conversation_at = Time.utc_now
 
           geocoder = Geocoder.new
           geocoder.expect_reverse_lookup(10.0, 20.0) { {country_name: "Argentina", label: "Buenos Aires"} }
@@ -534,6 +542,7 @@ describe ::MvamBot::Bot do
           MvamBot::Spec::DB.cleanup
           user = Factory::DB.user(conversation_step: "survey/ask_how_you_doing")
           user.conversation_session_id = "TEST_SESSION_ID"
+          user.conversation_at = Time.utc_now
 
           messages = handle_message(user: user, understand: response())
           reply_buttons(messages.last).should eq(["Sure", "I'd rather not"])
@@ -545,6 +554,7 @@ describe ::MvamBot::Bot do
             MvamBot::Spec::DB.cleanup
             user = Factory::DB.user(conversation_step: "survey/ask_gps")
             user.conversation_session_id = "TEST_SESSION_ID"
+            user.conversation_at = Time.utc_now
 
             messages = handle_message("", user: user, location: {10.0, 20.0})
             messages.size.should eq(1)
@@ -561,6 +571,7 @@ describe ::MvamBot::Bot do
               MvamBot::Spec::DB.cleanup
               user = Factory::DB.user_with_location(conversation_step: "survey/ask_gps")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_at = Time.utc_now
               adm0_name = MvamBot::Location::Adm0.find(user.location_adm0_id.not_nil!).name
 
               messages = handle_message("I'd rather not", user: user)
@@ -578,6 +589,7 @@ describe ::MvamBot::Bot do
               MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_gps")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_at = Time.utc_now
 
               messages = handle_message("I'd rather not", user: user)
               messages.size.should eq(1)
@@ -591,6 +603,7 @@ describe ::MvamBot::Bot do
               MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_country")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_at = Time.utc_now
 
               selected_country = MvamBot::Country.all.first
 
@@ -609,6 +622,7 @@ describe ::MvamBot::Bot do
               MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_location_name")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_at = Time.utc_now
               user.conversation_state["country_name"] = "Argentina"
 
               geocoder = Geocoder.new
@@ -637,6 +651,7 @@ describe ::MvamBot::Bot do
               MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_location_name")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_at = Time.utc_now
               user.conversation_state["country_name"] = "Argentina"
 
               messages = handle_message("I live in Buenos Aires",
@@ -656,6 +671,7 @@ describe ::MvamBot::Bot do
               MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_location_name")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_at = Time.utc_now
               user.conversation_state["country_name"] = "Argentina"
 
               geocoder = Geocoder.new
@@ -688,6 +704,7 @@ describe ::MvamBot::Bot do
               MvamBot::Spec::DB.cleanup
               user = Factory::DB.user(conversation_step: "survey/ask_which_location")
               user.conversation_session_id = "TEST_SESSION_ID"
+              user.conversation_at = Time.utc_now
               user.conversation_state["country_name"] = "Argentina"
               user.conversation_state["location_name"] = "Buenos Aires"
 
@@ -719,6 +736,7 @@ describe ::MvamBot::Bot do
 
       user = Factory::DB.user(conversation_step: "survey/ask_gps")
       user.conversation_session_id = "TEST_SESSION_ID"
+      user.conversation_at = Time.utc_now
       mkt = Location.vicente_lopez
 
       handle_message("", user: user, location: {mkt.lat.not_nil!, mkt.lng.not_nil!})
@@ -789,6 +807,7 @@ describe ::MvamBot::Bot do
           MvamBot::Spec::DB.cleanup
           user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
           user.conversation_session_id = "TEST_SESSION_ID"
+          user.conversation_at = Time.utc_now
 
           handle_message("No", user: user, understand: response())
           user.conversation_step.not_nil!.should contain("survey/ask_roof_photo")
@@ -860,6 +879,7 @@ describe ::MvamBot::Bot do
 
             user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
             user.conversation_session_id = "TEST_SESSION_ID"
+            user.conversation_at = Time.utc_now
 
             # middle of the atlantic
             user.conversation_state["lat"] = -19.469574
@@ -876,6 +896,7 @@ describe ::MvamBot::Bot do
             MvamBot::Spec::DB.cleanup
             user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
             user.conversation_session_id = "TEST_SESSION_ID"
+            user.conversation_at = Time.utc_now
             user.conversation_state["lat"] = -15.583478
             user.conversation_state["lng"] = -41.307781
             user.conversation_state["country_name"] = "Brazil"
@@ -891,6 +912,7 @@ describe ::MvamBot::Bot do
             user = Factory::DB.user(conversation_step: "survey/ask_not_enough_food")
             user.conversation_state["country_name"] = "Brazil"
             user.conversation_session_id = "TEST_SESSION_ID"
+            user.conversation_at = Time.utc_now
 
             messages = handle_message("No", user: user, understand: response())
             messages[0][:text].should match(/how much does .* cost/)
@@ -1076,6 +1098,7 @@ end
 def user_near(mkt_id : Int32, conversation_step : String)
   user = Factory::DB.user(conversation_step: conversation_step)
   user.conversation_session_id = "TEST_SESSION_ID"
+  user.conversation_at = Time.utc_now
   mkt = MvamBot::Location::Mkt.find(mkt_id)
 
   # set user position near a known market
