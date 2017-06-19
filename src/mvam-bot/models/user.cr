@@ -2,7 +2,7 @@ require "secure_random"
 
 module MvamBot
   class User
-    SESSION_LIFESPAN = 30.minutes
+    SESSION_LIFESPAN = 180.minutes
 
     alias ConversationState = Hash(String, Bool | Float64 | Int64 | String | Nil)
 
