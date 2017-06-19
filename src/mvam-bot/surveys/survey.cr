@@ -58,12 +58,14 @@ module MvamBot
       def start
         clear_states
         clear_user_timeout
+        user.ensure_session_id
         run(flow.start, extra_text: "")
       end
 
       def handle(message, wit_response : Wit::MessageResponse? = nil)
         @message = message
         @wit_response = wit_response if wit_response
+        user.ensure_session_id
         advance
       end
 

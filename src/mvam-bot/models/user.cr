@@ -159,7 +159,7 @@ module MvamBot
     def ensure_session_id
       # Generate a new session id if last conversation was too long ago, or return the current one
       if conversation_session_id.nil? || conversation_at.nil? || conversation_at.not_nil! < (Time.utc_now - SESSION_LIFESPAN)
-        self.conversation_session_id = SecureRandom.uuid
+        @conversation_session_id = SecureRandom.uuid
         @conversation_state.clear
       end
       conversation_session_id.not_nil!

@@ -39,7 +39,7 @@ module MvamBot
       answer(text)
     end
 
-    def answer(text : String, update_user : Bool = true)
+    def answer(text : String, update_user = true)
       MvamBot.logger.debug "< SendMessage #{chat_id}, #{text}"
       MvamBot::Logs::Message.create(user.id, true, text, Time.utc_now)
 
