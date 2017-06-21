@@ -59,6 +59,8 @@ services:
   ngrok:
     image: fnichol/ngrok
     command: "bot:80"
+    volumes:
+      - "./ngrok.yml:/root/ngrok.yml"
     ports:
       - 4040:4040
 
