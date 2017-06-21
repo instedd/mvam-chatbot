@@ -6,7 +6,7 @@ shards:
 
   facebook_bot:
     github: spalladino/crystal-facebook_bot
-    commit: 711e6138eb79a3b7e314d1473d0434163052b567
+    commit: d70a5c0f6fb5466bd645cbfc2379482edaeb1297
 
   kemal:
     github: sdogruyol/kemal
@@ -34,7 +34,7 @@ shards:
 
   telegram_bot:
     github: hangyas/telegram_bot
-    commit: bda3a2a33b02df2fedbdbcd33047cd2e5cdedc47
+    commit: 64f77b5815330019368c5dd102427ccbae5d3c5d
 
   wit:
     github: spalladino/wit-crystal

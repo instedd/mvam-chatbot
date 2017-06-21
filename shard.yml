@@ -14,7 +14,7 @@ dependencies:
     version: 1.4.0
   facebook_bot:
     github: spalladino/crystal-facebook_bot
-    commit: 711e6138eb79a3b7e314d1473d0434163052b567
+    commit: d70a5c0f6fb5466bd645cbfc2379482edaeb1297
   micrate:
     github: juanedi/micrate
     commit: 1386a5793fe43ed877f004b810349206eca5e707
