@@ -1,7 +1,7 @@
 module MvamBot
   abstract class UserMessenger
     getter user : MvamBot::User
-    getter chat_id : Int32 | String
+    getter chat_id : Int64 | Int32 | String
     getter bot : MvamBot::Bot
     getter token : String?
 
@@ -9,7 +9,7 @@ module MvamBot
       @chat_id = @user.id
     end
 
-    def initialize(@user : MvamBot::User, @chat_id : Int32 | String, @bot : MvamBot::Bot, @token : String? = nil)
+    def initialize(@user : MvamBot::User, @chat_id : Int64 | Int32 | String, @bot : MvamBot::Bot, @token : String? = nil)
     end
 
     abstract def answer_with_location_request(text : String, yes_text : String, no_text : String)
@@ -32,7 +32,8 @@ module MvamBot
     end
 
     def answer_with_keyboard(text : String, options : Array(String) | Array(Surveys::Option), update_user = true, layout = :vertical)
-      answer(text, update_user)
+      message = FacebookBot::Outgoing::Message.new(chat_id, text, quick_replies: quick_replies(options))
+      answer(message)
     end
 
     def answer_with_inline(text : String, buttons : Array(Tuple(String, String)))
@@ -40,16 +41,29 @@ module MvamBot
     end
 
     def answer(text : String, update_user = true)
-      MvamBot.logger.debug "< SendMessage #{chat_id}, #{text}"
-      MvamBot::Logs::Message.create(user.id, true, text, Time.utc_now)
+      message = FacebookBot::Outgoing::Message.new(chat_id, text)
+      answer(message)
+    end
 
-      bot.send_text chat_id, text, token: token
+    def answer(message : FacebookBot::Outgoing::Message, update_user = true)
+      MvamBot.logger.debug "< SendMessage #{chat_id}, #{message.text}"
+      MvamBot::Logs::Message.create(user.id, true, message.text, Time.utc_now)
+
+      bot.send_message chat_id, message, token: token
       user.conversation_at = Time.utc_now
       user.update if update_user
     end
 
     def download_photo(file_id : String)
       nil
+    end
+
+    private def quick_replies(options : Array(String))
+      options.map { |text| FacebookBot::Outgoing::QuickReply.new(text) }
+    end
+
+    private def quick_replies(options : Array(Surveys::Option))
+      options.map { |opt| FacebookBot::Outgoing::QuickReply.new(opt.text) }
     end
   end
 
