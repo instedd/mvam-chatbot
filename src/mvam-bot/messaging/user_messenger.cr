@@ -73,7 +73,7 @@ module MvamBot
     end
 
     def chat_id
-      super.as(Int32)
+      super.to_i32
     end
 
     def answer_with_location_request(text : String, yes_text : String, no_text : String)
