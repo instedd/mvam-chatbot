@@ -177,6 +177,7 @@ end
 
 def bot_definition_params(env)
   {
+    env.params.url["id"]?.try(&.to_i64),
     env.params.body["name"]?,
     env.params.body["flow"]?,
     env.params.body["page_id"]?,

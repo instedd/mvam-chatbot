@@ -42,7 +42,7 @@ module MvamBot
       def initialize
       end
 
-      def initialize(@name, @flow, @page_id, @access_token, @locales)
+      def initialize(@id, @name, @flow, @page_id, @access_token, @locales)
       end
     end
 
